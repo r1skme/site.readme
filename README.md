@@ -1,37 +1,38 @@
-# Иван · Видеомонтажёр
+# R1SK — personal portfolio
 
-Личный сайт-резюме: https://r1skme.github.io/site.readme/
+A bilingual personal website for projects, automation, interfaces and media. The visual direction is inspired by Neverlose Software, but this is R1SK's independent portfolio, not an official Neverlose website.
 
-Независимый проект, вдохновлённый визуальным языком Neverlose Software. Не является официальным сайтом Neverlose. Фотографии, игровые персонажи и выдуманные примеры работ не используются. Просмотры отдельных TikTok-роликов указаны со слов автора резюме.
+Live: https://r1skme.github.io/site.readme/
 
-## Структура
+## Implementation
 
-- `index.html` — содержание, семантическая разметка и SVG-графика.
-- `style.css` — адаптивный макет, состояния интерфейса и светлая версия для печати.
-- `app.js` — движение ленты, нижняя навигация, копирование Discord и управление анимацией.
-- `assets/` — оптимизированные оригинальные логотипы программ и favicon.
-- `.github/workflows/static.yml` — публикация на GitHub Pages после изменения `main`.
+- Static HTML, CSS and JavaScript. No build step or runtime library.
+- RU/EN switching without reloading, with a language query parameter and a saved preference when storage is available.
+- A continuously animated SVG ribbon. Its time is independent of scrolling and pointer input; scroll only changes the visual emphasis. One path is reused for the colour, light and edge passes.
+- A real pause control, reduced-motion support and visibility-aware animation scheduling.
+- Accessible native dialogs for project details and click-to-load YouTube players. Videos do not autoplay. Closing the player removes its iframe.
+- Telegram link, Discord copy with explicit failure handling, GitHub profile link and the supplied YouTube/TikTok links.
+- Resource notice tied to real load/error events, without fake percentages or an enforced waiting time. Main content is never hidden by a loader.
+- No generated photos, agent artwork, particle grid, invented product screenshots or fake performance counters.
 
-Сборщик, npm и серверная часть не нужны. Для локальной проверки из папки проекта:
+## Content boundaries
 
-```sh
-python -m http.server 8000
-```
+The site is based on the owner's answers. Predict is presented as a CS2 modification in development, not just a menu or a released product. GLOW RUST is a small, optional early-launch story rather than a headline success. Private repository links, implementation details, finances, user/player numbers and unverified 99.5%/96x claims are not published.
 
-Открыть `http://localhost:8000`. Обычное открытие `index.html` также показывает страницу; доступность буфера обмена зависит от браузера.
+The media figure is a conservative **150K+**, based on four displayed TikTok view counts: 95.1K + 16.1K + 26.8K + 20.8K = 158.8K. It combines the personal and GLOW RUST accounts and is not a unique-audience figure. Individual posts are not counted twice.
 
-## Дизайн и поведение
+## Third-party resources
 
-Крупные моноширинные заголовки, спокойные панели, широкая сине-фиолетовая лента и нижняя навигация. YouTube и TikTok используют одинаковые цвета: обводка `#2F7E88`, текст `#66E3E8`. Для результатов сохранены только 26,8 тыс. и 20,8 тыс. просмотров.
+The three tool icons originate from assets supplied by the owner. Font stylesheets are requested from Google Fonts with system fallbacks; no font files are distributed here. YouTube thumbnails are external and have a visual fallback. YouTube embeds load only when requested. There is no site analytics script.
 
-Основное содержимое доступно без JavaScript. Лента останавливается вне экрана и при скрытии вкладки. Есть ручная пауза и поддержка `prefers-reduced-motion`. Кнопка печати вызывает обычный диалог браузера со светлым макетом резюме.
+## Editing
 
-Необязательные PT Mono и Inter загружаются через Google Fonts. При недоступности сервиса используются локальные/системные шрифты. Файлы шрифтов в репозиторий не включены. Внешних JavaScript-библиотек, аналитики и обработчика форм нет.
+`index.html` contains the Russian copy. Elements with `data-en` contain the corresponding English version; `data-en-label` holds translated accessible labels. The script retains the original Russian content, so no second translation file is required. Keep translations free of untrusted HTML.
 
-## Изменение и публикация
+`style.css` controls the layout and animation surfaces. `app.js` controls language, SVG motion, navigation, dialogs and clipboard handling. Project descriptions are static dialog contents in the same document. Hashes such as `#case-prime` can be shared directly.
 
-Текст и ссылки меняются в `index.html`, оформление — в `style.css`, поведение — в `app.js`. После изменений CSS/JS стоит обновлять суффикс `?v=2.0` в HTML для сброса кеша.
+## Deployment
 
-Публикация настроена через один статический workflow. В артефакт попадают только HTML, CSS, JS и `assets/`; документация и служебные файлы не публикуются. В настройках Pages источником должен быть GitHub Actions.
+The existing GitHub Actions workflow copies the three application files and `assets/` into `_site` and publishes to GitHub Pages. Only the completed, checked version is moved to `main`. No paid service or server is required.
 
-Проверки и ограничения описаны в `QA.md`. Логотипы программ принадлежат соответствующим правообладателям и используются для обозначения инструментов.
+See `QA.md` for the checks performed and their limits.
