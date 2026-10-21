@@ -149,7 +149,10 @@
     returnFocus=document.activeElement;currentDialog=dialog;document.body.classList.add('locked');
     if(typeof dialog.showModal==='function')dialog.showModal();else dialog.setAttribute('open','');
   }
-  function hideDialog(dialog){ if(typeof dialog.close==='function') dialog.close(); else {dialog.removeAttribute('open');cleanDialog(dialog);} }
+  function hideDialog(dialog){
+    if(typeof dialog.close==='function') dialog.close(); else dialog.removeAttribute('open');
+    cleanDialog(dialog); // Tear down embedded playback synchronously, before the queued close event.
+  }
   function cleanDialog(dialog){
     if(dialog===videoDialog)videoFrame.replaceChildren();
     if(currentDialog===dialog){currentDialog=null;document.body.classList.remove('locked');returnFocus?.focus({preventScroll:true});}
@@ -157,6 +160,7 @@
   }
   $$('dialog').forEach(dialog=>{
     dialog.addEventListener('close',()=>cleanDialog(dialog));
+    dialog.addEventListener('cancel',e=>{e.preventDefault();hideDialog(dialog);});
     $('[data-close]',dialog)?.addEventListener('click',()=>hideDialog(dialog));
     dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)hideDialog(dialog);}});
   });
