@@ -1,28 +1,24 @@
-# Проверка версии 2
+# Verification — personal portfolio v3
 
-Проверки выполнены в локальном Chromium через Playwright. Это не тест на физическом iPhone и не измерение производительности Safari.
+Tested in local Chromium using the actual HTML/CSS/JavaScript, with application assets inlined for the test environment. Optional external resources were blocked. The external font files, third-party streaming and a physical iPhone were not available; screenshots therefore show system fallback fonts and video-cover fallback states.
 
-## Адаптивность
+## Layout
 
-Проверены ширины 320, 360, 390, 430, 768, 1024, 1440 и 1920 пикселей. На каждой ширине:
+RU and EN at 320, 360, 390, 430, 768, 1024, 1280, 1440 and 1920 pixels: 18 combinations. Document width equalled viewport width in every case. No missing internal anchor targets. English visible text had no leftover Russian copy.
 
-- нет горизонтального переполнения страницы;
-- текстовые элементы и кнопки не выходят за ширину окна;
-- все три логотипа программ загружаются;
-- JavaScript не выдаёт ошибок при проверенных действиях.
+## Interactions
 
-## Поведение
+- SVG geometry changed with no scroll or pointer interaction.
+- The pause button froze the geometry.
+- Reduced-motion mode started with static geometry.
+- Predict case dialog opened and Escape closed it.
+- No YouTube iframe existed before a video click.
+- A click created the expected youtube-nocookie player; closing it removed the iframe.
+- Clipboard success passed the exact `r1sk.gg` value to a mocked clipboard. The denied-permission path showed a failure message, not a false success.
+- Skills disclosure opened; all three supplied local product icons loaded.
+- With JavaScript disabled, the main introduction and the case descriptions remained readable.
+- No JavaScript exceptions in the exercised scenarios.
 
-Проверены переходы к работам и контактам, активный пункт нижней навигации, копирование Discord, сообщение о результате, запуск диалога печати, движение ленты, пауза, возобновление и остановка за пределами экрана. Отдельно проверен режим уменьшения движения.
+## Explicit limits
 
-При отключённом JavaScript видны имя, все девять пунктов навыков и обе ссылки на портфолио; неработающие без JavaScript кнопки скрыты. Ссылки имеют настоящие адреса YouTube, TikTok и Telegram.
-
-Цвета двух кнопок портфолио проверены через computed styles: текст `rgb(102, 227, 232)`, обводка `rgb(47, 126, 136)`.
-
-Светлая версия для печати экспортирована в две страницы A4. Текст остаётся текстом, а не снимком экрана.
-
-## Границы проверки
-
-Внешние серверы шрифтов недоступны в среде тестирования. Для визуальной проверки использовались локально установленные PT Mono и Inter. Проверка не подтверждает конкретную частоту кадров на устройстве пользователя. Реальная загрузка сторонних YouTube/TikTok-страниц не тестировалась.
-
-Файлы, загруженные в GitHub, сверяются с локальной версией по Git blob SHA. Состояние публикации проверяется отдельно по GitHub Actions.
+No claim of an FPS score, a Lighthouse score, unique audience, performance on an actual phone, verified YouTube playback, or current external view counts is made. GitHub Pages deployment status is checked separately after publication.
