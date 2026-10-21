@@ -1,0 +1,23 @@
+name: Prepare portfolio development dependencies
+on:
+  push:
+    branches: [redesign/multipage-v4]
+    paths: [package.json, .github/workflows/dependencies-v4.yml]
+permissions:
+  contents: read
+jobs:
+  dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-audit --no-fund
+      - run: tar -czf dependencies.tar.gz node_modules package-lock.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-dependencies
+          path: dependencies.tar.gz
+          retention-days: 1
