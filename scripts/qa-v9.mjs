@@ -3,7 +3,7 @@ import {spawn} from 'node:child_process';
 import {mkdirSync,writeFileSync,copyFileSync} from 'node:fs';
 import assert from 'node:assert/strict';
 const output='qa-output';mkdirSync(output,{recursive:true});
-const base='http://127.0.0.1:4176/site.readme/';
+const base='http://127.0.0.1:4176/';
 const server=spawn('node',['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4176'],{stdio:'ignore'});
 const report={version:9,checks:[],identityChecks:[],wordCounts:{},errors:[],limits:['Chromium automated checks, not a physical iPhone or a user-device FPS measurement.']};
 const pass=s=>{report.checks.push(s);console.log('V9_PASS',s)};
@@ -35,7 +35,7 @@ try{
  pass('About includes detailed technical practice, user support and project lessons in both languages');
  await page.setViewportSize({width:320,height:844});await visit('about/');
  const overflow=await page.locator('.v9-experience-list article,.v9-human-columns article,.v9-process-list article').evaluateAll(items=>items.filter(el=>el.scrollWidth>el.clientWidth+1).map(el=>el.textContent.slice(0,70)));assert.deepEqual(overflow,[]);pass('Expanded reading sections do not overflow at 320px');
- await page.setViewportSize({width:1440,height:1000});await visit();await page.locator('a[href="/site.readme/about/"]').first().click();await page.waitForURL('**/about/');await page.locator('.v9-profile-intro').waitFor();await page.waitForTimeout(650);assert.ok(await page.evaluate(()=>scrollY<2));pass('Page transition restores scroll once without a second jump');
+ await page.setViewportSize({width:1440,height:1000});await visit();await page.locator('a[href="/about/"]').first().click();await page.waitForURL('**/about/');await page.locator('.v9-profile-intro').waitFor();await page.waitForTimeout(650);assert.ok(await page.evaluate(()=>scrollY<2));pass('Page transition restores scroll once without a second jump');
  await page.evaluate(()=>scrollTo({top:700,behavior:'instant'}));await page.waitForTimeout(200);const savedY=await page.evaluate(()=>scrollY);
  await page.locator('.glass-dock-link[href$="/projects/"]').click();await page.waitForURL('**/projects/');await page.waitForTimeout(600);assert.ok(await page.evaluate(()=>scrollY<2));
  await page.goBack();await page.locator('.v9-profile-intro').waitFor();await page.waitForTimeout(650);assert.ok(Math.abs((await page.evaluate(()=>scrollY))-savedY)<4,'Back must restore the reading position');pass('Browser Back restores the reading position of the long About page');

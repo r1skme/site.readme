@@ -2,7 +2,7 @@ import {chromium} from '@playwright/test';
 import {mkdirSync,writeFileSync,copyFileSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 import assert from 'node:assert/strict';
-const base='http://127.0.0.1:4174/site.readme/';
+const base='http://127.0.0.1:4174/';
 const output='qa-output';mkdirSync(output,{recursive:true});
 const report={version:8,checks:[],layouts:[],errors:[],limits:['Chromium desktop and touch emulation; not physical iPhone testing.']};
 const server=spawn('node',['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4174'],{stdio:'ignore'});
@@ -12,7 +12,7 @@ const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 async function waitForServer(){for(let i=0;i<60;i++){try{if((await fetch(base)).ok)return;}catch{}await sleep(200);}throw new Error('V8 preview server did not start');}
 async function screen(name,fullPage=false){await page.waitForTimeout(350);await page.screenshot({path:`${output}/${name}.png`,fullPage});}
 try{
- await waitForServer();browser=await chromium.launch({headless:true});
+ await waitForServer();browser=await chromium.launch({headless:true,...(process.env.CHROMIUM_PATH?{executablePath:process.env.CHROMIUM_PATH}:{})});
  const context=await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
  await page.goto(base+'?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.home-hero h1').waitFor();await page.waitForTimeout(700);
  assert.equal(await page.locator('.hero-lower,.identity-descriptor,.header-status,.footer-identity').count(),0);
@@ -30,7 +30,6 @@ try{
  await screen('v8-roadmap-reading');
  await page.locator('.v8-chapters a').first().click();await page.waitForTimeout(950);
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.waitForTimeout(400);await screen('v8-roadmap-desktop');
- // Capture all chapters without screenshotting a moving pin container.
  await page.evaluate(()=>document.querySelectorAll('.reveal-ready').forEach(el=>el.classList.add('revealed')));
  await page.emulateMedia({reducedMotion:'reduce'});
  await screen('v8-roadmap-full',true);

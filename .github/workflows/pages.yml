@@ -25,6 +25,8 @@ jobs:
         run: npx playwright install --with-deps chromium
       - name: Browser and route tests
         run: npm run test:qa
+      - name: Verify root-domain assets and direct routes
+        run: node scripts/qa-domain.mjs
       - name: Compact visual proof
         if: always()
         run: |
@@ -35,7 +37,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: portfolio-qa
-          path: qa-output/
+          path: |
+            qa-output/
+            qa-domain-local/
           if-no-files-found: ignore
       - name: Save reproducible dependency lock
         uses: actions/upload-artifact@v4
@@ -60,3 +64,28 @@ jobs:
       - name: Publish only after checks pass
         id: deployment
         uses: actions/deploy-pages@v4
+  live-check:
+    if: github.ref == 'refs/heads/main'
+    needs: deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test dependencies
+        run: npm install --no-audit --no-fund
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Check the public predict.rip deployment
+        run: node scripts/qa-domain.mjs --live
+      - name: Save public-domain screenshots and network report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: predict-domain-live
+          path: qa-domain-live/
+          if-no-files-found: ignore
