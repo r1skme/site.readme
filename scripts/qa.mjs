@@ -17,9 +17,10 @@ try{
  const frozen=await page.locator('#ribbon-shape').getAttribute('d');await page.waitForTimeout(650);assert.equal(await page.locator('#ribbon-shape').getAttribute('d'),frozen);check('Motion pause freezes ribbon geometry');
  assert.equal(await page.locator('.glass-caustic').evaluate(el=>getComputedStyle(el,'::after').animationPlayState),'paused');check('Motion pause also stops glass surface highlights');
  await page.locator('.motion-switch').click();await page.waitForTimeout(120);
- await page.locator('.glass-dock-link[href$="/about/"]').click();await page.waitForURL('**/about/');await page.locator('.about-opening').waitFor();await page.waitForTimeout(650);
+ await page.locator('.glass-dock-link[href$="/about/"]').click();await page.waitForURL('**/about/');await page.locator('.v6-about-intro').waitFor();await page.waitForTimeout(650);
  assert.equal(await page.locator('.glass-dock-link[aria-current="page"]').getAttribute('href'),'/site.readme/about/');check('Separate About URL and active glass lens');
  assert.equal(await page.locator('.home-hero').count(),0);check('Outgoing page unmounted rather than stacking sections');
+ assert.equal(await page.locator('.timeline-list').count(),0);check('Gaming chronology is not mislabeled as programming experience');
  await page.goBack();await page.waitForURL('**/site.readme/');await page.locator('.home-hero').waitFor();check('Browser Back restores prior page');
  await page.locator('.lang-switch button').nth(1).click();assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.ok(page.url().includes('lang=en'));check('Language switches without document reload');
  await page.locator('.lang-switch button').first().click();
