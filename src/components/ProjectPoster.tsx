@@ -1,6 +1,6 @@
 import {m} from 'motion/react';
 import type {Project} from '@/data/content';
-import {useLanguage,L} from '@/lib/i18n';
+import {useLanguage} from '@/lib/i18n';
 export default function ProjectPoster({project,large=false}:{project:Project;large?:boolean}){
  const{t}=useLanguage();
  return <div className={`project-poster poster-${project.slug} ${large?'is-large':''}`} aria-label={t(project.eyebrow)}>
