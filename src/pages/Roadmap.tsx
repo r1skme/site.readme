@@ -19,7 +19,7 @@ const next=[
 export default function Roadmap(){
  const{t}=useLanguage();
  return <>
-  <PageHeading label={t(L('Мой путь','My journey'))} title={t(L('От первого запуска к своим инструментам.','From first launches to my own tools.'))}
+  <PageHeading label={t(L('Дорожная карта','Roadmap'))} title={t(L('Мой путь','My journey'))}
   desc={t(L('Чем занимался, к каким задачам пришёл и над чем работаю дальше. Без искусственной истории про карьеру и придуманной хронологии.','What I have built, what I learned and where I am headed, without an invented career timeline.'))}/>
   <Timeline items={steps}/>
   <section className="shell v7-future-section"><div className="v7-future-head"><h2>{t(L('Что дальше','What’s next'))}</h2><p>{t(L('Планы, а не обещания дат релиза.','Directions rather than promised release dates.'))}</p></div>
