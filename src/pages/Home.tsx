@@ -1,5 +1,5 @@
 import {Link} from 'react-router-dom';
-import {ArrowUpRight,ArrowRight,ChevronsDown,Code2,Clapperboard,LayoutTemplate} from 'lucide-react';
+import {ArrowUpRight,ChevronsDown,Code2,Clapperboard,LayoutTemplate} from 'lucide-react';
 import {m} from 'motion/react';
 import {useLanguage,L} from '@/lib/i18n';
 import {Eyebrow,AnimatedLink} from '@/components/Primitives';
