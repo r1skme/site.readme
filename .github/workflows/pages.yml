@@ -1,7 +1,7 @@
 name: Build, test and publish multipage portfolio
 on:
   push:
-    branches: [main, design/liquid-glass-v5]
+    branches: [main, 'design/**']
   workflow_dispatch:
 permissions:
   contents: read
