@@ -13,10 +13,19 @@ try{
  const context=await browser.newContext({viewport:{width:1440,height:1000},deviceScaleFactor:1});page=await context.newPage();page.on('pageerror',e=>report.errors.push(e.message));
  await page.goto(base,{waitUntil:'domcontentloaded'});await page.locator('.home-hero h1').waitFor();await page.waitForTimeout(1200);
  const first=await page.locator('#ribbon-shape').getAttribute('d');await page.waitForTimeout(700);assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'),first);check('Autonomous ribbon changes while idle');
- await page.locator('.motion-switch').click();await page.waitForTimeout(180);
- const frozen=await page.locator('#ribbon-shape').getAttribute('d');await page.waitForTimeout(650);assert.equal(await page.locator('#ribbon-shape').getAttribute('d'),frozen);check('Motion pause freezes ribbon geometry');
- assert.equal(await page.locator('.glass-caustic').evaluate(el=>getComputedStyle(el,'::after').animationPlayState),'paused');check('Motion pause also stops glass surface highlights');
- await page.locator('.motion-switch').click();await page.waitForTimeout(120);
+ assert.equal(await page.locator('.motion-switch').count(),0);check('Broken manual animation switch has been removed');
+ await page.evaluate(()=>localStorage.setItem('r1sk-pause','true'));
+ await page.reload();await page.locator('.home-hero h1').waitFor();await page.waitForTimeout(300);
+ const oldPreference=await page.locator('#ribbon-shape').getAttribute('d');await page.waitForTimeout(450);
+ assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'),oldPreference);
+ assert.equal(await page.evaluate(()=>localStorage.getItem('r1sk-pause')),null);
+ check('Motion defaults to active and obsolete saved pause setting is cleared');
+ await page.emulateMedia({reducedMotion:'reduce'});await page.waitForTimeout(250);
+ const frozen=await page.locator('#ribbon-shape').getAttribute('d');await page.waitForTimeout(350);
+ assert.equal(await page.locator('#ribbon-shape').getAttribute('d'),frozen);
+ assert.equal(await page.locator('.glass-caustic').evaluate(el=>getComputedStyle(el,'::after').animationPlayState),'paused');
+ check('System reduced-motion preference pauses ribbon and glass highlights');
+ await page.emulateMedia({reducedMotion:'no-preference'});await page.waitForTimeout(220);
  await page.locator('.glass-dock-link[href$="/about/"]').click();await page.waitForURL('**/about/');await page.locator('.v6-about-intro').waitFor();await page.waitForTimeout(650);
  assert.equal(await page.locator('.glass-dock-link[aria-current="page"]').getAttribute('href'),'/site.readme/about/');check('Separate About URL and active glass lens');
  assert.equal(await page.locator('.home-hero').count(),0);check('Outgoing page unmounted rather than stacking sections');
@@ -68,7 +77,7 @@ try{
   await page.setViewportSize({width,height});await page.goto(base+route+'?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.page-main h1').waitFor();
   await page.evaluate(()=>Promise.race([document.fonts.ready,new Promise(resolve=>setTimeout(resolve,4000))]));await page.waitForTimeout(800);
   if(full){const h=await page.evaluate(()=>document.documentElement.scrollHeight);for(let y=0;y<h;y+=height*.75){await page.evaluate(y=>scrollTo(0,y),y);await page.waitForTimeout(120)}await page.evaluate(()=>scrollTo(0,0));await page.waitForTimeout(800)}
-  if(await page.locator('.motion-switch').getAttribute('aria-pressed')!=='true')await page.locator('.motion-switch').click();await page.waitForTimeout(100);
+  await page.emulateMedia({reducedMotion:'reduce'});await page.waitForTimeout(130);
   await page.screenshot({path:`${output}/${name}.png`,fullPage:full});
  }
  await screenshot('','home-desktop',1440,1000,false);await screenshot('','home-full',1440,1000);await screenshot('','home-mobile',390,844,false);

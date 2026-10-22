@@ -19,7 +19,7 @@ export default function FluidBackdrop(){
   };
   const draw=(dt=1/60)=>{
    const t=clock.current;
-   const a=Math.sin(t*.36)*38,b=Math.sin(t*.3+1)*52,c=Math.sin(t*.42+2)*39,e=Math.cos(t*.28)*48;
+   const a=Math.sin(t*.71)*48,b=Math.sin(t*.62+1)*60,c=Math.sin(t*.79+2)*43,e=Math.cos(t*.57)*49;
    const upper=[[-260,610+a],[130,460+b],[360,525+c],[550,405+a],[730,115+e],[1070,-80+b],[1690,-190+c]];
    const lower=[[-260,795+a],[125,655+b],[400,750+c],[730,570+a],[880,285+e],[1200,145+b],[1690,38+c]];
    path.current?.setAttribute('d',curve(upper)+curve([...lower].reverse()).replace(/^M/,' L')+'Z');
