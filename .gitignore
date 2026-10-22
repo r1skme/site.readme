@@ -1,0 +1,11 @@
+node_modules/
+dist/
+qa-output/
+*.tsbuildinfo
+.DS_Store
+about/index.html
+contact/index.html
+media/index.html
+skills/index.html
+projects/**/index.html
+projects/index.html
