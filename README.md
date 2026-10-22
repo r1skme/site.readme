@@ -45,3 +45,9 @@ User-provided facts, public contact links and project descriptions only. No fina
 Media preview crops come from the owner's supplied screenshots. TikTok card links explicitly lead to the relevant profile; exact supplied short links are also provided. YouTube embeds load only after a click and are removed on closing the native dialog. Google Fonts are loaded externally with system fallback; font files are not distributed. No tracking scripts.
 
 Live: https://r1skme.github.io/site.readme/
+
+## V7: separate research projects and factual roadmap
+
+ReSearchify (C++20 local code search) remains in the primary catalog. Researchify Web (browser retrieval for local LLMs) is deliberately separated into the experiments area rather than appearing as a second nearly identical primary project. Project pages emphasize a verified time period and a technology stack, not personal-role blocks. Predict lists only the C++/ImGui interface prototype stack, not unconfirmed implementation details of a future release. Prime Market uses a clean vector tracing of the user's supplied wordmark; no other logos are invented.
+
+The **/roadmap/** page uses an adapted GSAP Timeline with pinned horizontal scroll on desktop and vertical progress on mobile. Events use real 2025/2026 dates, an approximate three-year editing duration, and 'now' for ongoing development. No placeholder demo dates, stock photos or promised release dates. GSAP SplitText and ScrollTrigger are bundled through the `gsap` npm dependency. The page is linked from the header, homepage, projects and about sections.
