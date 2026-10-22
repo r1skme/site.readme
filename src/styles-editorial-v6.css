@@ -255,3 +255,11 @@ body{font-family:var(--font-sans);font-size:16px;letter-spacing:-.005em}
  .v6-focus-row,.v6-project-row{color:#101826}
  .v6-project-row p,.v6-focus-row p{color:#333}
 }
+
+/* Final mobile pass: never allow the bottom glass navigation to overlap the hero note. */
+@media(max-width:650px){
+  .v6-hero .hero-lower{display:none!important}
+  .v6-hero{min-height:max(770px,calc(100svh + 48px))}
+  .liquid-dock .glass-surface{background:linear-gradient(145deg,rgba(6,13,27,.77),rgba(9,19,34,.70))!important}
+  .liquid-dock .glass-dock-link .glass-item-content span{white-space:nowrap}
+}
