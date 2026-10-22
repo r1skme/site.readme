@@ -1,0 +1,24 @@
+name: Review workspace
+on:
+  push:
+    branches: [design/substance-motion-v9]
+    paths: [.github/workflows/review-workspace.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  workspace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - name: Pack only source and build dependencies
+        run: tar -czf review-workspace.tar.gz src public scripts index.html package.json package-lock.json node_modules vite.config.ts tsconfig*.json components.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: review-workspace
+          path: review-workspace.tar.gz
+          retention-days: 1
