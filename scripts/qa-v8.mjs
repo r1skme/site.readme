@@ -32,7 +32,7 @@ try{
  await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.waitForTimeout(400);await screen('v8-roadmap-desktop');
  // Capture all chapters without screenshotting a moving pin container.
  await page.evaluate(()=>document.querySelectorAll('.reveal-ready').forEach(el=>el.classList.add('revealed')));
- if(await page.locator('.motion-switch').getAttribute('aria-pressed')!=='true')await page.locator('.motion-switch').click();
+ await page.emulateMedia({reducedMotion:'reduce'});
  await screen('v8-roadmap-full',true);
  for(const width of [320,390,768,1440]){
   await page.setViewportSize({width,height:width<600?844:1000});
