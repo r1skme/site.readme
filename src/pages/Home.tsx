@@ -37,9 +37,9 @@ export default function Home(){
   </section>
   <section className="shell v6-selection-section">
    <header className="v6-section-intro"><h2>{t(L('Над чем работаю','Selected projects'))}</h2><Link to="/projects/" className="v6-inline-link">{t(L('Все проекты','See all projects'))}<ArrowRight size={19}/></Link></header>
-   <div className="v6-feature-list">{selection.map(v=><Link className="v6-feature-row" to={'/projects/'+v.slug+'/'} key={v.slug}><div><h3>{v.name}</h3><p>{t(v.desc)}</p></div><span className="v6-arrow"><ArrowUpRight size={25} strokeWidth={1.5}/></span></Link>)}</div>
+   <div className="v6-feature-list">{selection.map(v=><Link className="v6-feature-row" to={'/projects/'+v.slug+'/'} key={v.slug}><div><h3>{v.slug==='prime-market'?<img className="v7-prime-compact" src={import.meta.env.BASE_URL+'assets/prime-wordmark.svg'} alt="Prime Market" loading="lazy"/>:v.name}</h3><p>{t(v.desc)}</p></div><span className="v6-arrow"><ArrowUpRight size={25} strokeWidth={1.5}/></span></Link>)}</div>
   </section>
-  <section className="shell v6-proof">
+  <section className="shell v7-roadmap-callout"><div><h2>{t(L('Мой путь','Roadmap'))}</h2><p>{t(L('Настоящие этапы работы над программами, игровыми проектами и видео — и то, что собираюсь развивать дальше.','The real milestones behind my tools, game projects and videos, plus what I want to build next.'))}</p></div><Link to="/roadmap/">{t(L('Смотреть дорожную карту','Explore roadmap'))}<ArrowUpRight size={22}/></Link></section><section className="shell v6-proof">
    <div className="v6-proof-primary"><strong>150K+</strong><p>{t(L('просмотров четырёх опубликованных TikTok-роликов на двух аккаунтах','views across four published TikTok posts from two accounts'))}</p></div>
    <div className="v6-proof-secondary"><strong>3 {t(L('года','years'))}</strong><p>DaVinci Resolve</p><Link to="/media/">{t(L('Посмотреть работы','Watch my work'))}<ArrowUpRight size={17}/></Link></div>
   </section>

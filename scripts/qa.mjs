@@ -23,15 +23,41 @@ try{
  assert.equal(await page.locator('.timeline-list').count(),0);check('Gaming chronology is not mislabeled as programming experience');
  await page.goBack();await page.waitForURL('**/site.readme/');await page.locator('.home-hero').waitFor();check('Browser Back restores prior page');
  await page.locator('.lang-switch button').nth(1).click();assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.ok(page.url().includes('lang=en'));check('Language switches without document reload');
+
+ // Regression: similar project names must not produce duplicate featured listings.
+ await page.goto(base+'projects/?lang=ru',{waitUntil:'domcontentloaded'});
+ await page.locator('.v7-project-catalog').waitFor();
+ assert.equal(await page.locator('.v7-project-row').count(),5);
+ assert.equal(await page.locator('.v7-project-row[href*="researchify-web"]').count(),0);
+ assert.equal(await page.locator('.v7-experiment-link[href*="researchify-web"]').count(),1);
+ check('ReSearchify listed once; Researchify Web is a distinct experiment');
+ const aligned=await page.locator('.v7-project-row[href*="researchify/"]').evaluate(row=>{
+  const heading=row.querySelector('h2').getBoundingClientRect(),arrow=row.querySelector('.v7-inline-arrow').getBoundingClientRect();
+  return arrow.top>=heading.top-8&&arrow.bottom<=heading.bottom+8&&arrow.left>=heading.left;
+ });
+ assert.ok(aligned,'Project arrow must align with title');
+ check('Project arrows stay aligned with their titles');
+ await page.goto(base+'projects/prime-market/?lang=ru',{waitUntil:'domcontentloaded'});
+ await page.locator('.v7-technology-section').waitFor();
+ assert.ok((await page.locator('.v7-technology-section').innerText()).includes('SQLite'));
+ assert.equal(await page.locator('.v6-case-role').count(),0);
+ assert.equal(await page.locator('.v7-prime-wordmark img').evaluate(img=>img.complete&&img.naturalWidth>0),true);
+ check('Project details show real technologies, not role, and real PRIME logo loads');
+ await page.goto(base+'roadmap/?lang=ru',{waitUntil:'domcontentloaded'});
+ await page.locator('.v7-journey-card').first().waitFor({timeout:20000});
+ assert.equal(await page.locator('.v7-journey-card').count(),5);
+ assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2025'));
+ assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2026'));
+ check('Real milestone roadmap is accessible as its own route');
  await page.locator('.lang-switch button').first().click();
- const routes=['','projects/','projects/prime-market/','projects/predict/','projects/researchify/','projects/researchify-web/','projects/glow-rust/','projects/exchange/','media/','skills/','about/','contact/'];
+ const routes=['','roadmap/','projects/','projects/prime-market/','projects/predict/','projects/researchify/','projects/researchify-web/','projects/glow-rust/','projects/exchange/','media/','skills/','about/','contact/'];
  for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:width<600?844:1000});for(const lang of ['ru','en']){for(const route of routes){
   const response=await page.goto(base+route+'?lang='+lang,{waitUntil:'domcontentloaded'});assert.equal(response?.status(),200);
   await page.locator('.page-main h1').waitFor({timeout:20000});await page.waitForTimeout(550);
   const dims=await page.evaluate(()=>({w:innerWidth,scroll:document.documentElement.scrollWidth,text:document.querySelector('.page-main h1')?.textContent}));
   assert.ok(dims.scroll<=dims.w+1,`Overflow ${width}/${lang}/${route}: ${dims.scroll}`);assert.equal(await page.locator('html').getAttribute('lang'),lang);report.layouts.push({width,lang,route,overflow:false});
  }}}
- check('96 route/language/viewport combinations without horizontal overflow');
+ check('104 route/language/viewport combinations without horizontal overflow');
  await page.setViewportSize({width:1440,height:1000});await page.goto(base+'media/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.media-cards').waitFor();
  assert.equal(await page.locator('iframe').count(),0);await page.locator('.media-work').nth(4).click();await page.locator('dialog[open]').waitFor();assert.equal(await page.locator('iframe').count(),1);
  await page.keyboard.press('Escape');await page.waitForTimeout(100);assert.equal(await page.locator('iframe').count(),0);assert.notEqual(await page.evaluate(()=>document.body.style.overflow),'hidden');check('Video opens deliberately; Escape removes iframe and unlocks scrolling');
@@ -47,12 +73,12 @@ try{
  }
  await screenshot('','home-desktop',1440,1000,false);await screenshot('','home-full',1440,1000);await screenshot('','home-mobile',390,844,false);
  await page.locator('.liquid-dock').screenshot({path:`${output}/glass-dock-mobile.png`});
- for(const route of ['projects','about','skills','media','contact'])await screenshot(route+'/',route,1440,1000,true);
+ for(const route of ['projects','roadmap','about','skills','media','contact'])await screenshot(route+'/',route,1440,1000,true);
  await screenshot('projects/predict/','predict',1440,1000,true);await page.locator('.liquid-dock').screenshot({path:`${output}/glass-dock.png`});
  check('Real page screenshots captured after rendering');
  const reduced=await browser.newContext({reducedMotion:'reduce',viewport:{width:390,height:844},hasTouch:true,isMobile:true});const rp=await reduced.newPage();await rp.goto(base,{waitUntil:'domcontentloaded'});await rp.locator('.home-hero').waitFor();await rp.waitForTimeout(100);const d=await rp.locator('#ribbon-shape').getAttribute('d');await rp.waitForTimeout(700);assert.equal(await rp.locator('#ribbon-shape').getAttribute('d'),d);check('System reduced motion starts with static geometry');await reduced.close();
  assert.deepEqual(report.errors,[]);check('No uncaught JavaScript errors in exercised scenarios');
  writeFileSync(`${output}/report.json`,JSON.stringify(report,null,2));console.log('QA_SUCCESS',JSON.stringify({checks:report.checks.length,layouts:report.layouts.length}));
- mkdirSync('dist/_review',{recursive:true});for(const name of ['home-desktop','home-full','home-mobile','glass-dock-mobile','glass-dock','projects','about','skills','media','contact','predict'])if(existsSync(`${output}/${name}.png`))copyFileSync(`${output}/${name}.png`,`dist/_review/${name}.png`);
+ mkdirSync('dist/_review',{recursive:true});for(const name of ['home-desktop','home-full','home-mobile','glass-dock-mobile','glass-dock','projects','roadmap','about','skills','media','contact','predict'])if(existsSync(`${output}/${name}.png`))copyFileSync(`${output}/${name}.png`,`dist/_review/${name}.png`);
  copyFileSync(`${output}/report.json`,'dist/_review/report.json');
 }catch(error){report.failure=String(error);writeFileSync(`${output}/report.json`,JSON.stringify(report,null,2));console.error(error);if(page)try{await page.screenshot({path:`${output}/failure.png`,fullPage:true})}catch{}process.exitCode=1}finally{await browser?.close();server.kill('SIGTERM')}
