@@ -1,11 +1,9 @@
 import {useEffect,useRef} from 'react';
-import {useLocation} from 'react-router-dom';
 import {useMotionPreference} from '@/lib/motion';
 /** Large composited colour ribbon, not a particle field. All graphics are procedural. */
 export default function FluidBackdrop(){
  const canvasRef=useRef<HTMLCanvasElement>(null);
  const {paused}=useMotionPreference();
- const path=useLocation().pathname;
  useEffect(()=>{
   const canvas=canvasRef.current, ctx=canvas?.getContext('2d',{alpha:true,desynchronized:true});
   if(!canvas||!ctx)return;
@@ -70,6 +68,6 @@ export default function FluidBackdrop(){
   document.addEventListener('visibilitychange',start);reduced.addEventListener('change',start);
   resize();scroll();start();
   return()=>{alive=false;cancelAnimationFrame(raf);window.removeEventListener('resize',onSize);window.removeEventListener('scroll',scroll);document.removeEventListener('visibilitychange',start);reduced.removeEventListener('change',start)};
- },[paused,path]);
+ },[paused]);
  return <canvas ref={canvasRef} className="fluid-background" aria-hidden="true"/>;
 }
