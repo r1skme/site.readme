@@ -1,0 +1,11 @@
+/* Supplied ReSearchify wordmark, vectorized from the owner's transparent source. */
+.v8-site .v7-project-row[href$='/researchify/'] .v6-project-titles::before,
+.v8-site .v6-feature-row[href$='/researchify/'] h3::before,
+.v8-site #journey-search h3::before{content:'';display:block;background:url('/site.readme/assets/researchify-mark.svg') center/contain no-repeat;width:57px;height:35px;margin-bottom:16px;opacity:.95}
+.v8-site #journey-search h3::before{width:52px;height:32px;margin-top:8px;margin-bottom:16px}
+@media(max-width:650px){
+ .v8-site .v7-project-row[href$='/researchify/'] .v6-project-titles::before,.v8-site .v6-feature-row[href$='/researchify/'] h3::before{width:45px;height:28px;margin-bottom:13px}
+ /* A local soft scrim suppresses text ghosts without making a full-width opaque bar. */
+ .v8-site .glass-dock-position::before{content:'';position:absolute;z-index:-1;inset:-16px -10px calc(-18px - env(safe-area-inset-bottom,0px));border-radius:28px;background:linear-gradient(180deg,transparent,#050b16a8 24%,#050b16e0 80%,#050b16dd);filter:blur(9px);pointer-events:none}
+ .v8-site .liquid-dock .glass-surface{background:rgba(9,18,33,.79)!important}
+}
