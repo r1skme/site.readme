@@ -1,69 +1,56 @@
-import {useLayoutEffect,useRef} from 'react';
-import gsap from 'gsap';
-import {ScrollTrigger} from 'gsap/ScrollTrigger';
-import {SplitText} from 'gsap/SplitText';
+import {useEffect,useRef,useState,type MouseEvent} from 'react';
+import {Link} from 'react-router-dom';
+import {ArrowUpRight,ArrowDown} from 'lucide-react';
 import {useLanguage,L,type Localized} from '@/lib/i18n';
 import {useMotionPreference} from '@/lib/motion';
-gsap.registerPlugin(ScrollTrigger,SplitText);
-export type JourneyStep={date:Localized;title:Localized;description:Localized;stack:string[]};
+export type JourneyStep={id:string;date:Localized;title:Localized;description:Localized;stack:string[];href:string;linkLabel?:Localized};
+/** A native vertical reading flow. No scroll interception, artificial pin spacer or hidden chapters. */
 export default function Timeline({items}:{items:JourneyStep[]}){
- const section=useRef<HTMLElement>(null),pin=useRef<HTMLDivElement>(null),windowRef=useRef<HTMLDivElement>(null),track=useRef<HTMLDivElement>(null);
- const heading=useRef<HTMLHeadingElement>(null),progress=useRef<HTMLDivElement>(null);
- const{t,lang}=useLanguage();const{paused}=useMotionPreference();
- useLayoutEffect(()=>{
-  const root=section.current,viewport=windowRef.current,rail=track.current,holder=pin.current;
-  if(!root||!viewport||!rail||!holder)return;
-  const mm=gsap.matchMedia();let splits:SplitText[]=[];
-  const ctx=gsap.context(()=>{
-   mm.add('(min-width: 900px)',()=>{
-    if(paused)return;
-    const distance=()=>Math.max(0,rail.scrollWidth-viewport.clientWidth);
-    const timeline=gsap.timeline({scrollTrigger:{
-     trigger:root,start:'top 12%',end:()=>'+='+Math.max(800,distance()+620),
-     scrub:.8,pin:holder,anticipatePin:1,invalidateOnRefresh:true
-    }});
-    timeline.to(rail,{x:()=>-distance(),ease:'none'},0);
-    if(progress.current)timeline.fromTo(progress.current,{scaleX:0},{scaleX:1,ease:'none'},0);
-    if(heading.current){
-     const split=new SplitText(heading.current,{type:'lines',mask:'lines'});splits.push(split);
-     gsap.from(split.lines,{yPercent:95,opacity:.4,duration:.85,stagger:.09,ease:'power3.out',
-      scrollTrigger:{trigger:root,start:'top 80%',once:true}});
-    }
-    return()=>{timeline.scrollTrigger?.kill();timeline.kill();};
-   });
-   mm.add('(max-width: 899px)',()=>{
-    gsap.set(rail,{clearProps:'transform'});
-    if(paused)return;
-    const cards=gsap.utils.toArray<HTMLElement>('.v7-journey-card',root);
-    cards.forEach((card)=>{
-     gsap.fromTo(card,{opacity:.7,y:18},{opacity:1,y:0,duration:.65,ease:'power2.out',
-      scrollTrigger:{trigger:card,start:'top 85%',once:true}});
-    });
-   });
-  },root);
-  const refresh=()=>ScrollTrigger.refresh();
-  document.fonts?.ready.then(refresh).catch(()=>{});
-  return()=>{mm.revert();splits.forEach(x=>x.revert());ctx.revert();};
- },[paused,lang]);
- return <section className="v7-journey-timeline" id="journey" ref={section}>
-  <div className="v7-journey-pin" ref={pin}>
-   <div className="shell v7-journey-heading">
-    <div><span className="v7-overline">R1SK / ROADMAP</span>
-     <h2 ref={heading}>{t(L('Как всё развивалось','How it developed'))}</h2>
-    </div>
-    <p>{t(L('Реальные этапы: без выдуманных запусков и дат.','Verified milestones, without invented launches or dates.'))}</p>
-   </div>
-   <div className="v7-journey-window" ref={windowRef}>
-    <div className="v7-journey-track" ref={track}>
-      {items.map((step,i)=><article key={i} className="v7-journey-card">
-       <span className="v7-journey-counter">{String(i+1).padStart(2,'0')}</span>
-       <div className="v7-journey-marker"/><span className="v7-journey-date">{t(step.date)}</span>
-       <h3>{t(step.title)}</h3><p>{t(step.description)}</p>
-       <div className="v7-journey-tags">{step.stack.map(x=><span key={x}>{x}</span>)}</div>
-      </article>)}
-    </div>
-    <div className="v7-journey-progress"><span ref={progress}/></div>
-   </div>
+ const root=useRef<HTMLElement>(null),cards=useRef<(HTMLElement|null)[]>([]),frame=useRef(0);
+ const[active,setActive]=useState(0);const{t,lang}=useLanguage();const{paused}=useMotionPreference();
+ useEffect(()=>{
+  let alive=true;
+  const update=()=>{
+   frame.current=0;if(!alive)return;
+   const elements=cards.current.filter((item):item is HTMLElement=>Boolean(item));if(!elements.length)return;
+   const readingLine=Math.min(innerHeight*.36,290);let next=0;
+   elements.forEach((el,index)=>{if(el.getBoundingClientRect().top<=readingLine)next=index;});
+   setActive(previous=>previous===next?previous:next);
+   const first=elements[0].getBoundingClientRect(),last=elements[elements.length-1].getBoundingClientRect();
+   const extent=Math.max(1,last.top-first.top);const progress=Math.max(0,Math.min(1,(readingLine-first.top)/extent));
+   root.current?.style.setProperty('--journey-progress',progress.toFixed(4));
+  };
+  const schedule=()=>{if(!frame.current)frame.current=requestAnimationFrame(update);};
+  window.addEventListener('scroll',schedule,{passive:true});window.addEventListener('resize',schedule,{passive:true});
+  const observer=typeof ResizeObserver!=='undefined'?new ResizeObserver(schedule):null;
+  if(root.current)observer?.observe(root.current);
+  document.fonts?.ready.then(()=>{if(alive)schedule();}).catch(()=>{});schedule();
+  return()=>{alive=false;cancelAnimationFrame(frame.current);frame.current=0;observer?.disconnect();window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);};
+ },[items.length,lang]);
+ const navigate=(event:MouseEvent<HTMLAnchorElement>,index:number)=>{
+  if(event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
+  event.preventDefault();const el=cards.current[index];if(!el)return;
+  window.scrollTo({top:window.scrollY+el.getBoundingClientRect().top-100,behavior:paused?'instant':'smooth'});
+  el.querySelector<HTMLElement>('h3')?.focus({preventScroll:true});
+ };
+ return <section ref={root} id="journey" className="shell v7-journey-timeline v8-journey" data-managed-motion>
+  <aside className="v8-journey-sidebar">
+   <h2>{t(L('Опыт, который остаётся','Experience that stays with me'))}</h2>
+   <nav className="v8-chapters" aria-label={t(L('Этапы пути','Journey chapters'))}>
+    {items.map((item,index)=><a key={item.id} href={'#journey-'+item.id} onClick={event=>navigate(event,index)} aria-current={active===index?'step':undefined} className={active===index?'is-reading':''}><span className="v8-chapter-dot" aria-hidden="true"/><span>{t(item.title)}</span></a>)}
+   </nav>
+   <a className="v8-next-jump" href="#next">{t(L('Что дальше','What comes next'))}<ArrowDown size={16} aria-hidden="true"/></a>
+  </aside>
+  <div className="v8-journey-story">
+   <div className="v8-story-line" aria-hidden="true"><span/></div>
+   {items.map((item,index)=><article key={item.id} id={'journey-'+item.id} ref={el=>{cards.current[index]=el;}} className={'v7-journey-card v8-story-step'+(active===index?' is-reading':'')}>
+    <span className="v8-story-node" aria-hidden="true"/>
+    <p className="v8-step-date">{t(item.date)}</p>
+    <h3 tabIndex={-1}>{t(item.title)}</h3>
+    <p className="v8-step-description">{t(item.description)}</p>
+    <ul className="v8-step-stack" aria-label={t(L('Инструменты','Tools'))}>{item.stack.map(tool=><li key={tool}>{tool}</li>)}</ul>
+    <Link to={item.href} className="v8-step-link">{t(item.linkLabel||L('О проекте','Explore project'))}<ArrowUpRight size={17} aria-hidden="true"/></Link>
+   </article>)}
   </div>
  </section>;
 }
