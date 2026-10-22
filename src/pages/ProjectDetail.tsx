@@ -2,7 +2,8 @@ import {Link,useParams} from 'react-router-dom';
 import {ArrowUpRight,ArrowLeft} from 'lucide-react';
 import type {CSSProperties} from 'react';
 import {useLanguage,L} from '@/lib/i18n';
-import {projects} from '@/data/content';
+import {projects} from '@/data/projects';
+import {ProjectIdentity} from '@/components/ProjectIdentity';
 
 export default function ProjectDetail(){
  const {slug}=useParams();const {t}=useLanguage();
@@ -13,11 +14,11 @@ export default function ProjectDetail(){
   <section className="shell v6-case-header v7-case-header" style={{'--project-color':project.accent} as CSSProperties}>
    <Link className="v6-case-back" to="/projects/"><ArrowLeft size={17}/>{t(L('Все проекты','All projects'))}</Link>
    {project.slug==='prime-market'&&<div className="v7-prime-wordmark"><img src={import.meta.env.BASE_URL+'assets/prime-wordmark.svg'} width="475" height="133" alt="PRIME"/></div>}
-   <h1 className={project.slug==='prime-market'?'sr-only':undefined}>{project.name}</h1>
+   <h1 className={project.slug==='prime-market'?'sr-only':undefined}><ProjectIdentity name={project.name} slug={project.slug}/></h1>
    <p className="v6-case-tagline">{t(project.tagline)}</p>
    <div className="v7-tech-intro"><p>{t(project.summary)}</p>
     <dl className="v7-project-metadata">
-      <div><dt>{t(L('Разрабатываю','Timeline'))}</dt><dd>{t(project.since)}</dd></div>
+      <div><dt>{t(L('Период работы','Timeline'))}</dt><dd>{t(project.since)}</dd></div>
       <div><dt>{t(L('Состояние','Status'))}</dt><dd>{t(L(project.status==='building'?'В разработке':'Приостановлен',project.status==='building'?'In development':'Paused'))}</dd></div>
     </dl>
    </div>
