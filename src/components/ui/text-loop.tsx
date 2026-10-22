@@ -1,1 +1,20 @@
-import{useEffect,useState}from'react';import{m,AnimatePresence,type Transition}from'motion/react';import{cn}from'@/lib/utils';import{useMotionPreference}from'@/lib/motion';interface TextLoopProps{staticText?:string;rotatingTexts?:string[];className?:string;interval?:number;transition?:Transition;staticTextClassName?:string;rotatingTextClassName?:string;backgroundClassName?:string;cursorClassName?:string}export default function TextLoop({staticText='Design',rotatingTexts=['Limitless','Timeless','Flawless'],className,interval=3300,transition={duration:.55,ease:[.22,1,.36,1]},staticTextClassName,rotatingTextClassName,backgroundClassName,cursorClassName}:TextLoopProps){const[index,setIndex]=useState(0);const{active,paused}=useMotionPreference();useEffect(()=>{if(rotatingTexts.length<2||!active)return;const timer=window.setInterval(()=>setIndex(prev=>(prev+1)%rotatingTexts.length),Math.max(1800,interval));return()=>clearInterval(timer)},[rotatingTexts.length,interval,active]);const text=rotatingTexts[index%Math.max(rotatingTexts.length,1)]||'';return <div className={cn('flex items-baseline justify-start w-fit max-w-full gap-3 tracking-tight',className)}><span className="sr-only">{staticText} {rotatingTexts.join(', ')}</span><span aria-hidden="true" className={cn('whitespace-nowrap',staticTextClassName)}>{staticText}</span><span aria-hidden="true" className="relative flex items-center max-w-full min-w-0"><AnimatePresence mode="wait" initial={false}><m.span key={text} initial={paused?false:{width:0,opacity:0}} animate={{width:'auto',opacity:1}} exit={{width:0,opacity:0}} transition={paused?{duration:0}:transition} className="overflow-hidden whitespace-nowrap relative inline-flex max-w-full"><span className={cn('absolute inset-0 bg-gradient-to-r from-transparent via-violet-300/10 to-violet-500/15',backgroundClassName)}/><span className={cn('relative pr-2 bg-clip-text text-transparent bg-gradient-to-r from-[#d4e9ff] via-[#88a9ff] to-[#b9a0ff]',rotatingTextClassName)}>{text}</span></m.span></AnimatePresence><span className={cn('text-loop-cursor',cursorClassName)}/></span></div>}
+import {useEffect,useState} from 'react';
+import {m,AnimatePresence,type Transition} from 'motion/react';
+import {cn} from '@/lib/utils';
+import {useMotionPreference} from '@/lib/motion';
+interface TextLoopProps{staticText?:string;rotatingTexts?:string[];className?:string;interval?:number;transition?:Transition;staticTextClassName?:string;rotatingTextClassName?:string;backgroundClassName?:string;cursorClassName?:string}
+/** Reserve the longest label's width. Only the visible word moves, never the layout. */
+export default function TextLoop({staticText='Design',rotatingTexts=['Limitless','Timeless','Flawless'],className,interval=3600,transition={duration:.52,ease:[.22,1,.36,1]},staticTextClassName,rotatingTextClassName,backgroundClassName,cursorClassName}:TextLoopProps){
+ const[index,setIndex]=useState(0);const{active,paused}=useMotionPreference();
+ useEffect(()=>{if(rotatingTexts.length<2||!active)return;const timer=window.setInterval(()=>setIndex(value=>(value+1)%rotatingTexts.length),Math.max(2200,interval));return()=>clearInterval(timer)},[rotatingTexts.length,interval,active]);
+ const text=rotatingTexts[index%Math.max(rotatingTexts.length,1)]||'';
+ return <div className={cn('textloop',className)}>
+  <span className="sr-only">{staticText} {rotatingTexts.join(', ')}</span>
+  <span aria-hidden="true" className={cn('textloop-static',staticTextClassName)}>{staticText}</span>
+  <span aria-hidden="true" className="textloop-window">
+   {rotatingTexts.map((value,i)=><span className={cn('textloop-measure',rotatingTextClassName)} key={i}>{value}</span>)}
+   <span className={cn('textloop-tint',backgroundClassName)}/>
+   <AnimatePresence initial={false} mode="sync"><m.span key={text} className={cn('textloop-word',rotatingTextClassName)} initial={paused?false:{opacity:0,y:'45%'}} animate={{opacity:1,y:0}} exit={paused?{opacity:0}:{opacity:0,y:'-40%'}} transition={paused?{duration:0}:transition}>{text}</m.span></AnimatePresence>
+  </span><span aria-hidden="true" className={cn('text-loop-cursor',cursorClassName)}/>
+ </div>;
+}

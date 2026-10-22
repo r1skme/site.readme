@@ -8,3 +8,14 @@
 @import './styles-v7.css';
 @import './styles-refined-v8.css';
 @import './styles-brand-marks.css';
+@import './styles-content-v9.css';
+
+/* One backdrop root: keep the glass blur on the nav, not inside an opacity-animated parent. */
+.v8-site .glass-dock-position,.v8-site .glass-dock-wrap{isolation:auto;opacity:1;will-change:auto}
+.v8-site .liquid-dock{background:rgba(7,15,28,.68)!important;backdrop-filter:blur(22px) saturate(125%)!important;-webkit-backdrop-filter:blur(22px) saturate(125%)!important}
+.v8-site .liquid-dock .glass-surface{background:transparent!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.v9-experience-label,.v9-reading-copy,.v9-human-columns article,.v9-process-list article{min-width:0}
+.v9-experience-label h2,.v9-experience-label h3,.v9-human-columns h3{overflow-wrap:break-word}
+@media(max-width:650px){.v8-site .liquid-dock{background:rgba(7,15,28,.76)!important}}
+@media(prefers-reduced-transparency:reduce){.v8-site .liquid-dock{background:#101b2e!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){.v8-site .liquid-dock{background:#101b2ef7!important}}

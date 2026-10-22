@@ -11,15 +11,15 @@ function RevealController(){
  const{pathname}=useLocation();const{paused}=useMotionPreference();
  useEffect(()=>{
   if(paused||!('IntersectionObserver'in window))return;
-  const observed=new WeakSet<Element>();
-  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('revealed');observer.unobserve(entry.target);}}),{threshold:.06,rootMargin:'0px 0px 32px 0px'});
-  const scan=()=>document.querySelectorAll('.page-main section:not(.home-hero):not(.interior-heading),.advantage,.tool-detail,.working-grid>div,.discipline,.media-work').forEach(el=>{
-   if(observed.has(el)||el.closest('dialog,[data-managed-motion]'))return;
-   observed.add(el);
-   if(el.getBoundingClientRect().top>innerHeight){el.classList.add('reveal-ready');observer.observe(el);}
+  const seen=new WeakSet<Element>();
+  const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('revealed');observer.unobserve(entry.target)}}),{threshold:.03,rootMargin:'0px 0px 30px 0px'});
+  const scan=()=>document.querySelectorAll('[data-reveal],.media-work,.page-main section:not(.home-hero):not(.interior-heading):not(.v9-section)').forEach(el=>{
+   if(seen.has(el)||el.closest('dialog,[data-managed-motion]'))return;seen.add(el);
+   if(el.querySelector('[data-reveal]')||el.getBoundingClientRect().height>innerHeight*1.15)return;
+   if(el.getBoundingClientRect().top>innerHeight*.98){el.classList.add('reveal-ready');observer.observe(el)}
   });
-  const mutations=new MutationObserver(scan);mutations.observe(document.body,{childList:true,subtree:true});scan();
-  return()=>{observer.disconnect();mutations.disconnect();document.querySelectorAll('.reveal-ready').forEach(el=>el.classList.remove('reveal-ready'));};
+  const changes=new MutationObserver(scan);changes.observe(document.getElementById('root')||document.body,{childList:true,subtree:true});scan();
+  return()=>{observer.disconnect();changes.disconnect();document.querySelectorAll('.reveal-ready').forEach(el=>el.classList.remove('reveal-ready'))};
  },[pathname,paused]);return null;
 }
 export function SiteShell({children}:{children:ReactNode}){
