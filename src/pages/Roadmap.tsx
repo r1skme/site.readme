@@ -1,30 +1,26 @@
 import Timeline,{type JourneyStep} from '@/components/ui/timeline';
 import {useLanguage,L} from '@/lib/i18n';
 import {PageHeading} from '@/components/Primitives';
-import {ArrowUpRight} from 'lucide-react';
+import {ArrowUpRight,Plus} from 'lucide-react';
 import {Link} from 'react-router-dom';
+
 const steps:JourneyStep[]=[
- {date:L('Около трёх лет практики','About three years'),title:L('Видеомонтаж','Video editing'),description:L('DaVinci Resolve, игровые эдиты, переходы, цвет и визуальные эффекты. Этот опыт продолжает развиваться параллельно с IT-проектами.','DaVinci Resolve, gaming edits, transitions, colour and effects. I continue practicing video alongside software projects.'),stack:['DaVinci Resolve','VFX','Short-form']},
- {date:L('2025','2025'),title:L('GLOW RUST','GLOW RUST'),description:L('Самостоятельно запустил Rust-сервер: хостинг, плагины, администрирование и продвижение. Проект приостановлен, но дал опыт работы с продуктом и аудиторией.','Launched a Rust server on my own: hosting, plugins, administration and promotion. The project is paused, but taught me product and audience lessons.'),stack:['Rust','RCON','SMM']},
- {date:L('2026','2026'),title:L('Prime Market','Prime Market'),description:L('Развиваю собственного Telegram-бота для рынка игровых предметов и веб-сайт. Главный следующий этап — браузерная версия и тестирование перед релизом.','Building a Telegram bot for game-item market tasks and a project website. Next comes a browser version and testing before release.'),stack:['Python','SQLite','Telegram API']},
- {date:L('Октябрь 2026','October 2026'),title:L('ReSearchify','ReSearchify'),description:L('Начал работу над локальным поиском по исходному коду: C++20, индексация, CLI и проверка скорости.','Started building local source-code search using C++20, indexing, CLI and performance tests.'),stack:['C++20','CLI','Search index']},
- {date:L('Сейчас','Now'),title:L('Следующие версии','Next iterations'),description:L('Продолжаю Predict и отдельный инструмент Researchify Web для поиска информации локальными ИИ-моделями. Детали незавершённых функций не публикую.','Continuing Predict and a separate Researchify Web tool for local AI web research. Unreleased feature details remain private.'),stack:['Predict','Researchify Web','QA']}
+ {id:'editing',date:L('Около трёх лет практики','Around three years of practice'),title:L('Монтаж и визуальный язык','Editing & visual expression'),description:L('Игровые ролики для YouTube и TikTok. Учусь выстраивать ритм, работать с анимацией, цветом и звуком. Монтаж остаётся частью моей работы и рядом с программированием.','Gaming videos for YouTube and TikTok. Working with rhythm, animation, colour and sound. Editing remains part of my practice alongside programming.'),stack:['DaVinci Resolve','Keyframes','VFX'],link:'/media/'},
+ {id:'glow',date:L('2025','2025'),title:L('GLOW RUST','GLOW RUST'),description:L('Первый опыт запуска игрового сервера: настройка, плагины, поддержка и продвижение. Привлечь игроков оказалось сложнее, чем наладить техническую часть.','An early game-server launch: setup, plugins, support and promotion. Attracting players proved harder than getting the technical side working.'),stack:['Rust','RCON','TikTok'],note:L('Проект на паузе. Научился лучше оценивать объём работы и не пытаться делать всё одному.','Currently paused. It taught me to judge the scope better and not try to do everything alone.'),link:'/projects/glow-rust/'},
+ {id:'prime',date:L('2026','2026'),title:L('Prime Market','Prime Market'),description:L('Собственный Telegram-бот для работы с рынком игровых предметов. Фильтры, уведомления, API и хранение данных. Вместе с ботом развиваю сайт и готовлю браузерную версию.','My Telegram bot for game-item market workflows: filters, notifications, APIs and data storage. Alongside the bot, I am developing the website and preparing a browser version.'),stack:['Python','SQLite','Telegram API'],link:'/projects/prime-market/'},
+ {id:'search',date:L('Октябрь 2026','October 2026'),title:L('ReSearchify','ReSearchify'),description:L('От автоматизации отдельных задач перешёл к поисковому движку. Локальный поиск по исходному коду, постоянный индекс и CLI. Проверяю скорость вместе с корректностью результатов.','Moving from individual automation tasks to a search engine. Local source-code search, a persistent index and a CLI. I test speed alongside the correctness of the results.'),stack:['C++20','CLI','Regex'],link:'/projects/researchify/'},
+ {id:'now',date:L('Сейчас','Now'),title:L('Следующие версии','Next iterations'),description:L('Продолжаю Predict и Researchify Web — отдельный инструмент интернет-поиска для локальных моделей. Параллельно дорабатываю интерфейсы и возвращаюсь к тестированию собственных продуктов.','Continuing Predict and Researchify Web, a separate web-research tool for local models. In parallel, I refine interfaces and test my products.'),stack:['Predict','Researchify Web','QA']}
 ];
-const next=[
- {title:L('Prime Market','Prime Market'),copy:L('Доработать браузерную версию, проверить сценарии работы и подготовить публичный запуск.','Finish the browser version, validate the workflows and prepare the first public release.')},
- {title:L('ReSearchify','ReSearchify'),copy:L('Ускорять буквальный поиск, индексировать большие проекты, проверять корректность и публиковать честные бенчмарки.','Improve literal search, handle larger codebases and publish correct, reproducible benchmarks.')},
- {title:L('Researchify Web','Researchify Web'),copy:L('Довести веб-поиск и чтение источников локальными моделями до доступного релиза.','Bring local-model web research and source retrieval to a usable public release.')},
- {title:L('Predict','Predict'),copy:L('Продолжать разработку и показывать детали только по мере готовности продукта.','Continue development and share details only when the product is ready.')}
+const plans=[
+ {name:'Prime Market',link:'/projects/prime-market/',text:L('Браузерная версия, проверка рабочих сценариев и подготовка к публичному запуску.','The browser version, workflow validation and preparation for a public launch.')},
+ {name:'ReSearchify',link:'/projects/researchify/',text:L('Более быстрый буквальный поиск, большие проекты и воспроизводимые тесты производительности.','Faster literal search, larger codebases and reproducible performance tests.')},
+ {name:'Researchify Web',link:'/projects/researchify-web/',text:L('Доработка поиска и чтения источников для локальных моделей, затем публикация релиза.','Refine source search and retrieval for local models, then prepare a release.')},
+ {name:'Predict',link:'/projects/predict/',text:L('Продолжение разработки, проверка функциональности и доработка интерфейса.','Continue development, test functionality and refine the interface.')}
 ];
-export default function Roadmap(){
- const{t}=useLanguage();
- return <>
-  <PageHeading label={t(L('Дорожная карта','Roadmap'))} title={t(L('Мой путь','My journey'))}
-  desc={t(L('Чем занимался, к каким задачам пришёл и над чем работаю дальше. Без искусственной истории про карьеру и придуманной хронологии.','What I have built, what I learned and where I am headed, without an invented career timeline.'))}/>
-  <Timeline items={steps}/>
-  <section className="shell v7-future-section"><div className="v7-future-head"><h2>{t(L('Что дальше','What’s next'))}</h2><p>{t(L('Планы, а не обещания дат релиза.','Directions rather than promised release dates.'))}</p></div>
-   <div className="v7-future-list">{next.map((item,i)=><article key={i}><span>{String(i+1).padStart(2,'0')}</span><div><h3>{t(item.title)}</h3><p>{t(item.copy)}</p></div></article>)}</div>
-   <Link to="/projects/" className="v7-secondary-link">{t(L('Открыть проекты','View projects'))}<ArrowUpRight size={18}/></Link>
-  </section>
- </>;
-}
+export default function Roadmap(){const{t}=useLanguage();return <>
+ <PageHeading label="" title={<>{t(L('Путь','Experience'))}<br/><span className="journey-title-secondary">{t(L('и планы.','& direction.'))}</span></>} desc={t(L('От монтажа и первых запусков к собственным инструментам. Что уже попробовал, над чем работаю и куда двигаюсь дальше.','From editing and early launches to my own tools. What I have tried, what I am building and where I am heading.'))}/>
+ <Timeline items={steps}/>
+ <section className="shell roadmap-next" id="next"><header><h2>{t(L('Ближайшие шаги','What comes next'))}</h2></header>
+  <div className="roadmap-plans">{plans.map((plan,index)=><details key={plan.name} className="roadmap-plan" open={index===0}><summary><h3>{plan.name}</h3><Plus size={21} aria-hidden="true"/></summary><div className="roadmap-plan-body"><p>{t(plan.text)}</p><Link to={plan.link}>{t(L('О проекте','View project'))}<ArrowUpRight size={17} aria-hidden="true"/></Link></div></details>)}</div>
+ </section>
+ </>}
