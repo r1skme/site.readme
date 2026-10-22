@@ -1,0 +1,44 @@
+/* Final visual QA pass: improve legibility and keep the dock clear on short screens. */
+.hero-rotator .text-transparent {
+  background-image:linear-gradient(100deg,#f5fbff 0%,#d2e9ff 52%,#cceee8 100%)!important;
+}
+.interior-heading .muted-headline{
+  color:#cbd8ee;
+  text-shadow:0 3px 24px #0309164d;
+}
+.liquid-dock .glass-surface{
+  background:linear-gradient(145deg,#202f4fc9 0%,#101b33de 52%,#273b59d4 100%);
+}
+.liquid-dock .glass-lens{
+  background:linear-gradient(145deg,#b6d7ff40,#5c7eea59 57%,#3c569c57);
+}
+.project-index-row:focus-visible{
+  outline-offset:-4px;
+}
+@media(max-width:650px){
+  .home-hero{
+    min-height:max(800px,calc(100svh + 100px));
+    padding-bottom:26px;
+  }
+  .home-hero .hero-lower{
+    min-height:65px;
+    position:relative;
+    z-index:1;
+  }
+  .glass-dock-link{
+    font-size:clamp(8.5px,2.55vw,10px);
+    font-weight:600;
+    line-height:1.12;
+    letter-spacing:-.015em;
+  }
+  .glass-dock-link .glass-item-content{gap:5px;}
+  .glass-surface{
+    background:linear-gradient(145deg,#21304de8 0%,#111d34ef 55%,#253751e9)!important;
+  }
+}
+@media(max-width:360px){
+  .glass-dock-link{font-size:8.5px}
+}
+@media(prefers-reduced-transparency:reduce){
+  .liquid-dock .glass-surface{background:#132038!important}
+}
