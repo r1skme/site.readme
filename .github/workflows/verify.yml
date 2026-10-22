@@ -15,6 +15,7 @@ jobs:
           node-version: 22
       - run: npm install --no-audit --no-fund
       - run: npm run build
+      - run: node scripts/qa-bundle.mjs
       - name: Upload built site for review
         uses: actions/upload-artifact@v4
         with:
