@@ -1,0 +1,16 @@
+import{useState}from'react';
+import{ArrowUpRight,Copy,Check,Send,MessageCircle, Github, Youtube,Music2}from'lucide-react';
+import{useLanguage,L}from'@/lib/i18n';
+import{PageHeading,Eyebrow}from'@/components/Primitives';
+export default function Contact(){
+ const{t}=useLanguage();const[copied,setCopied]=useState(false);const[error,setError]=useState(false);
+ const copy=async()=>{try{await navigator.clipboard.writeText('r1sk.gg');setCopied(true);setError(false);setTimeout(()=>setCopied(false),2800)}catch{setError(true);setTimeout(()=>setError(false),4000)}};
+ return <>
+ <PageHeading label={t(L('06 / КОНТАКТЫ','06 / CONTACT'))} title={<>{t(L('Есть задача?','Got a project?'))}<br/><span className="muted-headline">{t(L('Давай обсудим.','Let’s talk.'))}</span></>} desc={t(L('Связаться можно напрямую. Расскажи, над чем работаешь и чем я могу быть полезен.','You can reach me directly. Tell me what you are building and how I might help.'))}/>
+ <section className="contact-main shell"><a className="contact-main-card" href="https://t.me/R1SKME" target="_blank" rel="noopener noreferrer"><div className="contact-main-top"><span><Send size={19}/> TELEGRAM</span><ArrowUpRight size={27}/></div><strong>@R1SKME</strong><p>{t(L('Основной способ связи','Preferred way to reach me'))}</p></a>
+ <div className="contact-secondary"><button type="button" onClick={copy} className="contact-secondary-card"><span><MessageCircle size={20}/> DISCORD</span><strong>r1sk.gg</strong><span className="contact-card-action">{copied?<><Check size={16}/>{t(L('Скопировано','Copied'))}</>:<><Copy size={16}/>{error?t(L('Не удалось скопировать','Could not copy')):t(L('Скопировать ник','Copy username'))}</>}</span></button>
+ <a className="contact-secondary-card" href="https://github.com/r1skme" target="_blank" rel="noopener noreferrer"><span><Github size={20}/> GITHUB</span><strong>r1skme</strong><span className="contact-card-action">{t(L('Открыть профиль','View profile'))}<ArrowUpRight size={16}/></span></a></div>
+ </section>
+ <section className="contact-social shell"><Eyebrow>{t(L('ТАКЖЕ В СЕТИ','ALSO ONLINE'))}</Eyebrow><div><a href="https://youtube.com/@r1sk-gg" target="_blank" rel="noopener noreferrer"><Youtube size={23}/><span>YouTube / @r1sk-gg</span><ArrowUpRight/></a><a href="https://www.tiktok.com/@r1skme.hvh" target="_blank" rel="noopener noreferrer"><Music2 size={23}/><span>TikTok / @r1skme.hvh</span><ArrowUpRight/></a></div></section>
+ </>;
+}

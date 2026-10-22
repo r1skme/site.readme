@@ -1,0 +1,17 @@
+import {useRef,type CSSProperties,type ReactNode,type PointerEvent} from 'react';
+import {cn} from '@/lib/utils';
+type GlowColor = 'blue'|'purple'|'green'|'red'|'orange';
+interface GlowCardProps{children?:ReactNode;className?:string;glowColor?:GlowColor;size?:'sm'|'md'|'lg';width?:number|string;height?:number|string;customSize?:boolean;}
+const hues:Record<GlowColor,number>={blue:221,purple:270,green:155,red:350,orange:29};
+const sizes={sm:'w-48 h-64',md:'w-64 h-80',lg:'w-80 h-96'};
+export function GlowCard({children,className,glowColor='blue',size='md',width,height,customSize=true}:GlowCardProps){
+ const cardRef=useRef<HTMLDivElement>(null);
+ const updatePointer=(e:PointerEvent<HTMLDivElement>)=>{
+  if(e.pointerType==='touch')return;
+  const el=cardRef.current;if(!el)return;
+  const bounds=el.getBoundingClientRect();el.style.setProperty('--mx',`${(e.clientX-bounds.left).toFixed(1)}px`);el.style.setProperty('--my',`${(e.clientY-bounds.top).toFixed(1)}px`);
+ };
+ const styles:CSSProperties & Record<`--${string}`,string|number|undefined>={"--glow-hue":hues[glowColor],width:width??undefined,height:height??undefined};
+ return <div ref={cardRef} onPointerMove={updatePointer} style={styles} className={cn('spotlight-card relative overflow-hidden rounded-[22px] border border-white/[.11] bg-[#0c1524] isolate',!customSize&&sizes[size],className)}>{children}</div>;
+}
+export default GlowCard;
