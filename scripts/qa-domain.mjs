@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 const live=Boolean(process.env.DOMAIN_ORIGIN),base=live?new URL(process.env.DOMAIN_ORIGIN).origin+'/':'http://127.0.0.1:4180/';
 const report={base,live,checks:[],routes:[],assets:[],pageErrors:[],failedResources:[],limits:['Chromium desktop and touch emulation; not a physical iPhone.','Third-party playback availability is not asserted.']};
 const output=live?'live-domain-output':'qa-output';mkdirSync(output,{recursive:true});
-const routes=['','about/','roadmap/','projects/','media/','skills/','contact/','projects/prime-market/','projects/predict/','projects/researchify/','projects/researchify-web/','projects/glow-rust/','projects/exchange/'];
+const routes=['','about/','roadmap/','projects/','media/','skills/','contact/','projects/prime-market/','projects/predict/','projects/researchify/','projects/glow-rust/'];
 let server,browser,page;const resources=new Set();
 const check=name=>{report.checks.push(name);console.log('DOMAIN_PASS:',name)};
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
@@ -36,7 +36,15 @@ try{
   for(const ref of hrefs){const url=new URL(ref,page.url());if(url.origin===new URL(base).origin){assert.ok(!url.pathname.startsWith('/site.readme/'));if(url.pathname.startsWith('/assets/')||url.pathname.startsWith('/media/'))resources.add(url.href)}}
   report.routes.push({path:route||'/',status:response.status(),rendered:true});
  }
- check('All 13 pages render directly from the domain root');
+ check('Active pages render directly from the domain root');
+ for(const old of ['projects/exchange/','projects/researchify-web/']){
+  const response=await page.goto(base+old,{waitUntil:'domcontentloaded'});
+  assert.equal(response.status(),404,old);
+  await page.locator('.no-project h1').waitFor();
+ }
+ check('Removed projects return HTTP 404');
+ await page.goto(base+'projects/',{waitUntil:'domcontentloaded'});
+ assert.equal(await page.locator('.v7-project-row').count(),4);
  await page.goto(base,{waitUntil:'domcontentloaded'});await page.locator('.home-hero h1').waitFor();await page.waitForTimeout(500);
  assert.equal(await page.locator('.motion-switch').count(),0);
  await page.evaluate(()=>localStorage.setItem('r1sk-pause','true'));await page.reload({waitUntil:'domcontentloaded'});await page.locator('#ribbon-shape').waitFor({state:'attached'});await page.waitForTimeout(350);
@@ -45,7 +53,12 @@ try{
  assert.ok(await page.locator('.home-hero h1').evaluate(el=>parseFloat(getComputedStyle(el).fontSize)>50),'Styles did not load');
  await page.locator('.lang-switch button').nth(1).click();assert.equal(await page.locator('html').getAttribute('lang'),'en');await page.locator('.lang-switch button').first().click();check('RU/EN switching works on the new domain');
  await page.locator('.glass-dock-link[href="/projects/"]').click();await page.waitForURL(url=>url.pathname==='/projects/');await page.locator('.v7-project-catalog').waitFor();await page.reload({waitUntil:'domcontentloaded'});await page.locator('.v7-project-catalog').waitFor();check('Navigation and deep-link refresh preserve the full design');
- await page.goto(base+'media/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.media-work').nth(4).click();await page.locator('dialog[open]').waitFor();assert.equal(await page.locator('iframe').count(),1);await page.keyboard.press('Escape');await page.waitForTimeout(100);assert.equal(await page.locator('iframe').count(),0);check('Video modal opens and closes');
+ await page.goto(base+'media/?lang=ru',{waitUntil:'domcontentloaded'});
+ await page.locator('.media-work').first().waitFor();
+ assert.equal(await page.locator('iframe,dialog').count(),0);
+ assert.equal(await page.locator('.media-work[href^="https://youtu.be/"]').count(),2);
+ assert.equal(await page.locator('.media-direct-list a[href^="https://vm.tiktok.com/"]').count(),2);
+ check('Every media card opens an original link with no modal');
  const missing=await page.goto(base+'__domain_404_check__/',{waitUntil:'domcontentloaded'});assert.equal(missing?.status(),404);await page.locator('.page-main h1').waitFor();assert.ok((await page.locator('.page-main').innerText()).includes('404'));check('Unknown paths retain HTTP 404 and render the site NotFound page');
  for(const url of resources){const response=await context.request.get(url,{timeout:20000});assert.equal(response.status(),200,`Missing resource: ${url}`);const mime=response.headers()['content-type']||'';if(/\.(js|css|svg)(\?|$)/.test(url))assert.ok(!mime.includes('text/html'),`HTML returned in place of ${url}`);report.assets.push({url,status:response.status(),mime})}
  check('Every observed local JS, CSS, favicon, logo and media URL returns the proper resource');
