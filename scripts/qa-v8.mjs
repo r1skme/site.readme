@@ -2,7 +2,7 @@ import {chromium} from '@playwright/test';
 import {mkdirSync,writeFileSync,copyFileSync} from 'node:fs';
 import {spawn} from 'node:child_process';
 import assert from 'node:assert/strict';
-const base='http://127.0.0.1:4174/site.readme/';
+const base='http://127.0.0.1:4174/';
 const output='qa-output';mkdirSync(output,{recursive:true});
 const report={version:8,checks:[],layouts:[],errors:[],limits:['Chromium desktop and touch emulation; not physical iPhone testing.']};
 const server=spawn('node',['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4174'],{stdio:'ignore'});

@@ -4,7 +4,7 @@ import {spawn} from 'node:child_process';
 import assert from 'node:assert/strict';
 const output='qa-output';mkdirSync(output,{recursive:true});
 const server=spawn('node',['node_modules/vite/bin/vite.js','preview','--host','127.0.0.1','--port','4173'],{stdio:['ignore','pipe','pipe']});
-const base='http://127.0.0.1:4173/site.readme/';let browser,page;
+const base='http://127.0.0.1:4173/';let browser,page;
 const report={version:5,checks:[],layouts:[],limits:['Chromium desktop and touch emulation, not a physical iPhone.','Third-party video playback is not asserted; player mounting and teardown are tested.','No Lighthouse or FPS score claimed.'],errors:[]};
 const check=name=>{report.checks.push(name);console.log('PASS:',name)};
 const waitServer=async()=>{for(let i=0;i<80;i++){try{if((await fetch(base)).ok)return}catch{}await new Promise(r=>setTimeout(r,200))}throw Error('Preview server failed to start')};
@@ -27,10 +27,10 @@ try{
  check('System reduced-motion preference pauses ribbon and glass highlights');
  await page.emulateMedia({reducedMotion:'no-preference'});await page.waitForTimeout(220);
  await page.locator('.glass-dock-link[href$="/about/"]').click();await page.waitForURL('**/about/');await page.locator('.v6-about-intro').waitFor();await page.waitForTimeout(650);
- assert.equal(await page.locator('.glass-dock-link[aria-current="page"]').getAttribute('href'),'/site.readme/about/');check('Separate About URL and active glass lens');
+ assert.equal(await page.locator('.glass-dock-link[aria-current="page"]').getAttribute('href'),'/about/');check('Separate About URL and active glass lens');
  assert.equal(await page.locator('.home-hero').count(),0);check('Outgoing page unmounted rather than stacking sections');
  assert.equal(await page.locator('.timeline-list').count(),0);check('Gaming chronology is not mislabeled as programming experience');
- await page.goBack();await page.waitForURL('**/site.readme/');await page.locator('.home-hero').waitFor();check('Browser Back restores prior page');
+ await page.goBack();await page.waitForURL(url=>url.pathname==='/');await page.locator('.home-hero').waitFor();check('Browser Back restores prior page');
  await page.locator('.lang-switch button').nth(1).click();assert.equal(await page.locator('html').getAttribute('lang'),'en');assert.ok(page.url().includes('lang=en'));check('Language switches without document reload');
 
  // Regression: similar project names must not produce duplicate featured listings.
