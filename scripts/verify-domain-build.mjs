@@ -19,5 +19,5 @@ for(const file of files(dist)){
  assert.ok(assets.includes('/assets/favicon.svg'),`Wrong favicon in ${file}`);
  for(const ref of assets){assert.ok(ref.startsWith('/assets/'),`Unexpected relative asset ${ref} in ${file}`);const local=path.resolve(dist,'.'+ref.split(/[?#]/)[0]);assert.ok(local.startsWith(dist+path.sep)&&existsSync(local)&&statSync(local).isFile(),`Missing asset ${ref}`);checked.add(ref)}
 }
-assert.ok(htmlCount>=14,`Expected current routes and 404, found ${htmlCount} HTML files`);
+assert.ok(htmlCount>=12,`Expected current routes and 404, found ${htmlCount} HTML files`);
 console.log(`DOMAIN_BUILD_OK: ${htmlCount} HTML files; ${checked.size} root asset references; no legacy deployment prefix.`);

@@ -6,7 +6,7 @@ import {skills} from '@/data/content';
 
 const capabilities=[
  {name:'Python / Telegram',tools:['python-telegram-bot','SQLite','API'],paragraphs:[
-  L('Работаю над ботами и автоматизацией на примере Prime Market и EXchange. Задачи включают Telegram-команды, хранение настроек, фильтрацию предложений и уведомления. В Prime Market есть интеграция с Market.CSGO API.','I work on bots and automation through Prime Market and EXchange. The tasks include Telegram commands, stored settings, offer filters and notifications. Prime Market integrates with the Market.CSGO API.'),
+  L('Работаю над ботами и автоматизацией на примере Prime Market. В проекте использую Telegram-команды, хранение настроек, фильтрацию предложений и уведомления. В Prime Market есть интеграция с Market.CSGO API.','I work on bots and automation through Prime Market. This involves Telegram commands, stored settings, offer filters and notifications. Prime Market integrates with the Market.CSGO API.'),
   L('Разбираю сценарий целиком: какие данные приходят, какие условия выбрал пользователь и какой результат он должен получить. Проверяю настройки, обновления и поведение функций, чтобы автоматизация действительно заменяла ручные действия.','I work through the whole flow: which data arrives, what criteria the user chose and which result they should receive. I test settings, updates and feature behaviour so automation can replace manual work.')
  ]},
  {name:'C++20 / ReSearchify',tools:['CLI','Regex','UTF-8'],paragraphs:[

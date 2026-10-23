@@ -20,10 +20,10 @@ try{
  ok('Redundant hero, header and footer notes are removed from the DOM');
  await screen('v8-home-desktop');
  await page.goto(base+'roadmap/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.v8-story-step').last().waitFor();await page.waitForTimeout(600);
- assert.equal(await page.locator('.v8-story-step').count(),5);assert.equal(await page.locator('.pin-spacer').count(),0);
+ assert.equal(await page.locator('.v8-story-step').count(),6);assert.equal(await page.locator('.pin-spacer').count(),0);
  assert.equal(await page.locator('.v7-journey-track,.v7-journey-counter,.v7-overline').count(),0);
- ok('Roadmap has five real chapters and no pinned horizontal rail or decorative counters');
- const arrow=page.locator('.v8-chapters a').nth(3);await arrow.click();
+ ok('Roadmap has six real chapters and no pinned horizontal rail or decorative counters');
+ const arrow=page.locator('.v8-chapters a').nth(5);await arrow.click();
  await page.waitForFunction(()=>document.querySelector('.v8-story-step.is-reading')?.id==='journey-search',{},{timeout:5000});
  const position=await page.locator('#journey-search').boundingBox();assert.ok(position.y>-10&&position.y<innerHeightPlaceholder());
  ok('Chapter navigation scrolls to ReSearchify and tracks the active chapter');
@@ -40,7 +40,7 @@ try{
    for(const route of ['','roadmap/']){
     await page.goto(base+route+'?lang='+lang,{waitUntil:'domcontentloaded'});await page.locator('.page-main h1').waitFor();await page.waitForTimeout(350);
     const dims=await page.evaluate(()=>({width:innerWidth,document:document.documentElement.scrollWidth}));assert.ok(dims.document<=dims.width+1,`v8 overflow ${route} ${lang} ${width}`);
-    if(route){assert.equal(await page.locator('.v8-story-step').count(),5);const cards=await page.locator('.v8-story-step').evaluateAll(nodes=>nodes.map(n=>({w:n.clientWidth,s:n.scrollWidth})));assert.ok(cards.every(c=>c.s<=c.w+1),'Chapter text overflow');}
+    if(route){assert.equal(await page.locator('.v8-story-step').count(),6);const cards=await page.locator('.v8-story-step').evaluateAll(nodes=>nodes.map(n=>({w:n.clientWidth,s:n.scrollWidth})));assert.ok(cards.every(c=>c.s<=c.w+1),'Chapter text overflow');}
     report.layouts.push({width,lang,route,overflow:false});
    }
   }
@@ -49,12 +49,12 @@ try{
  await page.setViewportSize({width:390,height:844});await page.goto(base+'roadmap/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.v8-story-step').first().waitFor();
  await screen('v8-roadmap-mobile');
  await page.locator('.v8-chapters a').last().click();await page.waitForTimeout(500);
- assert.ok((await page.locator('#journey-now').boundingBox()).y<400);ok('Last chapter is reachable on a touch-sized screen');
+ assert.ok((await page.locator('#journey-search').boundingBox()).y<400);ok('Last chapter is reachable on a touch-sized screen');
  await page.evaluate(()=>{document.querySelectorAll('.reveal-ready').forEach(el=>el.classList.add('revealed'));scrollTo({top:0,behavior:'instant'});});await screen('v8-roadmap-mobile-full',true);
  await page.goto(base+'?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.home-hero').waitFor();await screen('v8-home-mobile');
  const reduced=await browser.newContext({reducedMotion:'reduce',viewport:{width:390,height:844}});const rp=await reduced.newPage();
  await rp.goto(base+'roadmap/?lang=en',{waitUntil:'domcontentloaded'});await rp.locator('.v8-story-step').last().waitFor();
- assert.equal(await rp.locator('.pin-spacer').count(),0);await rp.locator('.v8-chapters a').last().click();await rp.waitForTimeout(100);assert.ok((await rp.locator('#journey-now').boundingBox()).y<200);await reduced.close();
+ assert.equal(await rp.locator('.pin-spacer').count(),0);await rp.locator('.v8-chapters a').last().click();await rp.waitForTimeout(100);assert.ok((await rp.locator('#journey-search').boundingBox()).y<200);await reduced.close();
  ok('Reduced-motion roadmap keeps every chapter readable with instant navigation');
  assert.deepEqual(report.errors,[]);ok('No JavaScript errors in focused v8 checks');
  writeFileSync(`${output}/report-v8.json`,JSON.stringify(report,null,2));mkdirSync('dist/_review',{recursive:true});

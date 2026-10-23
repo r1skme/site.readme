@@ -36,10 +36,10 @@ try{
  // Regression: similar project names must not produce duplicate featured listings.
  await page.goto(base+'projects/?lang=ru',{waitUntil:'domcontentloaded'});
  await page.locator('.v7-project-catalog').waitFor();
- assert.equal(await page.locator('.v7-project-row').count(),5);
+ assert.equal(await page.locator('.v7-project-row').count(),4);
  assert.equal(await page.locator('.v7-project-row[href*="researchify-web"]').count(),0);
- assert.equal(await page.locator('.v7-experiment-link[href*="researchify-web"]').count(),1);
- check('ReSearchify listed once; Researchify Web is a distinct experiment');
+ assert.equal(await page.locator('.v7-experiment-link').count(),0);
+ check('Only the four selected projects remain in the catalog');
  const aligned=await page.locator('.v7-project-row[href*="researchify/"]').evaluate(row=>{
   const heading=row.querySelector('h2').getBoundingClientRect(),arrow=row.querySelector('.v7-inline-arrow').getBoundingClientRect();
   return arrow.top>=heading.top-8&&arrow.bottom<=heading.bottom+8&&arrow.left>=heading.left;
@@ -54,22 +54,25 @@ try{
  check('Project details show real technologies, not role, and real PRIME logo loads');
  await page.goto(base+'roadmap/?lang=ru',{waitUntil:'domcontentloaded'});
  await page.locator('.v7-journey-card').first().waitFor({timeout:20000});
- assert.equal(await page.locator('.v7-journey-card').count(),5);
+ assert.equal(await page.locator('.v7-journey-card').count(),6);
  assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2025'));
  assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2026'));
  check('Real milestone roadmap is accessible as its own route');
  await page.locator('.lang-switch button').first().click();
- const routes=['','roadmap/','projects/','projects/prime-market/','projects/predict/','projects/researchify/','projects/researchify-web/','projects/glow-rust/','projects/exchange/','media/','skills/','about/','contact/'];
+ const routes=['','roadmap/','projects/','projects/prime-market/','projects/predict/','projects/researchify/','projects/glow-rust/','media/','skills/','about/','contact/'];
  for(const width of [320,390,768,1440]){await page.setViewportSize({width,height:width<600?844:1000});for(const lang of ['ru','en']){for(const route of routes){
   const response=await page.goto(base+route+'?lang='+lang,{waitUntil:'domcontentloaded'});assert.equal(response?.status(),200);
   await page.locator('.page-main h1').waitFor({timeout:20000});await page.waitForTimeout(550);
   const dims=await page.evaluate(()=>({w:innerWidth,scroll:document.documentElement.scrollWidth,text:document.querySelector('.page-main h1')?.textContent}));
   assert.ok(dims.scroll<=dims.w+1,`Overflow ${width}/${lang}/${route}: ${dims.scroll}`);assert.equal(await page.locator('html').getAttribute('lang'),lang);report.layouts.push({width,lang,route,overflow:false});
  }}}
- check('104 route/language/viewport combinations without horizontal overflow');
+ check('88 route/language/viewport combinations without horizontal overflow');
  await page.setViewportSize({width:1440,height:1000});await page.goto(base+'media/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.media-cards').waitFor();
- assert.equal(await page.locator('iframe').count(),0);await page.locator('.media-work').nth(4).click();await page.locator('dialog[open]').waitFor();assert.equal(await page.locator('iframe').count(),1);
- await page.keyboard.press('Escape');await page.waitForTimeout(100);assert.equal(await page.locator('iframe').count(),0);assert.notEqual(await page.evaluate(()=>document.body.style.overflow),'hidden');check('Video opens deliberately; Escape removes iframe and unlocks scrolling');
+ assert.equal(await page.locator('iframe,dialog').count(),0);
+ assert.equal(await page.locator('.media-work[href^="https://youtu.be/"]').count(),2);
+ assert.equal(await page.locator('.media-direct-list a[href^="https://vm.tiktok.com/"]').count(),2);
+ assert.equal(await page.locator('.media-work').first().getAttribute('target'),'_blank');
+ check('Videos link directly to individual originals without an intermediate modal');
  await page.goto(base+'contact/?lang=ru',{waitUntil:'domcontentloaded'});await page.locator('.contact-main').waitFor();
  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async(value)=>{window.__copied=value}}}));await page.locator('button.contact-secondary-card').click();assert.equal(await page.evaluate(()=>window.__copied),'r1sk.gg');check('Discord copy uses exact username');
  await page.evaluate(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async()=>{throw Error('denied')}}}));await page.locator('button.contact-secondary-card').click();await page.waitForTimeout(100);assert.ok((await page.locator('button.contact-secondary-card').innerText()).includes('Не удалось'));check('Clipboard denial shows failure, never fake success');
