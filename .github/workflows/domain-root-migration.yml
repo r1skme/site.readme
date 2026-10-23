@@ -1,0 +1,74 @@
+name: Prepare predict.rip root paths
+on:
+  push:
+    branches: [design/predict-root-domain]
+    paths: [.github/workflows/domain-root-migration.yml]
+permissions:
+  contents: write
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: design/predict-root-domain
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Migrate only deployment paths and test URLs
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json,re
+          for root in ('src','scripts'):
+              for p in Path(root).rglob('*'):
+                  if p.suffix not in ('.tsx','.ts','.css','.mjs'): continue
+                  # Regression tests deliberately mention this obsolete prefix.
+                  if p.name in ('qa-domain.mjs','verify-domain-build.mjs'): continue
+                  old=p.read_text()
+                  new=old.replace("waitForURL('**/site.readme/')", "waitForURL(url=>url.pathname==='/')").replace('/site.readme/','/')
+                  if new!=old: p.write_text(new);print('Rebased',p)
+          p=Path('index.html');s=p.read_text().replace('/site.readme/assets/favicon.svg','%BASE_URL%assets/favicon.svg')
+          s=re.sub(r'(<meta name="portfolio-build" content=")[^"]+("\s*>)',r'\g<1>predict-root-v11\2',s)
+          if 'predict-root-v11' not in s: s=s.replace('</head>','<meta name="portfolio-build" content="predict-root-v11"></head>')
+          p.write_text(s)
+          p=Path('src/styles.css');s=p.read_text();imports=re.findall(r"^@import[^;]+;",s,flags=re.M);body=re.sub(r"^@import[^;]+;\n?",'',s,flags=re.M);p.write_text('\n'.join(imports)+'\n'+body.lstrip())
+          p=Path('package.json');data=json.loads(p.read_text());data['scripts']['build']=data['scripts']['build'].replace('&& node scripts/verify-build.mjs','&& node scripts/finalize-pages.mjs && node scripts/verify-build.mjs && node scripts/verify-domain-build.mjs');data['scripts']['test:qa']+=' && node scripts/qa-domain.mjs';p.write_text(json.dumps(data,ensure_ascii=False,indent=2)+'\n')
+          p=Path('README.md');p.write_text(p.read_text().replace('https://r1skme.github.io/site.readme/','https://predict.rip/'))
+          PY
+      - name: Commit migration to review branch only
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html src scripts package.json README.md
+          if ! git diff --cached --quiet; then
+            git commit -m 'Serve all assets and test routes from predict.rip root'
+            git push origin HEAD:design/predict-root-domain
+          fi
+      - run: npm install --no-audit --no-fund
+      - name: Archive review workspace
+        run: tar -czf /tmp/predict-root-workspace.tar.gz src public scripts index.html package.json package-lock.json node_modules vite.config.ts tsconfig*.json components.json .github/workflows/pages.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: predict-root-workspace
+          path: /tmp/predict-root-workspace.tar.gz
+          retention-days: 1
+      - run: npm run build
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.56.1-chromium-linux
+      - name: Install Chromium
+        timeout-minutes: 4
+        run: npx playwright install --with-deps chromium
+      - name: Check root-domain browser behavior
+        timeout-minutes: 6
+        run: node scripts/qa-domain.mjs
+      - name: Save domain review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: predict-domain-review
+          path: qa-output/
+          if-no-files-found: ignore
