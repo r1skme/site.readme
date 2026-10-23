@@ -44,7 +44,7 @@ User-provided facts, public contact links and project descriptions only. No fina
 
 Media preview crops come from the owner's supplied screenshots. TikTok card links explicitly lead to the relevant profile; exact supplied short links are also provided. YouTube embeds load only after a click and are removed on closing the native dialog. Google Fonts are loaded externally with system fallback; font files are not distributed. No tracking scripts.
 
-Live: https://r1skme.github.io/site.readme/
+Live: https://predict.rip/
 
 ## V7: separate research projects and factual roadmap
 

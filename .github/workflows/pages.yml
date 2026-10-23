@@ -19,11 +19,17 @@ jobs:
           node-version: 22
       - name: Install exact direct dependencies
         run: npm install --no-audit --no-fund
-      - name: Typecheck and build all routes
+      - name: Typecheck and validate root-domain build
         run: npm run build
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.56.1-chromium-linux
       - name: Install Chromium
+        timeout-minutes: 4
         run: npx playwright install --with-deps chromium
-      - name: Browser and route tests
+      - name: Browser, route and domain-path tests
+        timeout-minutes: 10
         run: npm run test:qa
       - name: Compact visual proof
         if: always()
@@ -50,13 +56,40 @@ jobs:
     if: github.ref == 'refs/heads/main'
     needs: verify
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+      url: https://predict.rip/
     steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Prepare published-site browser verification
+        run: npm install --no-audit --no-fund
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-1.56.1-chromium-linux
+      - name: Install Chromium
+        timeout-minutes: 4
+        run: npx playwright install --with-deps chromium
       - name: Publish only after checks pass
         id: deployment
         uses: actions/deploy-pages@v4
+      - name: Verify the real custom domain after publication
+        timeout-minutes: 5
+        env:
+          DOMAIN_ORIGIN: https://predict.rip
+        run: node scripts/qa-domain.mjs
+      - name: Save actual-domain checks and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: predict-live-checks
+          path: live-domain-output/
+          if-no-files-found: ignore
