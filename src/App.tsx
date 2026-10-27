@@ -4,6 +4,7 @@ import {
   lazy,
   useEffect,
   useRef,
+  useState,
   type ErrorInfo,
   type ReactNode,
 } from 'react';
@@ -25,14 +26,19 @@ const Home = lazy(pageLoaders.home),
   Skills = lazy(pageLoaders.skills),
   Contact = lazy(pageLoaders.contact),
   Roadmap = lazy(pageLoaders.roadmap);
-/** Shown only while a page chunk is really loading; it fades in after 250 ms so fast
- * navigations never flash it. Nothing renders while the boot screen still covers the page. */
+/** Shown only when a page chunk takes longer than a second to load, so normal navigation
+ * never flashes it. Nothing renders while the boot screen still covers the page. */
 function ResourceLoading() {
   const { t } = useLanguage();
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const id = window.setTimeout(() => setSlow(true), 1000);
+    return () => clearTimeout(id);
+  }, []);
   if (booting()) return null;
   return (
     <div className="route-loading" role="status">
-      <LoaderMark size={200} />
+      {slow && <LoaderMark size={200} />}
       <span className="sr-only">{t(L('Загрузка страницы', 'Loading page'))}</span>
     </div>
   );

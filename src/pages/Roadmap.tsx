@@ -54,10 +54,10 @@ const steps: JourneyStep[] = [
     date: L('Сейчас', 'Now'),
     title: L('Новые инструменты', 'New tools'),
     description: L(
-      'Развиваю Predict — игровой инструмент на C++ и Dear ImGui — и прототипирую ReSearchify Web: интернет-поиск и чтение источников для локальных LLM.',
-      'Building Predict — a gaming tool in C++ and Dear ImGui — and prototyping ReSearchify Web: web search and source reading for local LLMs.',
+      'Развиваю Predict — игровой инструмент на C++20 и Dear ImGui — и довожу ReSearchify и Prime Market до следующих релизов.',
+      'Building Predict — a gaming tool in C++20 and Dear ImGui — and taking ReSearchify and Prime Market to their next releases.',
     ),
-    stack: ['Predict', 'ReSearchify Web'],
+    stack: ['Predict', 'ReSearchify', 'Prime Market'],
     href: '/projects/',
     linkLabel: L('Все проекты', 'All projects'),
   },
@@ -77,13 +77,6 @@ const next: { title: string; href?: string; copy: ReturnType<typeof L> }[] = [
     copy: L(
       'Быстрее широкие regex и буквальный поиск, меньше индекс.',
       'Faster broad regex and literal search, a smaller index.',
-    ),
-  },
-  {
-    title: 'ReSearchify Web',
-    copy: L(
-      'Отдельный от ReSearchify проект: поиск в интернете, получение страниц и передача текста локальной модели. Стек ещё выбираю.',
-      'Separate from ReSearchify: web search, page retrieval and handing clean text to a local model. Stack still being chosen.',
     ),
   },
   {

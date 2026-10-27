@@ -11,15 +11,25 @@ function BootOverlay({ onDone }: { onDone: () => void }) {
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     let alive = true;
+    // Dev only: /?loader keeps the boot screen up until you click, to look at it.
+    if (import.meta.env.DEV && new URLSearchParams(location.search).has('loader')) {
+      const close = () => setLeaving(true);
+      addEventListener('click', close, { once: true });
+      return () => removeEventListener('click', close);
+    }
     Promise.all([pageReady, document.fonts?.ready]).then(() => {
       if (!alive) return;
       setLeaving(true);
-      setTimeout(onDone, 300);
     });
     return () => {
       alive = false;
     };
   }, [onDone]);
+  useEffect(() => {
+    if (!leaving) return;
+    const id = setTimeout(onDone, 300);
+    return () => clearTimeout(id);
+  }, [leaving, onDone]);
   return (
     <div className={'boot-inner' + (leaving ? ' is-leaving' : '')}>
       <LoaderMark />

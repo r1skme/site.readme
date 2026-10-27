@@ -225,7 +225,10 @@
   min-height: 70vh;
   display: grid;
   place-content: center;
-  animation: loader-in 0.4s var(--ease) 0.25s both;
+}
+
+.route-loading .loader-mark {
+  animation: loader-in 0.4s var(--ease) both;
 }
 
 .loader-mark {

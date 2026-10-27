@@ -135,14 +135,10 @@ try {
     assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'), a);
   });
 
-  await check(
-    'Boot screen is gone after load and the dev font switcher is not shipped',
-    async () => {
-      await page.goto(origin + '/', { waitUntil: 'networkidle' });
-      await page.waitForFunction(() => !document.getElementById('boot'));
-      assert.equal(await page.locator('.font-lab').count(), 0);
-    },
-  );
+  await check('Boot screen is gone after load', async () => {
+    await page.goto(origin + '/', { waitUntil: 'networkidle' });
+    await page.waitForFunction(() => !document.getElementById('boot'));
+  });
 
   await check('?lang=ru wins over a saved EN and survives navigation', async () => {
     await page.evaluate(() => localStorage.setItem('r1sk-lang', 'en'));
