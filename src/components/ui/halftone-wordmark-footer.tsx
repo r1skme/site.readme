@@ -67,6 +67,8 @@ export interface HalftoneWordmarkFooterProps {
   fontWeight?: number;
   /** Face for the small type. */
   monoFamily?: string;
+  /** Hide the brand line, link columns and back-to-top: only the dotted word. */
+  bare?: boolean;
   /** Root height. A definite length, never a percentage. */
   height?: string;
   /** Extra root class names. */
@@ -208,6 +210,7 @@ export default function HalftoneWordmarkFooter({
   fontWeight = 800,
   monoFamily = MONO_STACK,
   height = '560px',
+  bare = false,
   className = '',
 }: HalftoneWordmarkFooterProps) {
   const colors = { ...(PRESETS[preset] || PRESETS.night), ...(palette || {}) };
@@ -343,8 +346,12 @@ export default function HalftoneWordmarkFooter({
     const draw = (now: number) => {
       const o = opts.current;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.fillStyle = o.colors.background;
-      ctx.fillRect(0, 0, w, h);
+      // A "transparent" background lets the page show through between the dots.
+      ctx.clearRect(0, 0, w, h);
+      if (o.colors.background !== 'transparent') {
+        ctx.fillStyle = o.colors.background;
+        ctx.fillRect(0, 0, w, h);
+      }
 
       const r = o.interactive && !reduced ? Math.max(0, o.radius) : 0;
       const ringAge = ring.t < 0 ? 1e9 : now - ring.t;
@@ -512,41 +519,45 @@ export default function HalftoneWordmarkFooter({
       <style>{HWF_CSS}</style>
       <canvas ref={canvasRef} aria-hidden="true" />
       <span className="hwf-sr">{wordmark}</span>
-      <div className="hwf-top">
-        <div className="hwf-brand">
-          <strong>{label}</strong>
-          <span>{meta}</span>
-        </div>
-        {columns.map((col) => (
-          <nav className="hwf-col" key={col.title} aria-label={col.title}>
-            <h3>{col.title}</h3>
-            <ul>
-              {col.links.map((l) => {
-                const external = /^https?:/.test(l.href || '');
-                return (
-                  <li key={l.label}>
-                    <a
-                      href={l.href || '#'}
-                      target={external ? '_blank' : undefined}
-                      rel={external ? 'noopener noreferrer' : undefined}
-                      onClick={(e) => onLinkClick?.(l.href || '#', e)}
-                    >
-                      {l.label}
-                    </a>
-                  </li>
-                );
-              })}
-            </ul>
-          </nav>
-        ))}
-      </div>
-      <div className="hwf-rule">
-        {backToTop ? (
-          <button type="button" className="hwf-up" onClick={toTop}>
-            {backToTopLabel}
-          </button>
-        ) : null}
-      </div>
+      {!bare && (
+        <>
+          <div className="hwf-top">
+            <div className="hwf-brand">
+              <strong>{label}</strong>
+              <span>{meta}</span>
+            </div>
+            {columns.map((col) => (
+              <nav className="hwf-col" key={col.title} aria-label={col.title}>
+                <h3>{col.title}</h3>
+                <ul>
+                  {col.links.map((l) => {
+                    const external = /^https?:/.test(l.href || '');
+                    return (
+                      <li key={l.label}>
+                        <a
+                          href={l.href || '#'}
+                          target={external ? '_blank' : undefined}
+                          rel={external ? 'noopener noreferrer' : undefined}
+                          onClick={(e) => onLinkClick?.(l.href || '#', e)}
+                        >
+                          {l.label}
+                        </a>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </nav>
+            ))}
+          </div>
+          <div className="hwf-rule">
+            {backToTop ? (
+              <button type="button" className="hwf-up" onClick={toTop}>
+                {backToTopLabel}
+              </button>
+            ) : null}
+          </div>
+        </>
+      )}
     </footer>
   );
 }

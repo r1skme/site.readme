@@ -37,15 +37,6 @@
   }
 }
 
-@keyframes loading {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(250%);
-  }
-}
-
 @keyframes pulse {
   0%,
   100% {
@@ -130,6 +121,12 @@
   .hero-visual .terminal {
     transform: perspective(1300px) rotateY(-14deg) rotateX(7deg) rotateZ(-1deg);
     transition: none;
+  }
+
+  .loader-grid i {
+    animation: none;
+    opacity: 0.7;
+    transform: scale(0.6);
   }
 
   .bench-fill {

@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { m } from 'motion/react';
 import { Github } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
@@ -65,8 +65,7 @@ function usePageMeta() {
 export function SiteShell({ children }: { children: ReactNode }) {
   const { lang, setLang, t } = useLanguage(),
     { paused } = useMotionPreference(),
-    { pathname } = useLocation(),
-    navigate = useNavigate();
+    { pathname } = useLocation();
   usePageMeta();
   return (
     <div className="site">
@@ -129,50 +128,15 @@ export function SiteShell({ children }: { children: ReactNode }) {
       </header>
       {children}
       <HalftoneWordmarkFooter
+        bare
         wordmark="r1sk"
-        label="R1SK"
-        meta={t(
-          L('Python / C++ разработчик · predict.rip', 'Python / C++ developer · predict.rip'),
-        )}
-        columns={[
-          {
-            title: t(L('Проекты', 'Projects')),
-            links: [
-              { label: 'ReSearchify', href: '/projects/researchify/' },
-              { label: 'Prime Market', href: '/projects/prime-market/' },
-              { label: 'Predict', href: '/projects/predict/' },
-            ],
-          },
-          {
-            title: t(L('Сайт', 'Site')),
-            links: [
-              { label: t(L('Медиа', 'Media')), href: '/media/' },
-              { label: t(L('Навыки', 'Skills')), href: '/skills/' },
-              { label: t(L('Путь и планы', 'Roadmap')), href: '/roadmap/' },
-            ],
-          },
-          {
-            title: t(L('Связь', 'Contact')),
-            links: [
-              { label: 'Telegram', href: 'https://t.me/R1SKME' },
-              { label: 'GitHub', href: 'https://github.com/r1skme' },
-              { label: 'YouTube', href: 'https://youtube.com/@r1sk-gg' },
-            ],
-          },
-        ]}
-        backToTopLabel={t(L('Наверх ↑', 'Back to top ↑'))}
-        onLinkClick={(href, e) => {
-          if (!href.startsWith('/') || e.metaKey || e.ctrlKey || e.shiftKey) return;
-          e.preventDefault();
-          navigate(href);
-        }}
-        palette={{ background: '#050912', ink: '#cdd9f2', warm: '#5fdcf0' }}
+        palette={{ background: 'transparent', ink: '#cdd9f2', warm: '#5fdcf0' }}
+        grain={0}
         fontFamily="'Unbounded', 'Onest', system-ui, sans-serif"
         fontWeight={700}
-        monoFamily="'Onest', system-ui, sans-serif"
         interactive={!paused}
         crop={0.18}
-        height="clamp(380px, 46vw, 560px)"
+        height="clamp(200px, 27vw, 400px)"
         className="site-footer"
       />
       <LiquidGlassDock />

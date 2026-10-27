@@ -4,6 +4,7 @@ import {
   lazy,
   useEffect,
   useRef,
+  type CSSProperties,
   type ErrorInfo,
   type ReactNode,
 } from 'react';
@@ -23,14 +24,21 @@ const Home = lazy(pageLoaders.home),
   Skills = lazy(pageLoaders.skills),
   Contact = lazy(pageLoaders.contact),
   Roadmap = lazy(pageLoaders.roadmap);
+/** A field of dots with a wave running through it, in the footer's halftone style.
+ * It fades in after a short delay, so fast route changes never flash it. */
 function ResourceLoading() {
   const { t } = useLanguage();
   return (
     <div className="route-loading" role="status">
-      <div className="loading-progress" aria-hidden="true">
-        <span />
+      <div className="loader-grid" aria-hidden="true">
+        {Array.from({ length: 45 }, (_, i) => (
+          <i key={i} style={{ '--d': (i % 9) + Math.floor(i / 9) } as CSSProperties} />
+        ))}
       </div>
-      <p>{t(L('Загрузка страницы', 'Loading page'))}</p>
+      <p className="loader-word" aria-hidden="true">
+        R1SK<span>.</span>
+      </p>
+      <span className="sr-only">{t(L('Загрузка страницы', 'Loading page'))}</span>
     </div>
   );
 }

@@ -14,18 +14,86 @@
     />
   </head>
   <body>
+    <style>
+      body {
+        margin: 0;
+        background: #060b15;
+      }
+      .boot {
+        min-height: 100vh;
+        display: grid;
+        place-content: center;
+        justify-items: center;
+        gap: 22px;
+      }
+      .boot-grid {
+        display: grid;
+        grid-template-columns: repeat(9, 10px);
+        gap: 8px;
+      }
+      .boot-grid i {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #cdd9f2;
+        opacity: 0.35;
+        transform: scale(0.35);
+        animation: boot 1.4s ease-in-out infinite;
+      }
+      .boot p {
+        margin: 0;
+        font:
+          700 18px system-ui,
+          sans-serif;
+        letter-spacing: -0.04em;
+        color: #a6b4cb;
+      }
+      .boot p span {
+        color: #6b8cff;
+      }
+      @keyframes boot {
+        40% {
+          opacity: 1;
+          transform: scale(1);
+          background: #5fdcf0;
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .boot-grid i {
+          animation: none;
+          opacity: 0.7;
+          transform: scale(0.6);
+        }
+      }
+    </style>
     <div id="root">
-      <div
-        style="
-          min-height: 80vh;
-          display: grid;
-          place-content: center;
-          background: #060b15;
-          color: #e0eaff;
-          font-family: Arial;
-        "
-      >
-        <strong style="font-size: 42px">R1SK</strong>
+      <div class="boot" aria-hidden="true">
+        <div class="boot-grid">
+          <i style="animation-delay: 0ms"></i><i style="animation-delay: 70ms"></i
+          ><i style="animation-delay: 140ms"></i><i style="animation-delay: 210ms"></i
+          ><i style="animation-delay: 280ms"></i><i style="animation-delay: 350ms"></i
+          ><i style="animation-delay: 420ms"></i><i style="animation-delay: 490ms"></i
+          ><i style="animation-delay: 560ms"></i><i style="animation-delay: 70ms"></i
+          ><i style="animation-delay: 140ms"></i><i style="animation-delay: 210ms"></i
+          ><i style="animation-delay: 280ms"></i><i style="animation-delay: 350ms"></i
+          ><i style="animation-delay: 420ms"></i><i style="animation-delay: 490ms"></i
+          ><i style="animation-delay: 560ms"></i><i style="animation-delay: 630ms"></i
+          ><i style="animation-delay: 140ms"></i><i style="animation-delay: 210ms"></i
+          ><i style="animation-delay: 280ms"></i><i style="animation-delay: 350ms"></i
+          ><i style="animation-delay: 420ms"></i><i style="animation-delay: 490ms"></i
+          ><i style="animation-delay: 560ms"></i><i style="animation-delay: 630ms"></i
+          ><i style="animation-delay: 700ms"></i><i style="animation-delay: 210ms"></i
+          ><i style="animation-delay: 280ms"></i><i style="animation-delay: 350ms"></i
+          ><i style="animation-delay: 420ms"></i><i style="animation-delay: 490ms"></i
+          ><i style="animation-delay: 560ms"></i><i style="animation-delay: 630ms"></i
+          ><i style="animation-delay: 700ms"></i><i style="animation-delay: 770ms"></i
+          ><i style="animation-delay: 280ms"></i><i style="animation-delay: 350ms"></i
+          ><i style="animation-delay: 420ms"></i><i style="animation-delay: 490ms"></i
+          ><i style="animation-delay: 560ms"></i><i style="animation-delay: 630ms"></i
+          ><i style="animation-delay: 700ms"></i><i style="animation-delay: 770ms"></i
+          ><i style="animation-delay: 840ms"></i>
+        </div>
+        <p>R1SK<span>.</span></p>
       </div>
     </div>
     <noscript>
