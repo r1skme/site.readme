@@ -5,25 +5,64 @@ import { PageHeading, StackList } from '@/components/Primitives';
 import { CountUp } from '@/components/CountUp';
 import { capabilities } from '@/data/profile';
 import { editingSkills } from '@/data/media';
+import { IconFolder, type FolderIcon } from '@/components/ui/icon-folder';
+import {
+  siAvaloniaui,
+  siCmake,
+  siCplusplus,
+  siDotnet,
+  siGit,
+  siGithubactions,
+  siLlvm,
+  siPython,
+  siSqlite,
+  siTelegram,
+} from 'simple-icons';
 
-const tools = [
+type BrandIcon = { title: string; hex: string; path: string };
+
+/** A brand mark from Simple Icons (CC0), drawn white on its brand colour. */
+const brand = (icon: BrandIcon, label = icon.title): FolderIcon => ({
+  label,
+  background: `linear-gradient(135deg, #${icon.hex}, color-mix(in srgb, #${icon.hex} 60%, #000))`,
+  node: (
+    <svg viewBox="0 0 24 24" width="46%" height="46%" fill="#fff" aria-hidden="true">
+      <path d={icon.path} />
+    </svg>
+  ),
+});
+
+/** One of the site's own editing-tool logos on a dark tile. */
+const asset = (file: string, label: string): FolderIcon => ({
+  label,
+  background: 'linear-gradient(135deg, #1d2638, #0b111d)',
+  node: <img src={`/assets/${file}`} alt="" width="56" height="56" draggable={false} />,
+});
+
+const folders: { title: ReturnType<typeof L>; icons: FolderIcon[] }[] = [
   {
-    icon: 'resolve.svg',
-    name: 'DaVinci Resolve',
-    detail: L(
-      'Основной редактор: сборка, анимация, скорость, цвет и VFX.',
-      'My main editor for sequencing, animation, retiming, colour and VFX.',
-    ),
+    title: L('Языки', 'Languages'),
+    icons: [brand(siPython), brand(siCplusplus, 'C++20'), brand(siDotnet, 'C# / .NET')],
   },
   {
-    icon: 'capcut.svg',
-    name: 'CapCut',
-    detail: L('Для отдельных этапов монтажа.', 'For individual editing steps.'),
+    title: L('Сборка и CI', 'Build & CI'),
+    icons: [brand(siCmake), brand(siLlvm, 'LLVM / Clang'), brand(siGithubactions), brand(siGit)],
   },
   {
-    icon: 'hlae.svg',
-    name: 'HLAE',
-    detail: L('Изучаю камеры и игровые пролёты.', 'Learning camera work and in-game fly-throughs.'),
+    title: L('Данные и API', 'Data & APIs'),
+    icons: [
+      brand(siSqlite),
+      brand(siTelegram, 'Telegram Bot API'),
+      brand(siAvaloniaui, 'Avalonia UI'),
+    ],
+  },
+  {
+    title: L('Монтаж', 'Editing'),
+    icons: [
+      asset('resolve.svg', 'DaVinci Resolve'),
+      asset('capcut.svg', 'CapCut'),
+      asset('hlae.svg', 'HLAE'),
+    ],
   },
 ];
 
@@ -94,15 +133,17 @@ export default function Skills() {
             </ul>
           </div>
         </div>
-        <div className="tools">
-          {tools.map((tool) => (
-            <div className="tool" key={tool.name} data-reveal>
-              <img src={'/assets/' + tool.icon} width="44" height="44" alt="" />
-              <div>
-                <h3>{tool.name}</h3>
-                <p>{t(tool.detail)}</p>
-              </div>
-            </div>
+        <h2 className="folders-title" data-reveal>
+          {t(L('Инструменты', 'Tools'))}
+        </h2>
+        <div className="folders">
+          {folders.map((f) => (
+            <IconFolder
+              key={f.title.en}
+              title={t(f.title)}
+              tags={f.icons.map((i) => i.label ?? '')}
+              icons={f.icons}
+            />
           ))}
         </div>
       </section>

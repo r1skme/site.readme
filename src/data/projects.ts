@@ -1,11 +1,8 @@
 import { L, type Localized } from '../lib/l10n';
 
-export type ProjectStatus = 'active' | 'paused' | 'frozen' | 'prototype';
-
 export type Project = {
   slug: string;
   name: string;
-  status: ProjectStatus;
   period: Localized;
   stack: string[];
   tagline: Localized;
@@ -26,19 +23,11 @@ export type Project = {
   why?: Localized;
 };
 
-export const statusLabel: Record<ProjectStatus, Localized> = {
-  active: L('В разработке', 'Active'),
-  paused: L('На паузе', 'Paused'),
-  frozen: L('Заморожен', 'Frozen'),
-  prototype: L('Прототип', 'Prototype'),
-};
-
 // Catalogue order. The "next project" chain on detail pages follows it too.
 export const projects: Project[] = [
   {
     slug: 'researchify',
     name: 'ReSearchify',
-    status: 'active',
     period: L('окт. 2026 — сейчас', 'Oct 2026 — present'),
     stack: [
       'C++20',
@@ -175,7 +164,6 @@ export const projects: Project[] = [
   {
     slug: 'prime-market',
     name: 'Prime Market',
-    status: 'active',
     period: L('2026 — сейчас', '2026 — present'),
     stack: [
       'Python',
@@ -212,7 +200,6 @@ export const projects: Project[] = [
   {
     slug: 'predict',
     name: 'Predict',
-    status: 'active',
     period: L('2026 — сейчас', '2026 — present'),
     stack: [
       'C++20',
@@ -250,7 +237,6 @@ export const projects: Project[] = [
   {
     slug: 'sharex-macos-linux',
     name: 'ShareX for macOS & Linux',
-    status: 'active',
     period: L('окт. 2026', 'Oct 2026'),
     stack: [
       'C#',
@@ -285,7 +271,6 @@ export const projects: Project[] = [
   {
     slug: 'glow-rust',
     name: 'GLOW RUST',
-    status: 'paused',
     period: L('2025', '2025'),
     stack: ['Rust Game Server', 'RCON', 'Server Plugins', 'Hosting'],
     tagline: L(
@@ -312,7 +297,6 @@ export const projects: Project[] = [
   {
     slug: 'exchange',
     name: 'EXchange',
-    status: 'frozen',
     period: L('2026', '2026'),
     stack: ['Python', 'SQLite', 'Telegram', 'Market Filters'],
     tagline: L('Подбор и фильтрация игровых предметов.', 'Finding and filtering game items.'),

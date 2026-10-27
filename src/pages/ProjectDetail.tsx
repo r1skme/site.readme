@@ -5,7 +5,7 @@ import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { projects, findProject } from '@/data/projects';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
-import { ProjectLinks, RichText, StackList, StatusBadge } from '@/components/Primitives';
+import { ProjectLinks, RichText, StackList } from '@/components/Primitives';
 import { Terminal } from '@/components/Terminal';
 import { Benchmarks } from '@/components/Benchmarks';
 import NotFound from '@/components/NotFound';
@@ -47,12 +47,6 @@ export default function ProjectDetail() {
               <div>
                 <dt>{t(L('Период', 'Period'))}</dt>
                 <dd>{t(project.period)}</dd>
-              </div>
-              <div>
-                <dt>{t(L('Статус', 'Status'))}</dt>
-                <dd>
-                  <StatusBadge status={project.status} />
-                </dd>
               </div>
             </dl>
             <ProjectLinks project={project} />

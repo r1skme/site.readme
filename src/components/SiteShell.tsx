@@ -1,13 +1,14 @@
 import { useEffect, type ReactNode } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { m } from 'motion/react';
-import { ArrowUp, ArrowUpRight, Github } from 'lucide-react';
+import { Github } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { prefetchPage } from '@/lib/routes';
 import { getPageMeta } from '@/lib/seo';
 import FluidBackdrop from '@/components/FluidBackdrop';
 import { LiquidGlassDock } from '@/components/ui/liquid-glass-dock';
+import HalftoneWordmarkFooter from '@/components/ui/halftone-wordmark-footer';
 
 /** Fades in every [data-reveal] element that starts below the fold. */
 function RevealController() {
@@ -64,7 +65,8 @@ function usePageMeta() {
 export function SiteShell({ children }: { children: ReactNode }) {
   const { lang, setLang, t } = useLanguage(),
     { paused } = useMotionPreference(),
-    { pathname } = useLocation();
+    { pathname } = useLocation(),
+    navigate = useNavigate();
   usePageMeta();
   return (
     <div className="site">
@@ -126,36 +128,53 @@ export function SiteShell({ children }: { children: ReactNode }) {
         </nav>
       </header>
       {children}
-      <footer className="footer shell">
-        <p>© {new Date().getFullYear()} R1SK</p>
-        <div className="footer-links">
-          <a href="https://github.com/r1skme" target="_blank" rel="noopener noreferrer">
-            GitHub
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-          <a href="https://t.me/R1SKME" target="_blank" rel="noopener noreferrer">
-            Telegram
-            <ArrowUpRight size={15} aria-hidden="true" />
-          </a>
-          {pathname === '/contact/' ? (
-            <a
-              href="#main"
-              onClick={(e) => {
-                e.preventDefault();
-                window.scrollTo({ top: 0, behavior: paused ? 'instant' : 'smooth' });
-              }}
-            >
-              {t(L('Наверх', 'Back to top'))}
-              <ArrowUp size={15} aria-hidden="true" />
-            </a>
-          ) : (
-            <Link to="/contact/" onPointerEnter={() => prefetchPage('/contact/')}>
-              {t(L('Связаться', 'Contact'))}
-              <ArrowUpRight size={15} aria-hidden="true" />
-            </Link>
-          )}
-        </div>
-      </footer>
+      <HalftoneWordmarkFooter
+        wordmark="r1sk"
+        label="R1SK"
+        meta={t(
+          L('Python / C++ разработчик · predict.rip', 'Python / C++ developer · predict.rip'),
+        )}
+        columns={[
+          {
+            title: t(L('Проекты', 'Projects')),
+            links: [
+              { label: 'ReSearchify', href: '/projects/researchify/' },
+              { label: 'Prime Market', href: '/projects/prime-market/' },
+              { label: 'Predict', href: '/projects/predict/' },
+            ],
+          },
+          {
+            title: t(L('Сайт', 'Site')),
+            links: [
+              { label: t(L('Медиа', 'Media')), href: '/media/' },
+              { label: t(L('Навыки', 'Skills')), href: '/skills/' },
+              { label: t(L('Путь и планы', 'Roadmap')), href: '/roadmap/' },
+            ],
+          },
+          {
+            title: t(L('Связь', 'Contact')),
+            links: [
+              { label: 'Telegram', href: 'https://t.me/R1SKME' },
+              { label: 'GitHub', href: 'https://github.com/r1skme' },
+              { label: 'YouTube', href: 'https://youtube.com/@r1sk-gg' },
+            ],
+          },
+        ]}
+        backToTopLabel={t(L('Наверх ↑', 'Back to top ↑'))}
+        onLinkClick={(href, e) => {
+          if (!href.startsWith('/') || e.metaKey || e.ctrlKey || e.shiftKey) return;
+          e.preventDefault();
+          navigate(href);
+        }}
+        palette={{ background: '#050912', ink: '#cdd9f2', warm: '#5fdcf0' }}
+        fontFamily="'Unbounded', 'Onest', system-ui, sans-serif"
+        fontWeight={700}
+        monoFamily="'Onest', system-ui, sans-serif"
+        interactive={!paused}
+        crop={0.18}
+        height="clamp(380px, 46vw, 560px)"
+        className="site-footer"
+      />
       <LiquidGlassDock />
     </div>
   );

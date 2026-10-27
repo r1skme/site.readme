@@ -220,17 +220,6 @@
   color: var(--blue);
 }
 
-.capability-icon {
-  display: grid;
-  place-items: center;
-  width: 46px;
-  height: 46px;
-  border-radius: 14px;
-  color: var(--accent, var(--cyan));
-  background: color-mix(in srgb, var(--accent, var(--cyan)) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--accent, var(--cyan)) 30%, transparent);
-}
-
 .capability:nth-child(1) {
   --accent: var(--green);
 }
@@ -1436,45 +1425,17 @@ a.number:hover {
   vertical-align: middle;
 }
 
-.tools {
+.folders-title {
+  margin-top: clamp(56px, 7vw, 96px);
+  margin-bottom: 8px;
+}
+
+.folders {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 16px;
-  margin-top: 16px;
-}
-
-.tool {
-  display: flex;
-  gap: 16px;
-  align-items: flex-start;
-  padding: 22px;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
-}
-
-.tool img {
-  flex: none;
-  width: 52px;
-  height: 52px;
-  padding: 10px;
-  object-fit: contain;
-  border-radius: 14px;
-  background: rgb(150 175 220 / 0.08);
-  border: 1px solid var(--line);
-}
-
-.tool {
-  align-items: center;
-}
-
-.tool h3 {
-  font-size: 1.05rem;
-}
-
-.tool p {
-  margin-top: 6px;
-  font-size: 0.92rem;
-  color: var(--muted);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 40px 32px;
+  justify-items: center;
+  padding-top: 40px;
 }
 
 /* ---------- About ---------- */

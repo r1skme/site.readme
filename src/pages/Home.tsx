@@ -1,15 +1,5 @@
 import { Link } from 'react-router-dom';
-import {
-  ArrowUpRight,
-  ArrowRight,
-  Bot,
-  Clapperboard,
-  Github,
-  MousePointerClick,
-  Package,
-  Send,
-  Zap,
-} from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Github, Send } from 'lucide-react';
 import type { PointerEvent } from 'react';
 import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
@@ -26,7 +16,6 @@ const researchify = findProject('researchify')!;
 const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'].map(
   (slug) => findProject(slug)!,
 );
-const capabilityIcons = [Bot, Zap, Package, MousePointerClick, Clapperboard];
 
 function HeroTitle() {
   const { paused } = useMotionPreference();
@@ -173,14 +162,7 @@ export default function Home() {
         <div className="capabilities">
           {capabilities.map((c, i) => (
             <SpotlightCard key={i} as="article" className="capability">
-              {(() => {
-                const Icon = capabilityIcons[i];
-                return (
-                  <span className="capability-icon" aria-hidden="true">
-                    <Icon size={22} strokeWidth={1.7} />
-                  </span>
-                );
-              })()}
+              <span className="capability-index">0{i + 1}</span>
               <h3>{t(c.title)}</h3>
               <p>{t(c.text)}</p>
               <StackList items={c.tools} />

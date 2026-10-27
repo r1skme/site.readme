@@ -5,7 +5,7 @@ import { m } from 'motion/react';
 import { prefetchPage } from '@/lib/routes';
 import { useMotionPreference } from '@/lib/motion';
 import { useLanguage, L } from '@/lib/i18n';
-import { statusLabel, type Project, type ProjectStatus } from '@/data/projects';
+import type { Project } from '@/data/projects';
 
 export function PageHeading({
   title,
@@ -99,16 +99,6 @@ export function SpotlightCard({
     <Tag ref={ref as never} onPointerMove={move} className={`spotlight ${className}`} data-reveal>
       {children}
     </Tag>
-  );
-}
-
-export function StatusBadge({ status }: { status: ProjectStatus }) {
-  const { t } = useLanguage();
-  return (
-    <span className={`status status-${status}`}>
-      <i aria-hidden="true" />
-      {t(statusLabel[status])}
-    </span>
   );
 }
 

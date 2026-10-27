@@ -128,40 +128,6 @@
   background: rgb(150 175 220 / 0.08);
 }
 
-.status {
-  --status: var(--green);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font: 500 0.88rem/1.4 var(--font-sans);
-  color: var(--status);
-  white-space: nowrap;
-}
-
-.status i {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: currentColor;
-  box-shadow: 0 0 10px currentColor;
-}
-
-.status-active i {
-  animation: pulse 2.4s ease-in-out infinite;
-}
-
-.status-paused {
-  --status: var(--amber);
-}
-
-.status-frozen {
-  --status: #9fb0c8;
-}
-
-.status-prototype {
-  --status: var(--violet);
-}
-
 /* Spotlight card: a soft light follows the pointer across surface and border. */
 .spotlight {
   --mx: 50%;
