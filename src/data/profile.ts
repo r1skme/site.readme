@@ -1,134 +1,168 @@
-import { L } from '@/lib/i18n';
+import { L, type Localized } from '../lib/l10n';
+
+export const role = L(
+  'Python / C++ разработчик · автоматизация, инструменты для разработчиков, монтаж',
+  'Python / C++ developer · automation, developer tools, video editing',
+);
+
 export const profile = {
-  intro: [
+  short: [
     L(
-      'Занимаюсь программированием, автоматизацией и видеомонтажом. Мне интересно не только придумать идею, но и разобраться, как превратить её в удобный инструмент: что он должен делать, как им будут пользоваться и где он может ошибиться.',
-      'I work on programming, automation and video editing. I enjoy more than coming up with an idea: I want to understand how it becomes a useful tool, what it should do, how people will use it and where it might fail.',
+      'Я R1SK — разработчик на Python и C++. Сейчас развиваю ReSearchify (локальный поиск по коду на C++20) и Prime Market (Telegram-бот для рынка CS2-скинов).',
+      'I’m R1SK, a Python and C++ developer. Right now I’m building ReSearchify (local C++20 code search) and Prime Market (a Telegram bot for the CS2 skin market).',
     ),
     L(
-      'Многие мои проекты начинаются с собственной задачи. Prime Market вырос из желания убрать повторяющиеся действия на рынке игровых предметов, а ReSearchify — из недовольства скоростью привычного поиска. Такой подход помогает не терять смысл работы за списком функций.',
-      'Many of my projects start with a problem I have myself. Prime Market grew from a wish to remove repetitive game-item market tasks; ReSearchify started because everyday search felt too slow. That gives each project a purpose beyond a list of features.',
+      'Могу взять задачу целиком: разобраться в сценарии, написать инструмент, собрать релизы под разные системы и проверить результат. Плюс около трёх лет игрового монтажа в DaVinci Resolve.',
+      'I can take a task end to end: understand the workflow, write the tool, ship builds for different systems and test the result. Plus about three years of gaming video editing in DaVinci Resolve.',
     ),
   ],
   origin: L(
-    'Компьютерами увлёкся ещё в детстве, а одной из любимых игр стал Counter-Strike. Постепенно мне стало интересно не только играть, но и настраивать, автоматизировать и создавать что-то своё. Первым серьёзным программным проектом стал Prime Market.',
-    'My interest in computers started in childhood, with Counter-Strike among the first games I really got into. Over time, playing led to configuring, automating and building things of my own. Prime Market became my first serious software project.',
+    'Компьютерами увлёкся ещё в детстве, а одной из любимых игр стал Counter-Strike. Постепенно захотелось не только играть, но и настраивать, автоматизировать и создавать своё. Первым серьёзным программным проектом стал Prime Market.',
+    'My interest in computers started in childhood, with Counter-Strike among my favourite games. Over time playing turned into configuring, automating and building things of my own. Prime Market became my first serious software project.',
   ),
   motivation: L(
-    'В собственных инструментах ценю возможность менять поведение под задачу, понимать ограничения и управлять дальнейшим развитием. Поэтому обращаю внимание и на логику, и на интерфейс, и на то, насколько удобно возвращаться к продукту каждый день.',
-    'What I value in my own tools is being able to adapt their behaviour, understand their limitations and decide how they develop. I pay attention to the logic, the interface and what it is like to come back to a product every day.',
+    'Большинство моих проектов начинаются с собственной задачи — поэтому я сам их первый пользователь и вижу, где инструмент неудобен.',
+    'Most of my projects start with a problem of my own, so I am their first user and see where a tool gets in the way.',
   ),
 };
+
+export type Capability = {
+  title: Localized;
+  text: Localized;
+  tools: string[];
+  proof: { label: string | Localized; href: string };
+};
+
+// "What I can do for you": every claim links to the project that backs it.
+export const capabilities: Capability[] = [
+  {
+    title: L('Автоматизация и боты', 'Automation & bots'),
+    text: L(
+      'Telegram-боты, работа с API, фильтры, уведомления и хранение настроек. Убираю ручную рутину из рабочих процессов.',
+      'Telegram bots, API integrations, filters, notifications and stored settings. I remove manual routine from workflows.',
+    ),
+    tools: ['Python', 'python-telegram-bot', 'SQLite', 'REST API'],
+    proof: { label: 'Prime Market', href: '/projects/prime-market/' },
+  },
+  {
+    title: L('Быстрые инструменты на C++', 'Fast tools in C++'),
+    text: L(
+      'Индексы, поиск, CLI и замеры производительности. Слежу, чтобы ускорение не меняло смысл запроса и не теряло результаты.',
+      'Indexes, search, CLIs and performance measurement — making things faster without changing query meaning or losing results.',
+    ),
+    tools: ['C++20', 'CMake', 'Regex', 'CLI'],
+    proof: { label: 'ReSearchify', href: '/projects/researchify/' },
+  },
+  {
+    title: L('Сборки и релизы', 'Builds & releases'),
+    text: L(
+      'Кроссплатформенные сборки, установщики и CI: Windows, macOS (arm64 и Intel), Linux (x64 и arm64).',
+      'Cross-platform builds, installers and CI: Windows, macOS (arm64 and Intel), Linux (x64 and arm64).',
+    ),
+    tools: ['GitHub Actions', '.deb / .rpm', '.pkg / .dmg', 'Git'],
+    proof: { label: 'ShareX for macOS & Linux', href: '/projects/sharex-macos-linux/' },
+  },
+  {
+    title: L('Интерфейсы и тестирование', 'Interfaces & QA'),
+    text: L(
+      'Продумываю экраны, состояния и обратную связь. Пишу баг-репорты, которые можно воспроизвести: действие, условия, ожидание и факт.',
+      'I design screens, states and feedback, and write reproducible bug reports: action, conditions, expected and actual result.',
+    ),
+    tools: ['UX/UI', 'QA', 'Dear ImGui', 'React'],
+    proof: { label: 'Predict', href: '/projects/predict/' },
+  },
+  {
+    title: L('Игровой видеомонтаж', 'Gaming video editing'),
+    text: L(
+      'Короткие ролики, которые цепляют с первых секунд: ритм, музыка, speed ramp, цвет и VFX. 150K+ просмотров на четырёх роликах.',
+      'Short videos that hook from the first seconds: rhythm, music, speed ramps, colour and VFX. 150K+ views on four posts.',
+    ),
+    tools: ['DaVinci Resolve', 'Fusion', 'Fairlight', 'HLAE'],
+    proof: { label: L('Медиа', 'Media'), href: '/media/' },
+  },
+];
+
 export const experience = [
   {
     title: L('Автоматизация и Telegram', 'Automation & Telegram'),
     href: '/projects/prime-market/',
     link: 'Prime Market',
-    paragraphs: [
-      L(
-        'С Python работаю в собственных проектах автоматизации. В Prime Market это взаимодействие с Market.CSGO API, Telegram-команды, фильтры и уведомления. Использую python-telegram-bot и SQLite; разбираюсь в том, как связаны настройки, сохранённые данные и поведение бота.',
-        'I work with Python through my automation projects. In Prime Market that includes the Market.CSGO API, Telegram commands, filters and notifications. The tools include python-telegram-bot and SQLite; I work through how settings, stored data and bot behaviour connect.',
-      ),
-      L(
-        'Для меня важно не просто получить данные из API, а сделать из них понятный рабочий сценарий: задать условия, получать нужные уведомления и не выполнять одни и те же действия вручную. Сейчас инструмент использую сам и дорабатываю перед публичным запуском.',
-        'Getting data from an API is only part of the task. I want a clear workflow: set the criteria, receive relevant notifications and avoid repeating the same manual steps. I currently use the tool myself and am refining it before a public launch.',
-      ),
-    ],
+    text: L(
+      'В Prime Market работаю с Market.CSGO API, Telegram-командами, фильтрами и уведомлениями на python-telegram-bot и SQLite. Мне важно не просто получить данные из API, а сделать из них понятный сценарий: задал условия — получил нужное уведомление.',
+      'In Prime Market I work with the Market.CSGO API, Telegram commands, filters and notifications on python-telegram-bot and SQLite. Getting data out of an API is only part of it — the goal is a clear flow: set criteria, get the right notification.',
+    ),
   },
   {
-    title: L('Поиск и оптимизация', 'Search & performance'),
+    title: L('Поиск и производительность', 'Search & performance'),
     href: '/projects/researchify/',
     link: 'ReSearchify',
-    paragraphs: [
-      L(
-        'Через ReSearchify углубляюсь в C++20 и устройство поиска по исходному коду. В основе — CLI и постоянный индекс. Разбираю требования к поиску слов, фраз, регулярным выражениям, логическим условиям и фильтрам по путям, продумываю индексацию и проверку результатов.',
-        'ReSearchify is where I deepen my understanding of C++20 and source-code search, built around a CLI and persistent index. I work through requirements for words, phrases, regular expressions, boolean conditions and path filters, along with indexing and result verification.',
-      ),
-      L(
-        'Сравниваю разные сценарии: редкий идентификатор, распространённое слово, буквальную строку и запрос без совпадений. Быстрый ответ в одном тесте ещё не означает быстрый поиск вообще. Поэтому смотрю на корректность, объём индекса, время первого и повторного запроса, а не только на лучший результат.',
-        'I compare different cases: a rare identifier, a common word, a literal string and a query with no matches. A fast answer in one test does not make every search fast. I consider correctness, index size and first versus repeated queries, rather than only the best result.',
-      ),
-    ],
+    text: L(
+      'В ReSearchify — постоянный индекс, запросы AND / OR / NOT, фразы, буквальные строки, regex и фильтры по путям. Сравниваю редкие и частые совпадения, пустые запросы, первый и повторный запуск; смотрю на корректность, размер индекса и время.',
+      'In ReSearchify: a persistent index, AND / OR / NOT queries, phrases, literal strings, regex and path filters. I compare rare and frequent matches, empty queries, cold and warm runs, and track correctness, index size and timing.',
+    ),
   },
   {
     title: L('Интерфейсы и проверка', 'Interfaces & testing'),
     href: '/projects/',
     link: L('Проекты', 'Projects'),
-    paragraphs: [
-      L(
-        'Мне нравится продумывать продукт целиком: структуру, настройки, переходы между экранами и реакцию на действия. Так работаю над сайтами своих проектов и интерфейсами инструментов. Дизайн оцениваю не только по внешнему виду — важны читаемость, понятная навигация и предсказуемое поведение.',
-        'I enjoy thinking through a whole product: its structure, settings, screen transitions and responses to actions. That is how I approach my project websites and tool interfaces. Appearance matters, but so do readability, clear navigation and predictable behaviour.',
-      ),
-      L(
-        'Много времени уделяю поиску недочётов и баг-репортам. Когда что-то работает не так, стараюсь описать условия и последовательность действий, чтобы ошибку можно было воспроизвести. После исправления возвращаюсь к тому же сценарию и проверяю результат.',
-        'I spend a lot of time finding issues and writing bug reports. When something behaves unexpectedly, I describe the conditions and sequence of actions so it can be reproduced. After a fix, I return to the same scenario and check the result.',
-      ),
-    ],
+    text: L(
+      'Продумываю продукт целиком: структуру, настройки, переходы и реакцию на действия. Когда что-то ведёт себя не так, описываю условия и шаги, чтобы ошибку можно было повторить, а после исправления возвращаюсь к тому же сценарию.',
+      'I think through the whole product: structure, settings, transitions and responses. When something misbehaves I write down the conditions and steps so it can be reproduced, and re-check the same scenario after the fix.',
+    ),
   },
   {
     title: L('Игровой контент', 'Gaming content'),
     href: '/media/',
     link: L('Смотреть работы', 'Watch my work'),
-    paragraphs: [
-      L(
-        'Около трёх лет работаю в DaVinci Resolve. Больше всего люблю игровые эдиты: искать удачный момент, собирать ритм, подбирать музыку и добиваться цельного звучания и изображения. Уверенно использую keyframes, speed ramp, цветокоррекцию, переходы и VFX.',
-        'I have worked in DaVinci Resolve for around three years. Gaming edits are my favourite: finding the right moment, building rhythm, choosing music and bringing picture and sound together. I am comfortable with keyframes, speed ramps, colour correction, transitions and VFX.',
-      ),
-      L(
-        'Хорошо знаю Counter-Strike и HvH-сообщество, его терминологию, юмор и интересы. Это помогает выбирать материал и подачу. Сам придумывал, записывал и монтировал ролики для GLOW RUST; личные видео публикую на YouTube и TikTok. Сейчас развиваю моушн-дизайн, 3D и саунд-дизайн.',
-        'I know Counter-Strike and the HvH community, including its terminology, humour and interests. That helps me choose the material and how to present it. I came up with, recorded and edited GLOW RUST videos myself, and publish personal work on YouTube and TikTok. I am now developing motion, 3D and sound-design skills.',
-      ),
-    ],
+    text: L(
+      'Хорошо знаю Counter-Strike и HvH-сообщество — терминологию, юмор и интересы, поэтому понимаю, что зайдёт зрителю. Придумывал, снимал и монтировал ролики для GLOW RUST, личные видео публикую на YouTube и TikTok.',
+      'I know Counter-Strike and the HvH community — its terminology, humour and interests — so I know what lands with viewers. I came up with, recorded and edited GLOW RUST videos and publish personal work on YouTube and TikTok.',
+    ),
   },
 ];
-export const humanExperience = [
+
+export const beyond = [
   {
-    title: L('Поддержка пользователей', 'Helping users'),
-    paragraphs: [
-      L(
-        'Создаю и продаю игровые конфигурации для Neverlose, Fatality, Midnight, MemeSense и других проектов. Если покупатель не понимает настройку или поведение, помогаю разобраться. Для меня работа не заканчивается в момент передачи файла.',
-        'I create and sell game configurations for Neverlose, Fatality, Midnight, MemeSense and other products. When a buyer needs help understanding a setting or behaviour, I help them work through it. Handing over the file is not the end of the process.',
-      ),
-      L(
-        'Этот опыт помогает замечать разницу между тем, что понятно автору, и тем, что понятно человеку, который видит инструмент впервые. Участвую и в бета-тестировании Spurdo, без публикации внутренних материалов.',
-        'That experience helps me notice the gap between what is clear to the creator and what makes sense to a first-time user. I also take part in Spurdo beta testing without publishing internal material.',
-      ),
-    ],
+    title: L('Работа с пользователями', 'Working with users'),
+    text: L(
+      'Делаю и продаю конфигурации для игровых HvH-клиентов и сопровождаю покупателей: если настройка или поведение непонятны — помогаю разобраться. Участвую в закрытом бета-тестировании игрового ПО. Это научило видеть разницу между тем, что понятно автору, и тем, что понятно человеку, который открыл инструмент впервые.',
+      'I make and sell configurations for HvH gaming clients and support buyers: when a setting or behaviour is unclear, I help them through it. I also take part in closed beta testing of gaming software. It taught me the gap between what is obvious to the author and what a first-time user sees.',
+    ),
   },
   {
-    title: L('Опыт собственного запуска', 'Running my own project'),
-    paragraphs: [
-      L(
-        'В GLOW RUST отвечал за весь проект: запуск сервера, хостинг, конфигурацию и плагины, поддержку, модерацию, игровые события и продвижение. Работал с улучшенной ванилой и модовым режимом, занимался TikTok от идеи до публикации.',
-        'With GLOW RUST I handled the whole project: server launch, hosting, configuration, plugins, support, moderation, in-game events and promotion. I worked with enhanced vanilla and modded modes and took TikTok videos from idea to publication.',
-      ),
-      L(
-        'Самой сложной задачей оказалось привлечение игроков. Проект сейчас на паузе из-за нехватки времени. Он научил меня оценивать не только техническую часть, но и объём постоянной работы: поддержку, контент и общение с людьми.',
-        'Attracting players proved to be the hardest part. The project is currently paused because of limited time. It taught me to consider not only the technical setup, but also the ongoing work of support, content and communication.',
-      ),
-    ],
+    title: L('Собственный запуск', 'Running my own project'),
+    text: L(
+      'В GLOW RUST отвечал за всё: сервер, хостинг, плагины, поддержку, модерацию, события и TikTok от идеи до публикации. Сложнее всего оказалось привлечь игроков — теперь заранее учитываю нагрузку на поддержку, контент и продвижение.',
+      'With GLOW RUST I handled everything: server, hosting, plugins, support, moderation, events and TikTok from idea to post. Attracting players was the hardest part — now I plan for support, content and promotion up front.',
+    ),
   },
 ];
+
 export const approach = [
   {
-    title: L('Сначала разбираю задачу', 'Understand the task'),
+    title: L('Разбираю задачу', 'Understand the task'),
     text: L(
-      'Начинаю со сценария: что человек хочет получить, какие действия повторяет и где теряет время. Затем определяю нужные функции и ограничения. Так проще понять, что действительно стоит делать в первой версии.',
-      'I begin with the workflow: what the person needs, which actions are repetitive and where time is lost. Then I define the features and constraints. That makes it easier to decide what belongs in a first version.',
+      'Начинаю со сценария: что человек хочет получить, какие действия повторяет и где теряет время. Так понятно, что действительно нужно в первой версии.',
+      'I start from the workflow: what the person needs, what they repeat and where time is lost. That shows what really belongs in the first version.',
     ),
   },
   {
-    title: L('Проверяю на конкретных примерах', 'Test concrete cases'),
+    title: L('Проверяю на примерах', 'Test concrete cases'),
     text: L(
-      'Сравниваю ожидаемый и фактический результат. Для поиска это разные типы запросов, для бота — настройки и уведомления, для интерфейса — действия и переходы. Стараюсь оставлять понятную обратную связь, а не только оценку «работает» или «не работает».',
-      'I compare the expected result with what actually happens: different queries for search, settings and notifications for a bot, actions and transitions for an interface. I aim to give useful feedback rather than just saying something works or does not.',
+      'Сравниваю ожидаемый и фактический результат: разные запросы для поиска, настройки и уведомления для бота, действия и переходы для интерфейса.',
+      'I compare expected and actual results: different queries for search, settings and notifications for a bot, actions and transitions for an interface.',
     ),
   },
   {
-    title: L('Довожу детали', 'Refine the details'),
+    title: L('Довожу детали', 'Polish the details'),
     text: L(
-      'Возвращаюсь к результату после проверки: убираю лишние действия, уточняю формулировки и исправляю неудобства. В монтаже также пересматриваю темп, переходы и звук. Готов уделить больше времени работе, если понимаю, что именно можно улучшить.',
-      'After testing, I revisit the result: removing unnecessary steps, clarifying wording and fixing awkward interactions. In editing I similarly revisit pacing, transitions and sound. I am happy to spend more time when I can identify what needs improvement.',
+      'После проверки убираю лишние шаги, уточняю формулировки и исправляю неудобства. В монтаже так же пересматриваю темп, переходы и звук.',
+      'After testing I remove extra steps, sharpen wording and fix friction. In editing I revisit pacing, transitions and sound the same way.',
     ),
   },
 ];
+
+export const learning = L(
+  'Углубляюсь в C++ и устройство своих инструментов, развиваю моушн-дизайн, 3D и саунд-дизайн.',
+  'Going deeper into C++ and how my tools work, and developing motion design, 3D and sound design.',
+);

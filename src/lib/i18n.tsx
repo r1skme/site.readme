@@ -7,27 +7,46 @@ import {
   useState,
   type ReactNode,
 } from 'react';
-export type Lang = 'ru' | 'en';
-export type Localized = { ru: string; en: string };
+import type { Lang, Localized } from '@/lib/l10n';
+
+export { L } from '@/lib/l10n';
+export type { Lang, Localized } from '@/lib/l10n';
+
+const STORAGE_KEY = 'r1sk-lang';
+
+function remember(value: Lang) {
+  try {
+    localStorage.setItem(STORAGE_KEY, value);
+  } catch {
+    // Private mode: the language simply is not remembered between pages.
+  }
+}
+
+function initialLang(): Lang {
+  const query = new URLSearchParams(window.location.search).get('lang');
+  if (query === 'en' || query === 'ru') {
+    remember(query);
+    return query;
+  }
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'en' ? 'en' : 'ru';
+  } catch {
+    return 'ru';
+  }
+}
+
 const Ctx = createContext<{ lang: Lang; setLang: (v: Lang) => void; t: (s: Localized) => string }>({
   lang: 'ru',
   setLang: () => {},
   t: (s) => s.ru,
 });
+
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    const query = new URLSearchParams(window.location.search).get('lang');
-    if (query === 'en' || query === 'ru') return query;
-    try {
-      return localStorage.getItem('r1sk-lang') === 'en' ? 'en' : 'ru';
-    } catch {
-      return 'ru';
-    }
-  });
+  const [lang, setLangState] = useState<Lang>(initialLang);
   const setLang = useCallback((value: Lang) => {
     setLangState(value);
+    remember(value);
     try {
-      localStorage.setItem('r1sk-lang', value);
       const url = new URL(window.location.href);
       url.searchParams.set('lang', value);
       history.replaceState(history.state, '', url);
@@ -40,5 +59,5 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({ lang, setLang, t }), [lang, setLang, t]);
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
+
 export const useLanguage = () => useContext(Ctx);
-export const L = (ru: string, en: string): Localized => ({ ru, en });
