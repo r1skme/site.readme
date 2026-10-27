@@ -18,13 +18,22 @@ export default function PageTransition({
     <m.main
       id="main"
       tabIndex={-1}
-      initial={instant ? false : { opacity: 0, y: 7 }}
+      // The old page lifts away; the new one opens at the top and settles in from below.
+      initial={instant ? false : { opacity: 0, y: 28, filter: 'blur(6px)' }}
       animate={{
         opacity: 1,
         y: 0,
-        transition: { duration: instant ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] },
+        filter: 'blur(0px)',
+        transition: { duration: instant ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] },
+        // Drop the filter afterwards: a lingering filter would turn main into a containing block.
+        transitionEnd: { filter: 'none' },
       }}
-      exit={{ opacity: 0, transition: { duration: instant ? 0 : 0.13, ease: 'easeOut' } }}
+      exit={{
+        opacity: 0,
+        y: -14,
+        filter: 'blur(4px)',
+        transition: { duration: instant ? 0 : 0.26, ease: [0.4, 0, 1, 1] },
+      }}
       className="page-main"
     >
       {children}

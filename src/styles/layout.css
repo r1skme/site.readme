@@ -13,7 +13,8 @@
 
 .page-main {
   display: block;
-  min-height: 70vh;
+  /* At least a screen tall, so the footer never jumps up while a page loads or swaps. */
+  min-height: 100svh;
   outline: none;
 }
 
@@ -222,7 +223,7 @@
 
 /* Loading: the GitHub mark, lit by ElectricLogo while a page really loads. */
 .route-loading {
-  min-height: 70vh;
+  min-height: 100svh;
   display: grid;
   place-content: center;
 }

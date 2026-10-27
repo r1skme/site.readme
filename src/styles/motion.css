@@ -123,11 +123,6 @@
     transition: none;
   }
 
-  .bv-msg,
-  .bv-bar i {
-    animation: none;
-  }
-
   .bench-fill {
     transform: none;
     transition: none;

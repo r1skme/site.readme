@@ -1,160 +1,104 @@
-import type { CSSProperties } from 'react';
-import { siApple, siLinux, siTelegram } from 'simple-icons';
-import { useLanguage, L } from '@/lib/i18n';
-import { Figure } from '@/components/CountUp';
-import { findProject } from '@/data/projects';
-import { works } from '@/data/media';
+import type { ReactNode } from 'react';
+import {
+  siApple,
+  siCmake,
+  siCplusplus,
+  siLinux,
+  siLlvm,
+  siPython,
+  siReact,
+  siSqlite,
+  siTelegram,
+  siTypescript,
+} from 'simple-icons';
+import { useLanguage, L, type Localized } from '@/lib/i18n';
 
-// Small live illustrations for the "How I can help" bento. The chat and the settings window
-// show what the tools do; they are drawings of an interface, not screenshots.
+// The "How I can help" bento: every tile shows three tool icons and one caption line,
+// all in the same calm style. Brand marks from Simple Icons (CC0).
 
-const Brand = ({ path }: { path: string }) => (
+type Tile = { label: string; icon: ReactNode };
+
+const brand = (path: string) => (
   <svg viewBox="0 0 24 24" aria-hidden="true">
     <path d={path} fill="currentColor" />
   </svg>
 );
 
-/** A Telegram-style exchange with the bot: set a filter, an interval, get a notification. */
-export function ChatVisual() {
-  const { t } = useLanguage();
-  const messages = [
-    { me: true, text: '/filter add' },
-    { me: true, text: '/interval 5m' },
-    {
-      me: false,
-      text: t(L('Проверяю рынок каждые 5 минут', 'Checking the market every 5 minutes')),
-    },
-    {
-      me: false,
-      text: t(L('🔔 Найден предмет по фильтру', '🔔 An item matches your filter')),
-      alert: true,
-    },
-  ];
-  return (
-    <div className="bv-chat" aria-hidden="true">
-      <div className="bv-chat-head">
-        <span className="bv-chat-avatar">
-          <Brand path={siTelegram.path} />
-        </span>
-        Prime Market
-        <small>{t(L('бот', 'bot'))}</small>
-      </div>
-      {messages.map((m, i) => (
-        <p
-          key={i}
-          className={'bv-msg' + (m.me ? ' is-me' : '') + (m.alert ? ' is-alert' : '')}
-          style={{ '--i': i } as CSSProperties}
-        >
-          {m.text}
-        </p>
-      ))}
-    </div>
-  );
-}
+const asset = (file: string) => <img src={`/assets/${file}`} alt="" width="28" height="28" />;
 
-/** The top of the real ripgrep comparison, as bars. */
-export function BenchVisual() {
-  const { t } = useLanguage();
-  const rows = findProject('researchify')!.benchmarks![0].rows.slice(0, 3);
-  const max = rows[0].value;
-  return (
-    <div className="bv-bench" aria-hidden="true">
-      <span className="bv-caption">
-        {t(L('быстрее ripgrep · Windows', 'faster than ripgrep · Windows'))}
-      </span>
-      {rows.map((r, i) => (
-        <div
-          key={r.display}
-          className="bv-bar"
-          style={{ '--w': r.value / max, '--i': i } as CSSProperties}
-        >
-          <span>{t(r.label)}</span>
-          <i />
-          <strong>
-            <Figure value={r.display} />
-          </strong>
-        </div>
-      ))}
-    </div>
-  );
-}
+// Windows has no mark in Simple Icons: a plain four-pane drawing.
+const windows = brand(
+  'M2 4.5 10.5 3.3v8.2H2V4.5Zm9.5-1.3L22 1.8v9.7H11.5V3.2ZM2 12.5h8.5v8.2L2 19.5v-7Zm9.5 0H22v9.7l-10.5-1.4v-8.3Z',
+);
 
-/** The three systems the releases ship for. */
-export function OsVisual() {
+function Tiles({ tiles, caption }: { tiles: Tile[]; caption: Localized }) {
   const { t } = useLanguage();
   return (
-    <div className="bv-os" aria-hidden="true">
-      <div className="bv-os-tiles">
-        <span>
-          {/* Windows: a plain four-pane mark (no official logo in Simple Icons). */}
-          <svg viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M2 4.5 10.5 3.3v8.2H2V4.5Zm9.5-1.3L22 1.8v9.7H11.5V3.2ZM2 12.5h8.5v8.2L2 19.5v-7Zm9.5 0H22v9.7l-10.5-1.4v-8.3Z"
-            />
-          </svg>
-          Windows
-        </span>
-        <span>
-          <Brand path={siApple.path} />
-          macOS
-        </span>
-        <span>
-          <Brand path={siLinux.path} />
-          Linux
-        </span>
-      </div>
-      <span className="bv-caption">
-        {t(L('x64 и arm64 · установщики · CI', 'x64 and arm64 · installers · CI'))}
-      </span>
-    </div>
-  );
-}
-
-/** A Dear ImGui-style settings window; hovering the tile moves the slider. */
-export function ImGuiVisual() {
-  const { t } = useLanguage();
-  return (
-    <div className="bv-imgui" aria-hidden="true">
-      <div className="bv-imgui-title">Predict</div>
-      <div className="bv-imgui-tabs">
-        <span className="is-on">{t(L('Главное', 'Main'))}</span>
-        <span>{t(L('Вид', 'View'))}</span>
-        <span>{t(L('Конфиг', 'Config'))}</span>
-      </div>
-      <label>
-        <i className="is-on" /> {t(L('Включить', 'Enable'))}
-      </label>
-      <label>
-        <i /> {t(L('Сглаживание', 'Smoothing'))}
-      </label>
-      <div className="bv-imgui-slider">
-        <span />
-      </div>
-    </div>
-  );
-}
-
-/** A strip of real thumbnails drifting by. */
-export function ReelVisual() {
-  const strip = [...works, ...works];
-  return (
-    <div className="bv-reel" aria-hidden="true">
-      <div className="bv-reel-track">
-        {strip.map((w, i) => (
-          <span key={i} className={'bv-thumb' + (w.platform === 'TikTok' ? ' is-tall' : '')}>
-            <img
-              src={w.img.startsWith('http') ? w.img : `/${w.img}`}
-              alt=""
-              loading="lazy"
-              decoding="async"
-            />
+    <div className="bv-tiles" aria-hidden="true">
+      <div className="bv-tiles-row">
+        {tiles.map((tile) => (
+          <span key={tile.label}>
+            {tile.icon}
+            {tile.label}
           </span>
         ))}
       </div>
-      <strong className="bv-reel-badge">
-        <Figure value="150K+" />
-      </strong>
+      <span className="bv-caption">{t(caption)}</span>
     </div>
   );
 }
+
+export const ChatVisual = () => (
+  <Tiles
+    tiles={[
+      { label: 'Python', icon: brand(siPython.path) },
+      { label: 'Telegram', icon: brand(siTelegram.path) },
+      { label: 'SQLite', icon: brand(siSqlite.path) },
+    ]}
+    caption={L('asyncio · aiohttp · Market.CSGO API', 'asyncio · aiohttp · Market.CSGO API')}
+  />
+);
+
+export const BenchVisual = () => (
+  <Tiles
+    tiles={[
+      { label: 'C++20', icon: brand(siCplusplus.path) },
+      { label: 'CMake', icon: brand(siCmake.path) },
+      { label: 'Clang', icon: brand(siLlvm.path) },
+    ]}
+    caption={L('до 94,6× быстрее ripgrep', 'up to 94.6× faster than ripgrep')}
+  />
+);
+
+export const OsVisual = () => (
+  <Tiles
+    tiles={[
+      { label: 'Windows', icon: windows },
+      { label: 'macOS', icon: brand(siApple.path) },
+      { label: 'Linux', icon: brand(siLinux.path) },
+    ]}
+    caption={L('x64 и arm64 · установщики · CI', 'x64 and arm64 · installers · CI')}
+  />
+);
+
+export const ImGuiVisual = () => (
+  <Tiles
+    tiles={[
+      { label: 'React', icon: brand(siReact.path) },
+      { label: 'TypeScript', icon: brand(siTypescript.path) },
+      { label: 'C++20', icon: brand(siCplusplus.path) },
+    ]}
+    caption={L('Dear ImGui · DirectX 11 · QA', 'Dear ImGui · DirectX 11 · QA')}
+  />
+);
+
+export const ReelVisual = () => (
+  <Tiles
+    tiles={[
+      { label: 'Resolve', icon: asset('resolve.svg') },
+      { label: 'CapCut', icon: asset('capcut.svg') },
+      { label: 'HLAE', icon: asset('hlae.svg') },
+    ]}
+    caption={L('150K+ просмотров в TikTok', '150K+ views on TikTok')}
+  />
+);

@@ -268,124 +268,8 @@
   color: var(--soft);
 }
 
-/* Tile animations wait until the tile has scrolled into view. */
-.reveal-ready:not(.revealed) .bv-msg,
-.reveal-ready:not(.revealed) .bv-bar i {
-  animation-play-state: paused;
-}
-
-/* Chat */
-.bv-chat {
-  display: flex;
-  flex-direction: column;
-  gap: 7px;
-  height: 100%;
-  padding: 12px 16px;
-  font-size: 0.82rem;
-}
-
-.bv-chat-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid var(--line);
-  font-weight: 600;
-}
-
-.bv-chat-head small {
-  font-weight: 400;
-  color: var(--soft);
-}
-
-.bv-chat-avatar {
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  color: #fff;
-  background: #26a5e4;
-}
-
-.bv-chat-avatar svg {
-  width: 13px;
-  height: 13px;
-}
-
-.bv-msg {
-  max-width: 78%;
-  padding: 5px 10px;
-  border-radius: 12px 12px 12px 4px;
-  background: rgb(150 175 220 / 0.12);
-  animation: bv-pop 0.4s var(--ease) both;
-  animation-delay: calc(var(--i) * 0.35s + 0.2s);
-}
-
-.bv-msg.is-me {
-  align-self: flex-end;
-  border-radius: 12px 12px 4px 12px;
-  background: color-mix(in srgb, var(--green) 26%, transparent);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-}
-
-.bv-msg.is-alert {
-  color: var(--ink);
-  background: color-mix(in srgb, var(--green) 18%, rgb(150 175 220 / 0.1));
-  border: 1px solid color-mix(in srgb, var(--green) 45%, transparent);
-}
-
-@keyframes bv-pop {
-  from {
-    opacity: 0;
-    transform: translateY(6px) scale(0.97);
-  }
-}
-
-/* Benchmark bars */
-.bv-bench {
-  display: grid;
-  align-content: center;
-  gap: 12px;
-  height: 100%;
-  padding: 16px 20px;
-}
-
-.bv-bar {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  gap: 4px 12px;
-  font-size: 0.8rem;
-  color: var(--muted);
-}
-
-.bv-bar i {
-  grid-column: 1 / -1;
-  height: 8px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--cyan), var(--blue));
-  width: calc(max(var(--w), 0.04) * 100%);
-  transform-origin: left;
-  animation: bv-grow 1.2s var(--ease) both;
-  animation-delay: calc(var(--i) * 0.12s + 0.2s);
-}
-
-.bv-bar strong {
-  grid-row: 1;
-  grid-column: 2;
-  font: 700 1rem var(--font-display);
-  color: var(--ink);
-}
-
-@keyframes bv-grow {
-  from {
-    transform: scaleX(0);
-  }
-}
-
-/* Operating systems */
-.bv-os {
+/* Icon tiles: three tools and a caption, the same in every bento card. */
+.bv-tiles {
   display: grid;
   place-content: center;
   justify-items: center;
@@ -393,16 +277,16 @@
   height: 100%;
 }
 
-.bv-os-tiles {
+.bv-tiles-row {
   display: flex;
   gap: 12px;
 }
 
-.bv-os-tiles span {
+.bv-tiles-row span {
   display: grid;
   justify-items: center;
   gap: 8px;
-  width: 74px;
+  width: 78px;
   padding: 14px 6px 10px;
   border-radius: 14px;
   border: 1px solid var(--line);
@@ -415,155 +299,24 @@
     border-color 0.3s;
 }
 
-.bv-os-tiles svg {
-  width: 26px;
-  height: 26px;
+.bv-tiles-row svg,
+.bv-tiles-row img {
+  width: 28px;
+  height: 28px;
 }
 
-.bento-tile:hover .bv-os-tiles span {
+.bento-tile:hover .bv-tiles-row span {
   color: var(--ink);
-  border-color: color-mix(in srgb, var(--amber) 45%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
 }
 
-.bento-tile:hover .bv-os-tiles span:nth-child(1) {
+.bento-tile:hover .bv-tiles-row span:nth-child(1),
+.bento-tile:hover .bv-tiles-row span:nth-child(3) {
   transform: translateY(-6px);
 }
-.bento-tile:hover .bv-os-tiles span:nth-child(2) {
+
+.bento-tile:hover .bv-tiles-row span:nth-child(2) {
   transform: translateY(-10px);
-}
-.bento-tile:hover .bv-os-tiles span:nth-child(3) {
-  transform: translateY(-6px);
-}
-
-/* Dear ImGui-style window */
-.bv-imgui {
-  position: absolute;
-  inset: 22px 28px;
-  display: grid;
-  align-content: start;
-  gap: 9px;
-  padding: 0 0 12px;
-  border-radius: 8px;
-  border: 1px solid rgb(163 125 255 / 0.4);
-  background: #0f1020;
-  font-size: 0.76rem;
-  color: #c9c6e8;
-  overflow: hidden;
-}
-
-.bv-imgui-title {
-  padding: 5px 10px;
-  background: rgb(163 125 255 / 0.35);
-  font-weight: 600;
-  color: #fff;
-}
-
-.bv-imgui-tabs {
-  display: flex;
-  gap: 4px;
-  padding: 0 10px;
-}
-
-.bv-imgui-tabs span {
-  padding: 2px 8px;
-  border-radius: 4px;
-  background: rgb(255 255 255 / 0.06);
-}
-
-.bv-imgui-tabs .is-on {
-  background: rgb(163 125 255 / 0.45);
-  color: #fff;
-}
-
-.bv-imgui label {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 10px;
-}
-
-.bv-imgui label i {
-  width: 12px;
-  height: 12px;
-  border-radius: 3px;
-  background: rgb(255 255 255 / 0.1);
-}
-
-.bv-imgui label i.is-on {
-  background: var(--violet);
-  box-shadow: inset 0 0 0 3px #0f1020;
-}
-
-.bv-imgui-slider {
-  position: relative;
-  height: 14px;
-  margin: 0 10px;
-  border-radius: 3px;
-  background: rgb(255 255 255 / 0.08);
-}
-
-.bv-imgui-slider span {
-  position: absolute;
-  inset: 0 35% 0 0;
-  border-radius: inherit;
-  background: rgb(163 125 255 / 0.55);
-  transition: inset 0.9s var(--ease);
-}
-
-.bento-tile:hover .bv-imgui-slider span {
-  inset: 0 8% 0 0;
-}
-
-/* Thumbnail reel */
-.bv-reel {
-  height: 100%;
-  display: grid;
-  align-items: center;
-  overflow: hidden;
-}
-
-.bv-reel-track {
-  display: flex;
-  gap: 8px;
-  width: max-content;
-  animation: marquee 36s linear infinite;
-}
-
-.bv-thumb {
-  position: relative;
-  flex: none;
-  height: 120px;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 8px;
-}
-
-.bv-thumb.is-tall {
-  aspect-ratio: 3 / 4;
-}
-
-.bv-thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* TikTok previews are profile-grid screenshots: crop the "Pinned" badge and view counter. */
-.bv-thumb.is-tall img {
-  position: absolute;
-  top: -19%;
-  height: 136%;
-}
-
-.bv-reel-badge {
-  position: absolute;
-  left: 14px;
-  bottom: 10px;
-  padding: 2px 10px;
-  border-radius: 10px;
-  background: rgb(5 10 20 / 0.75);
-  font: 700 1.4rem var(--font-display);
-  --unit: var(--violet);
 }
 
 .capability-proof {
