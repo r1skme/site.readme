@@ -188,7 +188,8 @@ export default function Home() {
             <SpotlightCard
               key={p.slug}
               as="article"
-              className={`feature accent-${p.slug}` + (i === 0 ? ' feature-main' : '')}
+              className={'feature' + (i === 0 ? ' feature-main' : '')}
+              accent={p.accent}
             >
               <Link to={`/projects/${p.slug}/`} className="feature-link">
                 {p.links?.repo && (

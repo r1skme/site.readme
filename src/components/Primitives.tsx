@@ -1,4 +1,4 @@
-import { useRef, type ReactNode, type PointerEvent } from 'react';
+import { useRef, type CSSProperties, type ReactNode, type PointerEvent } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight, ArrowRight, Github, Download, ExternalLink } from 'lucide-react';
 import { m } from 'motion/react';
@@ -82,10 +82,13 @@ export function SpotlightCard({
   children,
   className = '',
   as: Tag = 'div',
+  accent,
 }: {
   children: ReactNode;
   className?: string;
   as?: 'div' | 'article' | 'li';
+  /** Sets --accent for the card's glow. */
+  accent?: string;
 }) {
   const ref = useRef<HTMLElement>(null);
   const { paused } = useMotionPreference();
@@ -96,7 +99,13 @@ export function SpotlightCard({
     ref.current.style.setProperty('--my', `${(e.clientY - b.top).toFixed(0)}px`);
   };
   return (
-    <Tag ref={ref as never} onPointerMove={move} className={`spotlight ${className}`} data-reveal>
+    <Tag
+      ref={ref as never}
+      onPointerMove={move}
+      className={`spotlight ${className}`}
+      style={accent ? ({ '--accent': accent } as CSSProperties) : undefined}
+      data-reveal
+    >
       {children}
     </Tag>
   );

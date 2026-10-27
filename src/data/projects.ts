@@ -10,6 +10,10 @@ export type Project = {
   challenge: Localized;
   approach: Localized;
   outcome: Localized;
+  /** The project's colour: card accents use it, the background ribbon takes `ribbon`. */
+  accent: string;
+  /** Four gradient stops for the background ribbon on this project's page. */
+  ribbon: [string, string, string, string];
   links?: { repo?: string; releases?: string; site?: string };
   facts?: { value: string; label: Localized }[];
   benchmarks?: {
@@ -27,6 +31,8 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: 'researchify',
+    accent: '#5fdcf0',
+    ribbon: ['#2fe3f2', '#1eb2cb', '#2a7fe0', '#3a4fd8'],
     name: 'ReSearchify',
     period: L('окт. 2026 — сейчас', 'Oct 2026 — present'),
     stack: [
@@ -163,6 +169,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'prime-market',
+    accent: '#7fe3b9',
+    ribbon: ['#8af0c4', '#2fbf8f', '#1f8f8a', '#2a5fd0'],
     name: 'Prime Market',
     period: L('2026 — сейчас', '2026 — present'),
     stack: [
@@ -199,6 +207,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'predict',
+    accent: '#a37dff',
+    ribbon: ['#c08bff', '#8a5cf6', '#5a3fe0', '#3a2bb0'],
     name: 'Predict',
     period: L('2026 — сейчас', '2026 — present'),
     stack: [
@@ -236,6 +246,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'sharex-macos-linux',
+    accent: '#f5c26b',
+    ribbon: ['#ffd27a', '#f5a742', '#e0703a', '#8a3fd0'],
     name: 'ShareX for macOS & Linux',
     period: L('окт. 2026', 'Oct 2026'),
     stack: [
@@ -270,6 +282,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'glow-rust',
+    accent: '#ff9a62',
+    ribbon: ['#ffb38a', '#ff8a4a', '#e0503a', '#8a2bb0'],
     name: 'GLOW RUST',
     period: L('2025', '2025'),
     stack: ['Rust Game Server', 'RCON', 'Server Plugins', 'Hosting'],
@@ -296,6 +310,8 @@ export const projects: Project[] = [
   },
   {
     slug: 'exchange',
+    accent: '#9fb0c8',
+    ribbon: ['#b9c6dc', '#7f93b8', '#4f64a0', '#3a3f8a'],
     name: 'EXchange',
     period: L('2026', '2026'),
     stack: ['Python', 'SQLite', 'Telegram', 'Market Filters'],

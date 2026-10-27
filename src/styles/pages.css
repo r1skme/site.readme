@@ -480,26 +480,7 @@ a.number:hover {
   margin-top: 14px;
 }
 
-/* Per-project accent: a coloured glow in the corner and a top edge. */
-.accent-researchify {
-  --accent: var(--cyan);
-}
-.accent-prime-market {
-  --accent: var(--green);
-}
-.accent-predict {
-  --accent: var(--violet);
-}
-.accent-sharex-macos-linux {
-  --accent: var(--amber);
-}
-.accent-glow-rust {
-  --accent: #ff9a62;
-}
-.accent-exchange {
-  --accent: #9fb0c8;
-}
-
+/* Per-project accent (--accent is set inline from projects.ts): a glow in the corner and a top edge. */
 .feature,
 .catalog-item {
   overflow: hidden;
