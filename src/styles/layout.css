@@ -238,12 +238,11 @@
 }
 
 .loader-mark-static {
-  width: 46%;
-  height: 46%;
+  width: 50%;
+  height: 50%;
   object-fit: contain;
-  /* The source mark is black: invert it to the site's light ink and add a soft glow. */
-  filter: invert(0.88) sepia(0.15) hue-rotate(180deg) drop-shadow(0 0 24px rgb(95 220 240 / 0.35));
-  opacity: 0.35;
+  filter: drop-shadow(0 0 30px rgb(95 220 240 / 0.45));
+  opacity: 0.22;
 }
 
 .loader-mark-electric {

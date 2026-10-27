@@ -38,7 +38,7 @@ function ResourceLoading() {
   if (booting()) return null;
   return (
     <div className="route-loading" role="status">
-      {slow && <LoaderMark size={200} />}
+      {slow && <LoaderMark size="min(84vw, 460px)" />}
       <span className="sr-only">{t(L('Загрузка страницы', 'Loading page'))}</span>
     </div>
   );
