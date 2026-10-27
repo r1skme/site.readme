@@ -128,7 +128,8 @@
   }
 
   .hero-visual .terminal {
-    transform: none;
+    transform: perspective(1300px) rotateY(-14deg) rotateX(7deg) rotateZ(-1deg);
+    transition: none;
   }
 
   .bench-fill {

@@ -18,7 +18,7 @@ export function Terminal({
   const { t } = useLanguage();
   const motion = useMotionPreference();
   const paused = motion.paused || !typing;
-  const [step, setStep] = useState({ line: 0, chars: 0 });
+  const [step, setStep] = useState({ line: Math.min(2, lines.length - 1), chars: 0 });
   const [visible, setVisible] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -38,7 +38,7 @@ export function Terminal({
     let next = { line: step.line, chars: step.chars + 1 };
     if (!current) {
       delay = 2600;
-      next = { line: 0, chars: 0 };
+      next = { line: 1, chars: 0 };
     } else if (step.chars >= current.cmd.length) {
       delay = 900;
       next = { line: step.line + 1, chars: 0 };

@@ -1,11 +1,23 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight, Github, Send } from 'lucide-react';
+import {
+  ArrowUpRight,
+  ArrowRight,
+  Bot,
+  Clapperboard,
+  Github,
+  MousePointerClick,
+  Package,
+  Send,
+  Zap,
+} from 'lucide-react';
+import type { PointerEvent } from 'react';
 import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { ActionLink, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
+import { StackCloud } from '@/components/StackCloud';
 import { CountUp, Figure } from '@/components/CountUp';
 import { projects, findProject } from '@/data/projects';
 import { role, capabilities } from '@/data/profile';
@@ -14,23 +26,7 @@ const researchify = findProject('researchify')!;
 const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'].map(
   (slug) => findProject(slug)!,
 );
-const stack = [
-  'Python',
-  'asyncio',
-  'aiohttp',
-  'C++20',
-  'CMake',
-  'Clang',
-  'DirectX 11',
-  'Dear ImGui',
-  'Win32 API',
-  'C# / .NET',
-  'Avalonia UI',
-  'SQLite',
-  'MCP',
-  'GitHub Actions',
-  'DaVinci Resolve',
-];
+const capabilityIcons = [Bot, Zap, Package, MousePointerClick, Clapperboard];
 
 function HeroTitle() {
   const { paused } = useMotionPreference();
@@ -72,6 +68,17 @@ function HeroTitle() {
 export default function Home() {
   const { t } = useLanguage();
   const { paused } = useMotionPreference();
+  // The terminal leans toward the cursor; touch and reduced motion keep the resting angle.
+  const tilt = (e: PointerEvent<HTMLElement>) => {
+    if (paused || e.pointerType !== 'mouse') return;
+    const b = e.currentTarget.getBoundingClientRect();
+    e.currentTarget.style.setProperty('--tx', ((e.clientX - b.left) / b.width - 0.5).toFixed(3));
+    e.currentTarget.style.setProperty('--ty', ((e.clientY - b.top) / b.height - 0.5).toFixed(3));
+  };
+  const untilt = (e: PointerEvent<HTMLElement>) => {
+    e.currentTarget.style.removeProperty('--tx');
+    e.currentTarget.style.removeProperty('--ty');
+  };
   const fade = (delay: number) =>
     paused
       ? {}
@@ -125,6 +132,8 @@ export default function Home() {
         </div>
         <m.div
           className="hero-visual"
+          onPointerMove={tilt}
+          onPointerLeave={untilt}
           initial={paused ? false : { opacity: 0, y: 30, rotateX: 12 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
           transition={{
@@ -138,7 +147,9 @@ export default function Home() {
             <strong>
               <Figure value="94,6×" />
             </strong>
-            <span>{t(L('быстрее поиска, как в VS Code', 'faster than VS Code-style search'))}</span>
+            <span>
+              {t(L('быстрее ripgrep — поиска VS Code', 'faster than ripgrep, VS Code’s search'))}
+            </span>
           </Link>
           <Link to="/projects/researchify/" className="hero-chip hero-chip-b">
             <strong>5</strong>
@@ -146,14 +157,6 @@ export default function Home() {
           </Link>
         </m.div>
       </section>
-
-      <div className="marquee" aria-hidden="true">
-        <div className="marquee-track">
-          {[...stack, ...stack].map((item, i) => (
-            <span key={i}>{item}</span>
-          ))}
-        </div>
-      </div>
 
       <section className="shell section" aria-labelledby="can-title">
         <header className="section-head" data-reveal>
@@ -170,7 +173,14 @@ export default function Home() {
         <div className="capabilities">
           {capabilities.map((c, i) => (
             <SpotlightCard key={i} as="article" className="capability">
-              <span className="capability-index">0{i + 1}</span>
+              {(() => {
+                const Icon = capabilityIcons[i];
+                return (
+                  <span className="capability-icon" aria-hidden="true">
+                    <Icon size={22} strokeWidth={1.7} />
+                  </span>
+                );
+              })()}
               <h3>{t(c.title)}</h3>
               <p>{t(c.text)}</p>
               <StackList items={c.tools} />
@@ -196,7 +206,7 @@ export default function Home() {
             <SpotlightCard
               key={p.slug}
               as="article"
-              className={'feature' + (i === 0 ? ' feature-main' : '')}
+              className={`feature accent-${p.slug}` + (i === 0 ? ' feature-main' : '')}
             >
               <Link to={`/projects/${p.slug}/`} className="feature-link">
                 {p.links?.repo && (
@@ -225,6 +235,13 @@ export default function Home() {
             </SpotlightCard>
           ))}
         </div>
+      </section>
+
+      <section className="shell section" aria-labelledby="stack-title">
+        <header className="section-head" data-reveal>
+          <h2 id="stack-title">{t(L('Стек', 'Stack'))}</h2>
+        </header>
+        <StackCloud />
       </section>
 
       <section className="shell proof" aria-labelledby="proof-title">

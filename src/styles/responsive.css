@@ -169,7 +169,7 @@
   }
 
   .hero-visual .terminal {
-    transform: none;
+    transform: perspective(900px) rotateY(-6deg) rotateX(4deg);
   }
 
   .terminal-body {
@@ -179,6 +179,12 @@
 
   .hero-visual {
     padding-block: 0;
+  }
+
+  .hero-chip,
+  .hero-chip-a,
+  .hero-chip-b {
+    transform: none;
   }
 
   .hero-chip {

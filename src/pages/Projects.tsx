@@ -20,7 +20,7 @@ export default function Projects() {
       />
       <section className="shell catalog" aria-label={t(L('Каталог проектов', 'Project directory'))}>
         {projects.map((p, i) => (
-          <SpotlightCard key={p.slug} as="article" className="catalog-item">
+          <SpotlightCard key={p.slug} as="article" className={`catalog-item accent-${p.slug}`}>
             <Link to={`/projects/${p.slug}/`} className="catalog-link">
               <span className="catalog-index" aria-hidden="true">
                 {String(i + 1).padStart(2, '0')}
