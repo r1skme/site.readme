@@ -1,15 +1,15 @@
 @media (max-width: 1080px) {
-  .capabilities {
+  .bento {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .capability,
-  .capability:nth-child(4),
-  .capability:nth-child(5) {
+  .bento-tile,
+  .bento-1,
+  .bento-2 {
     grid-column: auto;
   }
 
-  .capability:last-child {
+  .bento-5 {
     grid-column: 1 / -1;
   }
 
@@ -207,15 +207,22 @@
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .capabilities {
+  .bento {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .bento-5 {
+    grid-column: auto;
+  }
+
+  .bento-visual {
+    height: 180px;
   }
 
   .feature-main h3 {
     font-size: 1.75rem;
   }
 
-  .capability,
   .feature-link,
   .catalog-link,
   .contact-link,

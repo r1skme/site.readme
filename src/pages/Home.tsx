@@ -8,11 +8,20 @@ import { ActionLink, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
 import { StackCloud } from '@/components/StackCloud';
+import {
+  BenchVisual,
+  ChatVisual,
+  ImGuiVisual,
+  OsVisual,
+  ReelVisual,
+} from '@/components/BentoVisuals';
 import { CountUp, Figure } from '@/components/CountUp';
 import { projects, findProject } from '@/data/projects';
 import { role, capabilities } from '@/data/profile';
 
 const researchify = findProject('researchify')!;
+// One live illustration per capability, in the order of `capabilities` in profile.ts.
+const bentoVisuals = [ChatVisual, BenchVisual, OsVisual, ImGuiVisual, ReelVisual];
 const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'].map(
   (slug) => findProject(slug)!,
 );
@@ -159,19 +168,25 @@ export default function Home() {
             )}
           </p>
         </header>
-        <div className="capabilities">
-          {capabilities.map((c, i) => (
-            <SpotlightCard key={i} as="article" className="capability">
-              <span className="capability-index">0{i + 1}</span>
-              <h3>{t(c.title)}</h3>
-              <p>{t(c.text)}</p>
-              <StackList items={c.tools} />
-              <Link to={c.proof.href} className="capability-proof">
-                {typeof c.proof.label === 'string' ? c.proof.label : t(c.proof.label)}
-                <ArrowUpRight size={16} aria-hidden="true" />
-              </Link>
-            </SpotlightCard>
-          ))}
+        <div className="bento">
+          {capabilities.map((c, i) => {
+            const Visual = bentoVisuals[i];
+            return (
+              <SpotlightCard key={i} as="article" className={`bento-tile bento-${i + 1}`}>
+                <div className="bento-visual">
+                  <Visual />
+                </div>
+                <div className="bento-copy">
+                  <h3>{t(c.title)}</h3>
+                  <p>{t(c.text)}</p>
+                  <Link to={c.proof.href} className="capability-proof">
+                    {typeof c.proof.label === 'string' ? c.proof.label : t(c.proof.label)}
+                    <ArrowUpRight size={16} aria-hidden="true" />
+                  </Link>
+                </div>
+              </SpotlightCard>
+            );
+          })}
         </div>
       </section>
 
