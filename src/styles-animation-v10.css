@@ -1,18 +1,49 @@
 /* Motion defaults to on for ordinary visitors; this is motion that remains legible. */
 .v8-site [data-reveal].reveal-ready,
 .v8-site .v9-section.reveal-ready,
-.v8-site .v6-feature-row.reveal-ready{opacity:0;transform:translate3d(0,22px,0);transition:opacity .85s cubic-bezier(.22,1,.36,1),transform 1.05s cubic-bezier(.22,1,.36,1)}
+.v8-site .v6-feature-row.reveal-ready {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 1.05s cubic-bezier(0.22, 1, 0.36, 1);
+}
 .v8-site [data-reveal].reveal-ready.revealed,
 .v8-site .v9-section.reveal-ready.revealed,
-.v8-site .v6-feature-row.reveal-ready.revealed{opacity:1;transform:translateZ(0)}
-.v8-site .v9-experience-list article[data-reveal] .v9-experience-label>a svg{transition:transform .45s cubic-bezier(.22,1,.36,1)}
-.v8-site .v9-experience-list article[data-reveal]:hover .v9-experience-label>a svg{transform:translate(4px,-4px)}
-.v8-site .v6-feature-row .project-identity-arrow{transition:transform .45s cubic-bezier(.22,1,.36,1)}
-.v8-site .v6-feature-row:hover .project-identity-arrow{transform:translate(4px,-4px)}
-.v8-site .fluid-ribbon{will-change:transform,opacity}
-.v8-site .ambient-wash{animation-duration:13s}
-.v8-site .fluid-bottom-light{animation-duration:16s}
-@media(prefers-reduced-motion:reduce){
- .v8-site [data-reveal].reveal-ready,.v8-site .v9-section.reveal-ready,.v8-site .v6-feature-row.reveal-ready{opacity:1!important;transform:none!important;transition:none!important}
- .v8-site .fluid-ribbon{will-change:auto}
+.v8-site .v6-feature-row.reveal-ready.revealed {
+  opacity: 1;
+  transform: translateZ(0);
+}
+.v8-site .v9-experience-list article[data-reveal] .v9-experience-label > a svg {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v8-site .v9-experience-list article[data-reveal]:hover .v9-experience-label > a svg {
+  transform: translate(4px, -4px);
+}
+.v8-site .v6-feature-row .project-identity-arrow {
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.v8-site .v6-feature-row:hover .project-identity-arrow {
+  transform: translate(4px, -4px);
+}
+.v8-site .fluid-ribbon {
+  will-change: transform, opacity;
+}
+.v8-site .ambient-wash {
+  animation-duration: 13s;
+}
+.v8-site .fluid-bottom-light {
+  animation-duration: 16s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .v8-site [data-reveal].reveal-ready,
+  .v8-site .v9-section.reveal-ready,
+  .v8-site .v6-feature-row.reveal-ready {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .v8-site .fluid-ribbon {
+    will-change: auto;
+  }
 }

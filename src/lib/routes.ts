@@ -1,1 +1,21 @@
-export const pageLoaders={home:()=>import('@/pages/Home'),projects:()=>import('@/pages/Projects'),detail:()=>import('@/pages/ProjectDetail'),media:()=>import('@/pages/Media'),skills:()=>import('@/pages/Skills'),about:()=>import('@/pages/About'),contact:()=>import('@/pages/Contact'),roadmap:()=>import('@/pages/Roadmap')};export function prefetchPage(path:string){const key=path==='/'?'home':path.startsWith('/projects/')?(path==='/projects/'?'projects':'detail'):path.split('/')[1];if(key in pageLoaders)void pageLoaders[key as keyof typeof pageLoaders]().catch(()=>{});}
+export const pageLoaders = {
+  home: () => import('@/pages/Home'),
+  projects: () => import('@/pages/Projects'),
+  detail: () => import('@/pages/ProjectDetail'),
+  media: () => import('@/pages/Media'),
+  skills: () => import('@/pages/Skills'),
+  about: () => import('@/pages/About'),
+  contact: () => import('@/pages/Contact'),
+  roadmap: () => import('@/pages/Roadmap'),
+};
+export function prefetchPage(path: string) {
+  const key =
+    path === '/'
+      ? 'home'
+      : path.startsWith('/projects/')
+        ? path === '/projects/'
+          ? 'projects'
+          : 'detail'
+        : path.split('/')[1];
+  if (key in pageLoaders) void pageLoaders[key as keyof typeof pageLoaders]().catch(() => {});
+}
