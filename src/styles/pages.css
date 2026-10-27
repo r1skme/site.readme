@@ -721,7 +721,7 @@ a.number:hover {
 
 .catalog-link {
   display: grid;
-  grid-template-columns: 56px minmax(0, 1fr) auto;
+  grid-template-columns: 56px minmax(0, 1fr);
   gap: 8px 24px;
   align-items: center;
   padding: 28px;
@@ -747,6 +747,10 @@ a.number:hover {
 .catalog-main p {
   margin-top: 8px;
   color: var(--muted);
+}
+
+.catalog-main .chips {
+  margin-top: 16px;
 }
 
 .catalog-meta {

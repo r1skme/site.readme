@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Github } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { useLanguage, L } from '@/lib/i18n';
-import { PageHeading, SpotlightCard } from '@/components/Primitives';
+import { PageHeading, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 
 export default function Projects() {
@@ -13,8 +13,8 @@ export default function Projects() {
         title={t(L('Проекты.', 'Projects.'))}
         desc={t(
           L(
-            'Поиск по коду, автоматизация, кроссплатформенные сборки, игровые инструменты и собственный сервер. У каждого — задача, стек и текущий статус.',
-            'Code search, automation, cross-platform builds, gaming tools and my own server. Each with its purpose, stack and current status.',
+            'Поиск по коду, автоматизация, кроссплатформенные сборки, игровые инструменты и собственный сервер. У каждого — задача и полный стек.',
+            'Code search, automation, cross-platform builds, gaming tools and my own server. Each with its purpose and full stack.',
           ),
         )}
       />
@@ -37,9 +37,7 @@ export default function Projects() {
                   )}
                 </h2>
                 <p>{t(p.tagline)}</p>
-              </div>
-              <div className="catalog-meta">
-                <span className="catalog-stack">{p.stack.slice(0, 3).join(' · ')}</span>
+                <StackList items={p.stack} />
               </div>
             </Link>
           </SpotlightCard>

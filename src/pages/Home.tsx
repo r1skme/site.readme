@@ -220,7 +220,7 @@ export default function Home() {
                     ))}
                   </dl>
                 )}
-                <StackList items={p.stack.slice(0, i === 0 ? 6 : 3)} />
+                <StackList items={p.stack} />
               </Link>
             </SpotlightCard>
           ))}
