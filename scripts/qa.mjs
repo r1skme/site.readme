@@ -183,6 +183,8 @@ try {
 
   await check('Media: TikTok cards link out, YouTube opens a player', async () => {
     await page.goto(origin + '/media/', { waitUntil: 'networkidle' });
+    // Network idleness can precede the delayed React route render.
+    await page.locator('a.work-tiktok').first().waitFor({ state: 'attached' });
     assert.equal(await page.locator('a.work-tiktok').count(), 4);
     assert.equal(await page.locator('a.work-tiktok .work-play').count(), 0);
     await page.locator('button.work-youtube').first().click();
