@@ -150,13 +150,21 @@ export function ProjectLinks({ project }: { project: Project }) {
   );
 }
 
-/** Renders `code` spans inside otherwise plain localized copy. */
+/** Renders localized copy with `code` spans and **highlighted** key phrases. */
 export function RichText({ text }: { text: string }) {
   return (
     <>
-      {text
-        .split(/(`[^`]+`)/)
-        .map((part, i) => (part.startsWith('`') ? <code key={i}>{part.slice(1, -1)}</code> : part))}
+      {text.split(/(`[^`]+`|\*\*[^*]+\*\*)/).map((part, i) =>
+        part.startsWith('`') ? (
+          <code key={i}>{part.slice(1, -1)}</code>
+        ) : part.startsWith('**') ? (
+          <strong key={i} className="hl">
+            {part.slice(2, -2)}
+          </strong>
+        ) : (
+          part
+        ),
+      )}
     </>
   );
 }

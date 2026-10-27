@@ -7,7 +7,9 @@
   --font-heading: 'Geologica', 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --heading-weight: 600;
   --heading-tracking: -0.03em;
-  --font-sans: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Geologica', 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  /* Inline links: coloured and bold so it is obvious what can be clicked. */
+  --link: #8fb4ff;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
   --bg: #060b15;
@@ -15,7 +17,7 @@
   --surface: rgb(14 24 42 / 0.62);
   --surface-strong: rgb(16 28 50 / 0.86);
   --ink: #f2f6ff;
-  --muted: #a6b4cb;
+  --muted: #b3c0d6;
   --soft: #74859f;
   --line: rgb(150 175 220 / 0.14);
   --line-strong: rgb(150 175 220 / 0.26);

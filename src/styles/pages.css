@@ -34,7 +34,7 @@
 }
 
 .hero-now a {
-  color: var(--ink);
+  color: var(--link);
   font-weight: 600;
   background: linear-gradient(var(--cyan), var(--cyan)) 0 100% / 0 1px no-repeat;
   transition:
@@ -97,7 +97,7 @@
   font-size: clamp(1.25rem, 2.1vw, 1.65rem);
   line-height: 1.4;
   letter-spacing: -0.015em;
-  color: #dbe5f7;
+  color: var(--muted);
 }
 
 .hero-actions {
@@ -571,9 +571,9 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  font-weight: 500;
+  font-weight: 600;
   font-size: 0.94rem;
-  color: var(--ink);
+  color: var(--link);
 }
 
 .capability-proof::before {
@@ -1746,13 +1746,18 @@ a.number:hover {
   padding-top: clamp(48px, 6vw, 80px);
 }
 
+.about-short-copy .hl,
+.hero-pitch .hl {
+  font-weight: 700;
+}
+
 .about-short-copy {
   display: grid;
   gap: 20px;
   align-content: start;
   font-size: clamp(1.1rem, 1.6vw, 1.3rem);
   line-height: 1.55;
-  color: #dbe5f7;
+  color: var(--muted);
 }
 
 .about-short-copy .hero-actions {

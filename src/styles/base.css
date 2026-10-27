@@ -82,6 +82,29 @@ code {
   border-radius: 6px;
 }
 
+/* Key phrases inside copy: brighter and bolder than the text around them. */
+.hl {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+/* Inline links inside running text: coloured and bold, underline on hover. */
+.prose a,
+.lead a,
+p > a:not([class]) {
+  color: var(--link);
+  font-weight: 600;
+  text-decoration: none;
+  background: linear-gradient(currentColor, currentColor) 0 100% / 0 1.5px no-repeat;
+  transition: background-size 0.3s var(--ease);
+}
+
+.prose a:hover,
+.lead a:hover,
+p > a:not([class]):hover {
+  background-size: 100% 1.5px;
+}
+
 .muted {
   color: var(--soft);
 }

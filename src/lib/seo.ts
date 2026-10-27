@@ -85,7 +85,7 @@ export function getPageMeta(pathname: string, lang: Lang) {
   if (project)
     return {
       title: `${project.name} — R1SK`,
-      description: `${project.tagline[lang]} ${project.summary[lang]}`.replace(/`/g, ''),
+      description: `${project.tagline[lang]} ${project.summary[lang]}`.replace(/`|\*\*/g, ''),
     };
   return { title: notFound.title[lang], description: notFound.description[lang] };
 }

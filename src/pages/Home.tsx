@@ -4,7 +4,7 @@ import type { PointerEvent } from 'react';
 import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
-import { ActionLink, SpotlightCard, StackList } from '@/components/Primitives';
+import { ActionLink, RichText, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
 import { StackCloud } from '@/components/StackCloud';
@@ -107,12 +107,14 @@ export default function Home() {
             })()}
           </m.p>
           <m.p className="hero-pitch" {...fade(0.45)}>
-            {t(
-              L(
-                'Делаю инструменты, которые убирают рутину и ускоряют работу, — и довожу их до релиза: от сценария и интерфейса до сборок под Windows, macOS и Linux.',
-                'I build tools that remove routine and speed up work — and ship them: from the workflow and interface to builds for Windows, macOS and Linux.',
-              ),
-            )}
+            <RichText
+              text={t(
+                L(
+                  'Делаю **инструменты, которые убирают рутину** и ускоряют работу, — и **довожу их до релиза**: от сценария и интерфейса до сборок под Windows, macOS и Linux.',
+                  'I build **tools that remove routine** and speed up work — and **ship them**: from the workflow and interface to builds for Windows, macOS and Linux.',
+                ),
+              )}
+            />
           </m.p>
           <m.div className="hero-actions" {...fade(0.55)}>
             <ActionLink to="/projects/">{t(L('Проекты', 'Projects'))}</ActionLink>
@@ -178,7 +180,9 @@ export default function Home() {
                 </div>
                 <div className="bento-copy">
                   <h3>{t(c.title)}</h3>
-                  <p>{t(c.text)}</p>
+                  <p>
+                    <RichText text={t(c.text)} />
+                  </p>
                   <Link to={c.proof.href} className="capability-proof">
                     {typeof c.proof.label === 'string' ? c.proof.label : t(c.proof.label)}
                     <ArrowUpRight size={16} aria-hidden="true" />

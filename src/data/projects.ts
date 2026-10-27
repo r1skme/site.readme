@@ -52,8 +52,8 @@ export const projects: Project[] = [
       'Open-source code search that finds what you need in milliseconds.',
     ),
     summary: L(
-      'Поисковый движок на C++20 с постоянным индексом и CLI `rs`. Находит идентификаторы, точный текст, регулярные выражения и комбинации условий без повторного чтения всех файлов. Готовые сборки под Windows, macOS и Linux, JSON-вывод и MCP для ИИ-агентов. Открытый код под GPL-3.0.',
-      'A C++20 search engine with a persistent index and the `rs` CLI. It finds identifiers, exact text, regular expressions and combined conditions without rescanning every file. Prebuilt for Windows, macOS and Linux, with JSON output and MCP for AI agents. Open source under GPL-3.0.',
+      '**Поисковый движок на C++20** с постоянным индексом и CLI `rs`. Находит идентификаторы, точный текст, регулярные выражения и комбинации условий без повторного чтения всех файлов. **Готовые сборки под Windows, macOS и Linux**, JSON-вывод и MCP для ИИ-агентов. Открытый код под GPL-3.0.',
+      '**A C++20 search engine** with a persistent index and the `rs` CLI. It finds identifiers, exact text, regular expressions and combined conditions without rescanning every file. **Prebuilt for Windows, macOS and Linux**, with JSON output and MCP for AI agents. Open source under GPL-3.0.',
     ),
     challenge: L(
       'Идея появилась из недовольства скоростью привычного поиска в Windows. В большом проекте нужно быстро найти не только редкое слово, но и точную строку с пунктуацией, сочетание условий или совпадение по шаблону — и не пересканировать всё дерево на каждый запрос.',
@@ -187,8 +187,8 @@ export const projects: Project[] = [
       'Automating CS2 skin-market workflows.',
     ),
     summary: L(
-      'Telegram-бот для рынка CS2-скинов: мониторинг цен, пользовательские фильтры, уведомления и автоматизация торговли в фоновых задачах. Асинхронный Python (asyncio, aiohttp), SQLite и Market.CSGO API v2. Параллельно — сайт проекта.',
-      'A Telegram bot for the CS2 skin market: price monitoring, user filters, notifications and trade automation in background tasks. Async Python (asyncio, aiohttp), SQLite and the Market.CSGO API v2. Alongside it: the project website.',
+      '**Telegram-бот для рынка CS2-скинов**: мониторинг цен, пользовательские фильтры, уведомления и автоматизация торговли в фоновых задачах. Асинхронный Python (asyncio, aiohttp), SQLite и Market.CSGO API v2. Параллельно — сайт проекта.',
+      '**A Telegram bot for the CS2 skin market**: price monitoring, user filters, notifications and trade automation in background tasks. Async Python (asyncio, aiohttp), SQLite and the Market.CSGO API v2. Alongside it: the project website.',
     ),
     challenge: L(
       'Prime Market вырос из повторяющихся действий, которые приходилось делать вручную. Хотелось один раз задать условия, отслеживать нужные изменения и получать результат в Telegram, а не возвращаться к одним и тем же проверкам.',

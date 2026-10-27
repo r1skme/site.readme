@@ -7,9 +7,9 @@
   gap: 10px;
   min-height: 50px;
   padding: 0 20px 0 22px;
-  border-radius: 14px;
-  font-weight: 600;
-  font-size: 0.98rem;
+  border-radius: 16px;
+  font-weight: 700;
+  font-size: 1rem;
   white-space: nowrap;
   transition:
     transform 0.25s var(--ease),
@@ -70,8 +70,8 @@
   align-items: center;
   gap: 6px;
   min-height: 44px;
-  color: var(--ink);
-  font-weight: 500;
+  color: var(--link);
+  font-weight: 600;
   background: linear-gradient(currentColor, currentColor) 0 calc(100% - 10px) / 0 1px no-repeat;
   transition: background-size 0.35s var(--ease);
 }

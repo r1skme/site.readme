@@ -8,12 +8,12 @@ export const role = L(
 export const profile = {
   short: [
     L(
-      'Я R1SK — разработчик на Python и C++. Сейчас развиваю ReSearchify (локальный поиск по коду на C++20) и Prime Market (Telegram-бот для рынка CS2-скинов).',
-      'I’m R1SK, a Python and C++ developer. Right now I’m building ReSearchify (local C++20 code search) and Prime Market (a Telegram bot for the CS2 skin market).',
+      'Я R1SK — **разработчик на Python и C++**. Сейчас развиваю **ReSearchify** (локальный поиск по коду на C++20) и **Prime Market** (Telegram-бот для рынка CS2-скинов).',
+      'I’m R1SK, a **Python and C++ developer**. Right now I’m building **ReSearchify** (local C++20 code search) and **Prime Market** (a Telegram bot for the CS2 skin market).',
     ),
     L(
-      'Могу взять задачу целиком: разобраться в сценарии, написать инструмент, собрать релизы под разные системы и проверить результат. Плюс около трёх лет игрового монтажа в DaVinci Resolve.',
-      'I can take a task end to end: understand the workflow, write the tool, ship builds for different systems and test the result. Plus about three years of gaming video editing in DaVinci Resolve.',
+      '**Могу взять задачу целиком**: разобраться в сценарии, написать инструмент, собрать релизы под разные системы и проверить результат. Плюс около трёх лет игрового монтажа в DaVinci Resolve.',
+      '**I can take a task end to end**: understand the workflow, write the tool, ship builds for different systems and test the result. Plus about three years of gaming video editing in DaVinci Resolve.',
     ),
   ],
   origin: L(
@@ -38,8 +38,8 @@ export const capabilities: Capability[] = [
   {
     title: L('Автоматизация и боты', 'Automation & bots'),
     text: L(
-      'Telegram-боты, работа с API, фильтры, уведомления и хранение настроек. Убираю ручную рутину из рабочих процессов.',
-      'Telegram bots, API integrations, filters, notifications and stored settings. I remove manual routine from workflows.',
+      '**Telegram-боты**, работа с API, фильтры, уведомления и хранение настроек. **Убираю ручную рутину** из рабочих процессов.',
+      '**Telegram bots**, API integrations, filters, notifications and stored settings. **I remove manual routine** from workflows.',
     ),
     tools: ['Python', 'asyncio', 'aiohttp', 'SQLite', 'Telegram Bot API'],
     proof: { label: 'Prime Market', href: '/projects/prime-market/' },
@@ -47,8 +47,8 @@ export const capabilities: Capability[] = [
   {
     title: L('Быстрые инструменты на C++', 'Fast tools in C++'),
     text: L(
-      'Индексы, поиск, CLI и замеры производительности. Слежу, чтобы ускорение не меняло смысл запроса и не теряло результаты.',
-      'Indexes, search, CLIs and performance measurement — making things faster without changing query meaning or losing results.',
+      'Индексы, поиск, CLI и **замеры производительности**. Слежу, чтобы ускорение **не меняло смысл запроса** и не теряло результаты.',
+      'Indexes, search, CLIs and **performance measurement** — making things faster **without changing query meaning** or losing results.',
     ),
     tools: ['C++20', 'CMake', 'Multithreading', 'Regex', 'MCP'],
     proof: { label: 'ReSearchify', href: '/projects/researchify/' },
@@ -56,8 +56,8 @@ export const capabilities: Capability[] = [
   {
     title: L('Сборки и релизы', 'Builds & releases'),
     text: L(
-      'Кроссплатформенные сборки, установщики и CI: Windows, macOS (arm64 и Intel), Linux (x64 и arm64).',
-      'Cross-platform builds, installers and CI: Windows, macOS (arm64 and Intel), Linux (x64 and arm64).',
+      '**Кроссплатформенные сборки**, установщики и CI: **Windows, macOS и Linux** на x64 и arm64.',
+      '**Cross-platform builds**, installers and CI: **Windows, macOS and Linux** on x64 and arm64.',
     ),
     tools: ['GitHub Actions', 'C# / .NET 10', 'Avalonia UI', 'Git'],
     proof: { label: 'ShareX for macOS & Linux', href: '/projects/sharex-macos-linux/' },
@@ -65,8 +65,8 @@ export const capabilities: Capability[] = [
   {
     title: L('Интерфейсы и тестирование', 'Interfaces & QA'),
     text: L(
-      'Продумываю экраны, состояния и обратную связь. Пишу баг-репорты, которые можно воспроизвести: действие, условия, ожидание и факт.',
-      'I design screens, states and feedback, and write reproducible bug reports: action, conditions, expected and actual result.',
+      'Продумываю **экраны, состояния и обратную связь**. Пишу **баг-репорты, которые можно воспроизвести**: действие, условия, ожидание и факт.',
+      'I design **screens, states and feedback**, and write **reproducible bug reports**: action, conditions, expected and actual result.',
     ),
     tools: ['Dear ImGui', 'DirectX 11', 'Win32 API', 'React', 'QA'],
     proof: { label: 'Predict', href: '/projects/predict/' },
@@ -74,8 +74,8 @@ export const capabilities: Capability[] = [
   {
     title: L('Игровой видеомонтаж', 'Gaming video editing'),
     text: L(
-      'Короткие ролики, которые цепляют с первых секунд: ритм, музыка, speed ramp, цвет и VFX. 150K+ просмотров на четырёх роликах.',
-      'Short videos that hook from the first seconds: rhythm, music, speed ramps, colour and VFX. 150K+ views on four posts.',
+      'Короткие ролики, которые **цепляют с первых секунд**: ритм, музыка, speed ramp, цвет и VFX. **150K+ просмотров** на четырёх роликах.',
+      'Short videos that **hook from the first seconds**: rhythm, music, speed ramps, colour and VFX. **150K+ views** on four posts.',
     ),
     tools: ['DaVinci Resolve', 'Fusion', 'Fairlight', 'HLAE'],
     proof: { label: L('Медиа', 'Media'), href: '/media/' },

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
-import { PageHeading, StackList } from '@/components/Primitives';
+import { PageHeading, RichText, StackList } from '@/components/Primitives';
 import { CountUp } from '@/components/CountUp';
 import { capabilities } from '@/data/profile';
 import { editingSkills } from '@/data/media';
@@ -87,7 +87,9 @@ export default function Skills() {
               <h2>{t(c.title)}</h2>
             </div>
             <div>
-              <p>{t(c.text)}</p>
+              <p>
+                <RichText text={t(c.text)} />
+              </p>
               <StackList items={c.tools} />
               <Link to={c.proof.href} className="text-link">
                 {t(L('Пример:', 'Example:'))}{' '}

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
-import { ActionLink, PageHeading } from '@/components/Primitives';
+import { ActionLink, PageHeading, RichText } from '@/components/Primitives';
 import { profile, experience, beyond, approach, learning, role } from '@/data/profile';
 
 export default function About() {
@@ -12,7 +12,9 @@ export default function About() {
       <section className="shell about-short" aria-label={t(L('Коротко', 'In short'))}>
         <div className="about-short-copy">
           {profile.short.map((p, i) => (
-            <p key={i}>{t(p)}</p>
+            <p key={i}>
+              <RichText text={t(p)} />
+            </p>
           ))}
           <div className="hero-actions">
             <ActionLink to="/projects/">{t(L('Проекты', 'Projects'))}</ActionLink>
