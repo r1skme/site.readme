@@ -3,7 +3,7 @@ import { ArrowUpRight, ArrowRight, Github, Send } from 'lucide-react';
 import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
-import { ActionLink, SpotlightCard, StatusBadge, StackList } from '@/components/Primitives';
+import { ActionLink, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
 import { CountUp } from '@/components/CountUp';
@@ -82,7 +82,6 @@ export default function Home() {
       <section className="hero shell">
         <div className="hero-copy">
           <m.p className="hero-now" {...fade(0.05)}>
-            <span className="pulse" aria-hidden="true" />
             {t(L('Сейчас делаю', 'Now building'))}{' '}
             <Link to="/projects/researchify/">ReSearchify</Link> {t(L('и', 'and'))}{' '}
             <Link to="/projects/prime-market/">Prime Market</Link>
@@ -134,11 +133,11 @@ export default function Home() {
           <Terminal lines={researchify.commands!.slice(0, 5)} />
           <Link to="/projects/researchify/" className="hero-chip hero-chip-a">
             <strong>94,6×</strong>
-            <span>{t(L('быстрее ripgrep', 'faster than ripgrep'))}</span>
+            <span>{t(L('быстрее поиска, как в VS Code', 'faster than VS Code-style search'))}</span>
           </Link>
           <Link to="/projects/researchify/" className="hero-chip hero-chip-b">
             <strong>5</strong>
-            <span>{t(L('платформ, open source', 'platforms, open source'))}</span>
+            <span>{t(L('систем: Windows, macOS, Linux', 'systems: Windows, macOS, Linux'))}</span>
           </Link>
         </m.div>
       </section>
@@ -195,10 +194,11 @@ export default function Home() {
               className={'feature' + (i === 0 ? ' feature-main' : '')}
             >
               <Link to={`/projects/${p.slug}/`} className="feature-link">
-                <div className="feature-top">
-                  <StatusBadge status={p.status} />
-                  {p.links?.repo && <Github size={17} aria-label="GitHub" />}
-                </div>
+                {p.links?.repo && (
+                  <div className="feature-top">
+                    <Github size={17} aria-label="GitHub" />
+                  </div>
+                )}
                 <h3>
                   <ProjectIdentity name={p.name} slug={p.slug} arrow />
                 </h3>
@@ -249,8 +249,8 @@ export default function Home() {
             <span>
               {t(
                 L(
-                  'ReSearchify быстрее ripgrep на редком термине',
-                  'ReSearchify vs ripgrep on a rare term',
+                  'во столько раз ReSearchify быстрее поиска в VS Code (ripgrep)',
+                  'times faster: ReSearchify vs VS Code’s search engine (ripgrep)',
                 ),
               )}
             </span>

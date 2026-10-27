@@ -58,10 +58,7 @@
 }
 
 .wordmark span {
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .topbar-nav {

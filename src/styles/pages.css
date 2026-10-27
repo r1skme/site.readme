@@ -47,10 +47,6 @@
   background-size: 100% 1px;
 }
 
-.hero-now .pulse {
-  margin-right: 6px;
-}
-
 .pulse {
   width: 8px;
   height: 8px;
@@ -71,19 +67,12 @@
 
 .hero-title span {
   display: inline-block;
-  background: linear-gradient(180deg, #ffffff 30%, #b8c8ea);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .hero-title .hero-dot {
-  background: var(--gradient);
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  animation: shimmer 6s ease-in-out infinite;
-  filter: drop-shadow(0 0 22px rgb(107 140 255 / 0.55));
+  color: var(--blue);
+  padding-right: 0.06em;
 }
 
 .hero-role {
@@ -98,10 +87,7 @@
 .hero-role strong {
   font: 600 clamp(1.3rem, 2vw, 1.7rem) / 1.2 var(--font-display);
   letter-spacing: -0.03em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
   justify-self: start;
 }
 
@@ -129,12 +115,8 @@
 
 .hero-visual .terminal {
   /* Perspective on the element itself: no shared 3D context with the glow behind it. */
-  transform: perspective(1400px) rotateY(-9deg) rotateX(4deg);
+  transform: none;
   transition: transform 0.8s var(--ease);
-}
-
-.hero-visual:hover .terminal {
-  transform: perspective(1400px) rotateY(-3deg) rotateX(1deg);
 }
 
 .hero-visual::before {
@@ -175,10 +157,7 @@
 .hero-chip strong {
   font: 600 1.6rem/1.1 var(--font-display);
   letter-spacing: -0.04em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .hero-chip-a {
@@ -333,10 +312,7 @@
 .feature-facts dt {
   font: 600 clamp(2rem, 4vw, 3rem) / 1 var(--font-display);
   letter-spacing: -0.05em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .feature-facts dd {
@@ -372,13 +348,10 @@ a.number:hover {
 .number strong {
   font: 600 clamp(2.6rem, 5vw, 4.2rem) / 1 var(--font-display);
   letter-spacing: -0.06em;
-  background: linear-gradient(180deg, #fff, #9fb4e0);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
-.number span {
+.number > span {
   color: var(--muted);
   font-size: 0.94rem;
   max-width: 26ch;
@@ -413,10 +386,7 @@ a.number:hover {
 .step-index {
   font: 700 clamp(3.4rem, 6vw, 5rem) / 0.9 var(--font-display);
   letter-spacing: -0.06em;
-  background: linear-gradient(180deg, rgb(160 190 255 / 0.55), rgb(160 190 255 / 0.05));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
   margin-bottom: 6px;
 }
 
@@ -502,14 +472,11 @@ a.number:hover {
 }
 
 .proof-number {
-  font: 700 clamp(5.5rem, 15vw, 13rem) / 0.82 var(--font-display);
-  letter-spacing: -0.075em;
-  margin-left: -0.05em;
-  padding-right: 0.08em;
-  background: linear-gradient(110deg, #ffffff 20%, #9fd8ff 55%, #a98bff 90%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  font: 700 clamp(4.4rem, 11vw, 10.5rem) / 0.86 var(--font-display);
+  letter-spacing: -0.06em;
+  margin-left: -0.04em;
+  white-space: nowrap;
+  color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
 
@@ -568,10 +535,7 @@ a.number:hover {
 .proof-side strong {
   font: 700 clamp(3rem, 6vw, 5rem) / 0.9 var(--font-display);
   letter-spacing: -0.06em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
   padding-right: 0.08em;
 }
 
@@ -580,6 +544,19 @@ a.number:hover {
 }
 
 /* Benchmarks */
+.why {
+  display: grid;
+  grid-template-columns: minmax(0, 0.6fr) minmax(0, 1.4fr);
+  gap: 16px 48px;
+  align-items: start;
+}
+
+.why p {
+  font-size: clamp(1.05rem, 1.5vw, 1.25rem);
+  line-height: 1.6;
+  color: #d3def2;
+}
+
 .bench-title {
   margin-bottom: clamp(28px, 4vw, 48px);
 }
@@ -834,10 +811,7 @@ a.number:hover {
 .fact dt {
   font: 600 clamp(1.8rem, 3.2vw, 2.6rem) / 1 var(--font-display);
   letter-spacing: -0.05em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .fact dd {
@@ -1233,10 +1207,7 @@ a.number:hover {
 .editing-lead > strong {
   font: 600 clamp(5rem, 12vw, 9rem) / 0.9 var(--font-display);
   letter-spacing: -0.07em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .editing-lead p {
@@ -1296,7 +1267,17 @@ a.number:hover {
 
 .tool img {
   flex: none;
-  border-radius: 10px;
+  width: 52px;
+  height: 52px;
+  padding: 10px;
+  object-fit: contain;
+  border-radius: 14px;
+  background: rgb(150 175 220 / 0.08);
+  border: 1px solid var(--line);
+}
+
+.tool {
+  align-items: center;
 }
 
 .tool h3 {
@@ -1422,10 +1403,7 @@ a.number:hover {
 
 .contact-main .contact-link strong {
   font-size: clamp(2rem, 4.4vw, 3.4rem);
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
 }
 
 .contact-action {
@@ -1600,10 +1578,7 @@ a.number:hover {
 .not-found-code {
   font: 600 clamp(6rem, 18vw, 12rem) / 0.85 var(--font-display);
   letter-spacing: -0.08em;
-  background: var(--gradient);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--ink);
   opacity: 0.85;
 }
 

@@ -108,9 +108,9 @@ try {
           if (lang === 'ru') {
             // Scroll through so scroll-revealed blocks are visible in the full-page shot.
             await page.evaluate(async () => {
-              for (let y = 0; y < document.body.scrollHeight; y += innerHeight / 2) {
+              for (let y = 0; y < document.body.scrollHeight; y += innerHeight / 3) {
                 scrollTo(0, y);
-                await new Promise((r) => setTimeout(r, 60));
+                await new Promise((r) => setTimeout(r, 160));
               }
               scrollTo(0, 0);
               await new Promise((r) => setTimeout(r, 900));

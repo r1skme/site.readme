@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Github } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { useLanguage, L } from '@/lib/i18n';
-import { PageHeading, SpotlightCard, StatusBadge } from '@/components/Primitives';
+import { PageHeading, SpotlightCard } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 
 export default function Projects() {
@@ -39,8 +39,6 @@ export default function Projects() {
                 <p>{t(p.tagline)}</p>
               </div>
               <div className="catalog-meta">
-                <StatusBadge status={p.status} />
-                <span>{t(p.period)}</span>
                 <span className="catalog-stack">{p.stack.slice(0, 3).join(' · ')}</span>
               </div>
             </Link>

@@ -60,8 +60,15 @@ export default function ProjectDetail() {
         </div>
       </section>
 
+      {project.why && (
+        <section className="shell section why" aria-labelledby="why-title">
+          <h2 id="why-title">{t(L('Зачем это нужно', 'Why it matters'))}</h2>
+          <p>{t(project.why)}</p>
+        </section>
+      )}
+
       {project.benchmarks && (
-        <section className="shell section" aria-labelledby="bench-title">
+        <section className="shell section-tight" aria-labelledby="bench-title">
           <h2 id="bench-title" className="bench-title">
             {t(L('Скорость в цифрах', 'Speed in numbers'))}
           </h2>

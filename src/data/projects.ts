@@ -23,6 +23,7 @@ export type Project = {
   }[];
   commands?: { cmd: string; note: Localized }[];
   footnote?: Localized;
+  why?: Localized;
 };
 
 export const statusLabel: Record<ProjectStatus, Localized> = {
@@ -41,8 +42,8 @@ export const projects: Project[] = [
     period: L('окт. 2026 — сейчас', 'Oct 2026 — present'),
     stack: ['C++20', 'CMake', 'CLI', 'Regex', 'JSON', 'MCP', 'GitHub Actions'],
     tagline: L(
-      'Open-source поиск по коду, который в десятки раз быстрее ripgrep.',
-      'Open-source code search, tens of times faster than ripgrep.',
+      'Открытый поиск по коду, который находит нужное за миллисекунды.',
+      'Open-source code search that finds what you need in milliseconds.',
     ),
     summary: L(
       'Поисковый движок на C++20 с постоянным индексом и CLI `rs`. Находит идентификаторы, точный текст, регулярные выражения и комбинации условий без повторного чтения всех файлов. Готовые сборки под Windows, macOS и Linux, JSON-вывод и MCP для ИИ-агентов. Открытый код под GPL-3.0.',
@@ -64,12 +65,16 @@ export const projects: Project[] = [
       repo: 'https://github.com/r1skme/ReSearchify',
       releases: 'https://github.com/r1skme/ReSearchify/releases',
     },
+    why: L(
+      'Когда проект большой, обычный поиск на каждый запрос заново читает все файлы — и ждёшь. ripgrep — один из самых быстрых таких поисков, именно он работает внутри поиска VS Code. ReSearchify один раз строит индекс и дальше отвечает почти сразу: редкое слово в 350 МБ кода он находит в 94 раза быстрее ripgrep. Это экономит время разработчику и особенно ИИ-агентам, которые делают сотни запросов подряд.',
+      'On a large project, ordinary search re-reads every file for every query — and you wait. ripgrep is one of the fastest such tools; it is what powers search in VS Code. ReSearchify builds an index once and then answers almost instantly: it finds a rare word in 350 MB of code 94 times faster than ripgrep. That saves time for developers and especially for AI agents that run hundreds of queries in a row.',
+    ),
     facts: [
       {
         value: '94,6×',
         label: L(
-          'быстрее ripgrep на редком термине (349,7 MiB)',
-          'faster than ripgrep on a rare term (349.7 MiB)',
+          'быстрее ripgrep (движка поиска VS Code) на редком слове',
+          'faster than ripgrep (VS Code’s search engine) on a rare word',
         ),
       },
       {
