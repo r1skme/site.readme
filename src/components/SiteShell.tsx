@@ -136,7 +136,8 @@ export function SiteShell({ children }: { children: ReactNode }) {
         fontWeight={700}
         interactive={!paused}
         crop={0.18}
-        height="clamp(200px, 27vw, 400px)"
+        // Extra 140px above the word: pushed dots and the click ring never hit the top edge.
+        height="calc(clamp(200px, 27vw, 400px) + 140px)"
         className="site-footer"
       />
       <LiquidGlassDock />

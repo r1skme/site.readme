@@ -160,7 +160,11 @@
 
 /* Footer: halftone wordmark, cropped by the bottom edge; the dock floats over it. */
 .site-footer {
-  margin-top: var(--section);
+  /* The canvas has 140px of headroom; pull it up by the same amount and keep it under the
+     content above, so it never blocks clicks there. */
+  position: relative;
+  z-index: -1;
+  margin-top: calc(var(--section) - 140px);
 }
 
 /* Fixed backdrop: the animated ribbon behind every page. */
@@ -216,61 +220,37 @@
   background: radial-gradient(ellipse 120% 90% at 50% 40%, transparent 30%, rgb(6 11 21 / 0.55));
 }
 
-/* Loading / errors */
+/* Loading: the GitHub mark, lit by ElectricLogo while a page really loads. */
 .route-loading {
   min-height: 70vh;
   display: grid;
   place-content: center;
-  justify-items: center;
-  gap: 22px;
   animation: loader-in 0.4s var(--ease) 0.25s both;
 }
 
-.loader-grid {
+.loader-mark {
+  position: relative;
   display: grid;
-  grid-template-columns: repeat(9, 10px);
-  gap: 8px;
+  place-items: center;
 }
 
-.loader-grid i {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: #cdd9f2;
-  transform: scale(0.35);
+.loader-mark-static {
+  width: 46%;
+  height: 46%;
+  object-fit: contain;
+  /* The source mark is black: invert it to the site's light ink and add a soft glow. */
+  filter: invert(0.88) sepia(0.15) hue-rotate(180deg) drop-shadow(0 0 24px rgb(95 220 240 / 0.35));
   opacity: 0.35;
-  animation: loader-wave 1.4s ease-in-out infinite;
-  animation-delay: calc(var(--d) * 70ms);
 }
 
-.loader-word {
-  font: 700 1.1rem var(--font-display);
-  letter-spacing: -0.04em;
-  color: var(--muted);
-}
-
-.loader-word span {
-  color: var(--blue);
+.loader-mark-electric {
+  position: absolute;
+  inset: 0;
 }
 
 @keyframes loader-in {
   from {
     opacity: 0;
-    transform: translateY(8px);
-  }
-}
-
-@keyframes loader-wave {
-  0%,
-  100% {
-    transform: scale(0.35);
-    opacity: 0.35;
-    background: #cdd9f2;
-  }
-  40% {
-    transform: scale(1);
-    opacity: 1;
-    background: var(--cyan);
   }
 }
 
