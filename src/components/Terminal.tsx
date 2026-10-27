@@ -34,7 +34,7 @@ export function Terminal({
   useEffect(() => {
     if (!animate) return;
     const current = lines[step.line];
-    let delay = 38;
+    let delay = 26;
     let next = { line: step.line, chars: step.chars + 1 };
     if (!current) {
       delay = 2600;

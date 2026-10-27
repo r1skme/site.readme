@@ -130,4 +130,9 @@
   .hero-visual .terminal {
     transform: none;
   }
+
+  .bench-fill {
+    transform: none;
+    transition: none;
+  }
 }

@@ -15,6 +15,12 @@ export type Project = {
   outcome: Localized;
   links?: { repo?: string; releases?: string; site?: string };
   facts?: { value: string; label: Localized }[];
+  benchmarks?: {
+    title: Localized;
+    note?: Localized;
+    unit: 'x' | 'abs';
+    rows: { label: Localized; value: number; display: string }[];
+  }[];
   commands?: { cmd: string; note: Localized }[];
   footnote?: Localized;
 };
@@ -35,12 +41,12 @@ export const projects: Project[] = [
     period: L('окт. 2026 — сейчас', 'Oct 2026 — present'),
     stack: ['C++20', 'CMake', 'CLI', 'Regex', 'JSON', 'MCP', 'GitHub Actions'],
     tagline: L(
-      'Локальный поиск по исходному коду: проиндексировал один раз — ищешь сколько угодно.',
-      'Local source-code search: index once, search as often as you like.',
+      'Open-source поиск по коду, который в десятки раз быстрее ripgrep.',
+      'Open-source code search, tens of times faster than ripgrep.',
     ),
     summary: L(
-      'Поисковый движок на C++20 с постоянным индексом и CLI `rs`. Находит идентификаторы, точный текст, регулярные выражения и комбинации условий без повторного чтения всех файлов. Готовые сборки под Windows, macOS и Linux, JSON-вывод и MCP для ИИ-агентов.',
-      'A C++20 search engine with a persistent index and the `rs` CLI. It finds identifiers, exact text, regular expressions and combined conditions without rescanning every file. Prebuilt for Windows, macOS and Linux, with JSON output and MCP for AI agents.',
+      'Поисковый движок на C++20 с постоянным индексом и CLI `rs`. Находит идентификаторы, точный текст, регулярные выражения и комбинации условий без повторного чтения всех файлов. Готовые сборки под Windows, macOS и Linux, JSON-вывод и MCP для ИИ-агентов. Открытый код под GPL-3.0.',
+      'A C++20 search engine with a persistent index and the `rs` CLI. It finds identifiers, exact text, regular expressions and combined conditions without rescanning every file. Prebuilt for Windows, macOS and Linux, with JSON output and MCP for AI agents. Open source under GPL-3.0.',
     ),
     challenge: L(
       'Идея появилась из недовольства скоростью привычного поиска в Windows. В большом проекте нужно быстро найти не только редкое слово, но и точную строку с пунктуацией, сочетание условий или совпадение по шаблону — и не пересканировать всё дерево на каждый запрос.',
@@ -60,20 +66,78 @@ export const projects: Project[] = [
     },
     facts: [
       {
-        value: '19×',
-        label: L('быстрее прогретый запрос по редкому термину', 'faster warm rare-term query'),
+        value: '94,6×',
+        label: L(
+          'быстрее ripgrep на редком термине (349,7 MiB)',
+          'faster than ripgrep on a rare term (349.7 MiB)',
+        ),
       },
-      { value: '−29%', label: L('размер индекса', 'index size') },
-      { value: '7.14 ms', label: L('открытие индекса (было 300 ms)', 'index open (was 300 ms)') },
       {
-        value: '~16 KB',
-        label: L('на диске после правки одного файла', 'on disk after editing one file'),
+        value: '34×',
+        label: L('быстрее на несуществующем термине', 'faster on a term with no matches'),
+      },
+      {
+        value: '37,7×',
+        label: L('быстрее на 1000 запросах подряд', 'faster over 1000 queries in a row'),
+      },
+      { value: '10×', label: L('ускорение на 16 потоках', 'speed-up on 16 threads') },
+    ],
+    benchmarks: [
+      {
+        title: L('ReSearchify против ripgrep · Windows', 'ReSearchify vs ripgrep · Windows'),
+        unit: 'x',
+        rows: [
+          {
+            label: L('Редкий термин, 349,7 MiB', 'Rare term, 349.7 MiB'),
+            value: 94.6,
+            display: '94,6×',
+          },
+          {
+            label: L('1000 запросов подряд', '1000 queries in a row'),
+            value: 37.7,
+            display: '37,7×',
+          },
+          { label: L('Несуществующий термин', 'Term with no matches'), value: 34, display: '34×' },
+          { label: L('Редкий термин', 'Rare term'), value: 25.6, display: '25,6×' },
+          { label: L('Частые термины', 'Frequent terms'), value: 2.2, display: '1,6–2,2×' },
+        ],
+      },
+      {
+        title: L('Параллельный поиск', 'Parallel search'),
+        note: L('ускорение относительно одного потока', 'speed-up over a single thread'),
+        unit: 'x',
+        rows: [
+          { label: L('2 потока', '2 threads'), value: 2.5, display: '2,5×' },
+          { label: L('4 потока', '4 threads'), value: 4.7, display: '4,7×' },
+          { label: L('8 потоков', '8 threads'), value: 7.2, display: '7,2×' },
+          { label: L('16 потоков', '16 threads'), value: 10, display: '10×' },
+        ],
+      },
+      {
+        title: L('macOS · время ReSearchify', 'macOS · ReSearchify timings'),
+        note: L('точного сравнения с ripgrep пока нет', 'no exact ripgrep comparison yet'),
+        unit: 'abs',
+        rows: [
+          {
+            label: L('Несуществующий термин', 'Term with no matches'),
+            value: 2.1,
+            display: '2,1 мс',
+          },
+          {
+            label: L('Обновление одного файла', 'Updating one file'),
+            value: 3.7,
+            display: '3,7 мс',
+          },
+          { label: L('Редкий термин', 'Rare term'), value: 14.7, display: '14,7 мс' },
+          { label: L('Частый термин', 'Frequent term'), value: 211, display: '211 мс' },
+          {
+            label: L('1000 запросов подряд', '1000 queries in a row'),
+            value: 6630,
+            display: '6,63 с',
+          },
+        ],
       },
     ],
-    footnote: L(
-      'Корпус 100 000 файлов / 5 млн строк (~350 MiB). Сравнение двух версий движка самого проекта (v1 → v2), а не с rg, grep или Everything. Широкий regex всё ещё медленный (~19.9 s).',
-      'Corpus of 100,000 files / 5M lines (~350 MiB). Compares two versions of this project’s engine (v1 → v2), not rg, grep or Everything. A broad regex can still be slow (~19.9 s).',
-    ),
     commands: [
       { cmd: 'rs -i .', note: L('проиндексировать текущий проект', 'index the current project') },
       { cmd: 'rs -s RenderFrame', note: L('найти идентификатор', 'find an identifier') },

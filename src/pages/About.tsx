@@ -69,7 +69,9 @@ export default function About() {
         <ol className="steps">
           {approach.map((a, i) => (
             <li key={i} data-reveal>
-              <span className="step-index">{i + 1}</span>
+              <span className="step-index" aria-hidden="true">
+                0{i + 1}
+              </span>
               <h3>{t(a.title)}</h3>
               <p>{t(a.text)}</p>
             </li>

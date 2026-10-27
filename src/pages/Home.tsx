@@ -8,7 +8,7 @@ import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
 import { CountUp } from '@/components/CountUp';
 import { projects, findProject } from '@/data/projects';
-import { role, capabilities, approach } from '@/data/profile';
+import { role, capabilities } from '@/data/profile';
 
 const researchify = findProject('researchify')!;
 const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'].map(
@@ -83,13 +83,21 @@ export default function Home() {
         <div className="hero-copy">
           <m.p className="hero-now" {...fade(0.05)}>
             <span className="pulse" aria-hidden="true" />
-            {t(L('Сейчас:', 'Now:'))} <Link to="/projects/researchify/">ReSearchify</Link>
-            <span aria-hidden="true"> · </span>
+            {t(L('Сейчас делаю', 'Now building'))}{' '}
+            <Link to="/projects/researchify/">ReSearchify</Link> {t(L('и', 'and'))}{' '}
             <Link to="/projects/prime-market/">Prime Market</Link>
           </m.p>
           <HeroTitle />
           <m.p className="hero-role" {...fade(0.35)}>
-            {t(role)}
+            {(() => {
+              const [head, ...tail] = t(role).split(' · ');
+              return (
+                <>
+                  <strong>{head}</strong>
+                  <span>{tail.join(' · ')}</span>
+                </>
+              );
+            })()}
           </m.p>
           <m.p className="hero-pitch" {...fade(0.45)}>
             {t(
@@ -125,12 +133,12 @@ export default function Home() {
         >
           <Terminal lines={researchify.commands!.slice(0, 5)} />
           <Link to="/projects/researchify/" className="hero-chip hero-chip-a">
-            <strong>19×</strong>
-            <span>{t(L('быстрее v1 на редком термине', 'faster than v1 on a rare term'))}</span>
+            <strong>94,6×</strong>
+            <span>{t(L('быстрее ripgrep', 'faster than ripgrep'))}</span>
           </Link>
           <Link to="/projects/researchify/" className="hero-chip hero-chip-b">
             <strong>5</strong>
-            <span>{t(L('платформ в релизах', 'release platforms'))}</span>
+            <span>{t(L('платформ, open source', 'platforms, open source'))}</span>
           </Link>
         </m.div>
       </section>
@@ -212,51 +220,53 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="shell numbers" aria-label={t(L('В цифрах', 'In numbers'))}>
-        {[
-          {
-            value: '150K+',
-            label: L('просмотров четырёх TikTok-роликов', 'views on four TikTok posts'),
-            href: '/media/',
-          },
-          {
-            value: '3',
-            label: L('года в DaVinci Resolve', 'years in DaVinci Resolve'),
-            href: '/media/',
-          },
-          {
-            value: '5',
-            label: L('платформ в релизах ReSearchify', 'ReSearchify release platforms'),
-            href: '/projects/researchify/',
-          },
-          {
-            value: '6',
-            label: L('собственных проектов', 'projects of my own'),
-            href: '/projects/',
-          },
-        ].map((n) => (
-          <Link key={n.value} to={n.href} className="number" data-reveal>
+      <section className="shell proof" aria-labelledby="proof-title">
+        <Link to="/media/" className="proof-main" data-reveal>
+          <h2 id="proof-title" className="sr-only">
+            {t(L('Результаты', 'Results'))}
+          </h2>
+          <strong className="proof-number">
+            <CountUp value="150K+" duration={2200} />
+          </strong>
+          <span className="proof-caption">
+            {t(
+              L(
+                'просмотров у четырёх моих TikTok-роликов — монтаж, идея и подача мои.',
+                'views on four of my TikTok edits — the idea, edit and delivery are mine.',
+              ),
+            )}
+            <span className="proof-more">
+              {t(L('Смотреть работы', 'Watch the work'))}
+              <ArrowUpRight size={18} aria-hidden="true" />
+            </span>
+          </span>
+        </Link>
+        <div className="proof-side">
+          <Link to="/projects/researchify/" data-reveal>
             <strong>
-              <CountUp value={n.value} />
+              <CountUp value="94,6×" />
             </strong>
-            <span>{t(n.label)}</span>
+            <span>
+              {t(
+                L(
+                  'ReSearchify быстрее ripgrep на редком термине',
+                  'ReSearchify vs ripgrep on a rare term',
+                ),
+              )}
+            </span>
           </Link>
-        ))}
+          <Link to="/skills/" data-reveal>
+            <strong>
+              <CountUp value="3" />
+            </strong>
+            <span>
+              {t(L('года монтажа в DaVinci Resolve', 'years editing in DaVinci Resolve'))}
+            </span>
+          </Link>
+        </div>
       </section>
 
-      <section className="shell section" aria-labelledby="how-title">
-        <header className="section-head" data-reveal>
-          <h2 id="how-title">{t(L('Как работаю', 'How I work'))}</h2>
-        </header>
-        <ol className="steps">
-          {approach.map((a, i) => (
-            <li key={i} data-reveal>
-              <span className="step-index">{i + 1}</span>
-              <h3>{t(a.title)}</h3>
-              <p>{t(a.text)}</p>
-            </li>
-          ))}
-        </ol>
+      <section className="shell section-tight">
         <Link to="/roadmap/" className="roadmap-line" data-reveal>
           <span>{t(L('Путь и планы', 'Roadmap'))}</span>
           <span className="roadmap-line-text">

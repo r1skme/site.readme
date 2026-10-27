@@ -138,7 +138,7 @@
   min-height: 36px;
   border: 0;
   background: none;
-  font: 600 0.74rem var(--font-mono);
+  font: 600 0.74rem var(--font-sans);
   letter-spacing: 0.08em;
   color: var(--soft);
   transition: color 0.2s;

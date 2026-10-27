@@ -120,12 +120,11 @@
 }
 
 .chips li {
-  padding: 4px 10px;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  font: 500 0.76rem/1.5 var(--font-mono);
-  color: #c3d1e8;
-  background: rgb(150 175 220 / 0.05);
+  padding: 3px 10px;
+  border-radius: 999px;
+  font: 500 0.8rem/1.6 var(--font-sans);
+  color: #b9c7de;
+  background: rgb(150 175 220 / 0.08);
 }
 
 .status {
@@ -133,12 +132,8 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 4px 11px 4px 9px;
-  border-radius: 999px;
-  font: 500 0.76rem/1.5 var(--font-mono);
+  font: 500 0.88rem/1.4 var(--font-sans);
   color: var(--status);
-  background: color-mix(in srgb, var(--status) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--status) 26%, transparent);
   white-space: nowrap;
 }
 
@@ -256,7 +251,7 @@ a:hover .identity-arrow {
 .terminal {
   position: relative;
   border-radius: var(--radius);
-  background: linear-gradient(180deg, rgb(13 22 40 / 0.92), rgb(7 13 25 / 0.95));
+  background: linear-gradient(180deg, #0d1628, #070d19);
   border: 1px solid var(--line-strong);
   box-shadow:
     0 40px 80px -30px rgb(0 0 0 / 0.8),

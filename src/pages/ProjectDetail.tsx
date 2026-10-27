@@ -5,14 +5,9 @@ import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { projects, findProject } from '@/data/projects';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
-import {
-  ProjectLinks,
-  RichText,
-  SpotlightCard,
-  StackList,
-  StatusBadge,
-} from '@/components/Primitives';
+import { ProjectLinks, RichText, StackList, StatusBadge } from '@/components/Primitives';
 import { Terminal } from '@/components/Terminal';
+import { Benchmarks } from '@/components/Benchmarks';
 import NotFound from '@/components/NotFound';
 
 export default function ProjectDetail() {
@@ -65,20 +60,12 @@ export default function ProjectDetail() {
         </div>
       </section>
 
-      {project.facts && (
-        <section className="shell section-tight" aria-labelledby="facts-title">
-          <h2 id="facts-title" className="eyebrow">
-            {t(L('Замеры из README', 'Measurements from the README'))}
+      {project.benchmarks && (
+        <section className="shell section" aria-labelledby="bench-title">
+          <h2 id="bench-title" className="bench-title">
+            {t(L('Скорость в цифрах', 'Speed in numbers'))}
           </h2>
-          <dl className="facts">
-            {project.facts.map((f) => (
-              <SpotlightCard key={f.value} className="fact">
-                <dt>{f.value}</dt>
-                <dd>{t(f.label)}</dd>
-              </SpotlightCard>
-            ))}
-          </dl>
-          {project.footnote && <p className="footnote">{t(project.footnote)}</p>}
+          <Benchmarks groups={project.benchmarks} />
         </section>
       )}
 
@@ -104,7 +91,7 @@ export default function ProjectDetail() {
           {t(L('Технологии', 'Stack'))}
         </h2>
         <StackList items={project.stack} />
-        {project.footnote && !project.facts && <p className="footnote">{t(project.footnote)}</p>}
+        {project.footnote && <p className="footnote">{t(project.footnote)}</p>}
       </section>
 
       <section className="shell case-story">

@@ -81,6 +81,8 @@
     border-top: 1px solid var(--line);
   }
 
+  .proof,
+  .benchmarks,
   .steps,
   .case-story,
   .tools,
@@ -166,6 +168,10 @@
   .terminal-body {
     min-height: 0;
     font-size: 0.8rem;
+  }
+
+  .hero-visual {
+    padding-block: 0;
   }
 
   .hero-chip {
