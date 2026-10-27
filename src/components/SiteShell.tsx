@@ -23,7 +23,7 @@ function RevealController() {
           entry.target.classList.add('revealed');
           observer.unobserve(entry.target);
         }),
-      { threshold: 0.08, rootMargin: '0px 0px -40px 0px' },
+      { threshold: 0, rootMargin: '0px 0px 15% 0px' },
     );
     const scan = () =>
       document.querySelectorAll('[data-reveal]').forEach((el) => {

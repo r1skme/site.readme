@@ -19,7 +19,8 @@
   --cyan: #5fdcf0;
   --violet: #a37dff;
   --green: #7fe3b9;
-  --amber: #f2c27b;
+  --amber: #f5c26b;
+  --pink: #ff7ab6;
   --gradient: linear-gradient(100deg, var(--cyan), var(--blue) 45%, var(--violet));
 
   --radius-sm: 10px;
@@ -28,7 +29,7 @@
 
   --shell: 1240px;
   --gutter: clamp(16px, 4vw, 48px);
-  --section: clamp(80px, 11vw, 150px);
+  --section: clamp(64px, 8vw, 112px);
   --dock-space: 120px;
 
   --ease: cubic-bezier(0.22, 1, 0.36, 1);

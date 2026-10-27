@@ -41,7 +41,7 @@ export const capabilities: Capability[] = [
       'Telegram-боты, работа с API, фильтры, уведомления и хранение настроек. Убираю ручную рутину из рабочих процессов.',
       'Telegram bots, API integrations, filters, notifications and stored settings. I remove manual routine from workflows.',
     ),
-    tools: ['Python', 'python-telegram-bot', 'SQLite', 'REST API'],
+    tools: ['Python', 'asyncio', 'aiohttp', 'SQLite', 'Telegram Bot API'],
     proof: { label: 'Prime Market', href: '/projects/prime-market/' },
   },
   {
@@ -50,7 +50,7 @@ export const capabilities: Capability[] = [
       'Индексы, поиск, CLI и замеры производительности. Слежу, чтобы ускорение не меняло смысл запроса и не теряло результаты.',
       'Indexes, search, CLIs and performance measurement — making things faster without changing query meaning or losing results.',
     ),
-    tools: ['C++20', 'CMake', 'Regex', 'CLI'],
+    tools: ['C++20', 'CMake', 'Multithreading', 'Regex', 'MCP'],
     proof: { label: 'ReSearchify', href: '/projects/researchify/' },
   },
   {
@@ -59,7 +59,7 @@ export const capabilities: Capability[] = [
       'Кроссплатформенные сборки, установщики и CI: Windows, macOS (arm64 и Intel), Linux (x64 и arm64).',
       'Cross-platform builds, installers and CI: Windows, macOS (arm64 and Intel), Linux (x64 and arm64).',
     ),
-    tools: ['GitHub Actions', '.deb / .rpm', '.pkg / .dmg', 'Git'],
+    tools: ['GitHub Actions', 'C# / .NET 10', 'Avalonia UI', 'Git'],
     proof: { label: 'ShareX for macOS & Linux', href: '/projects/sharex-macos-linux/' },
   },
   {
@@ -68,7 +68,7 @@ export const capabilities: Capability[] = [
       'Продумываю экраны, состояния и обратную связь. Пишу баг-репорты, которые можно воспроизвести: действие, условия, ожидание и факт.',
       'I design screens, states and feedback, and write reproducible bug reports: action, conditions, expected and actual result.',
     ),
-    tools: ['UX/UI', 'QA', 'Dear ImGui', 'React'],
+    tools: ['Dear ImGui', 'DirectX 11', 'Win32 API', 'React', 'QA'],
     proof: { label: 'Predict', href: '/projects/predict/' },
   },
   {

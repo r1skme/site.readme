@@ -120,3 +120,8 @@ code {
 .skip-nav:focus {
   transform: none;
 }
+
+/* Units after big numbers ("×", "K+", " мс") carry the accent colour. */
+.unit {
+  color: var(--unit, var(--cyan));
+}

@@ -4,7 +4,7 @@
   grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
   gap: 24px 64px;
   align-items: end;
-  padding-top: clamp(64px, 10vw, 140px);
+  padding-top: clamp(48px, 7vw, 96px);
 }
 
 .page-heading-side {
@@ -19,8 +19,8 @@
   grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
   gap: 56px;
   align-items: center;
-  min-height: min(860px, calc(100svh - 70px));
-  padding-block: 48px 64px;
+  min-height: min(760px, calc(100svh - 90px));
+  padding-block: 32px 48px;
 }
 
 .hero-now {
@@ -154,6 +154,10 @@
   border-color: rgb(150 175 220 / 0.5);
 }
 
+.hero-chip-b strong {
+  color: var(--amber);
+}
+
 .hero-chip strong {
   font: 600 1.6rem/1.1 var(--font-display);
   letter-spacing: -0.04em;
@@ -261,12 +265,29 @@
 
 .featured {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 16px;
 }
 
 .feature-main {
-  grid-row: span 3;
+  grid-column: 1 / -1;
+}
+
+.feature-main .feature-link {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-rows: auto auto 1fr auto;
+  column-gap: 48px;
+}
+
+.feature-main .feature-facts {
+  grid-column: 2;
+  grid-row: 1 / 5;
+  align-self: center;
+  margin: 0;
+  padding: 0 0 0 40px;
+  border-top: 0;
+  border-left: 1px solid var(--line);
 }
 
 .feature-link {
@@ -310,7 +331,7 @@
 }
 
 .feature-facts dt {
-  font: 600 clamp(2rem, 4vw, 3rem) / 1 var(--font-display);
+  font: 700 clamp(2rem, 3.6vw, 2.9rem) / 1 var(--font-display);
   letter-spacing: -0.05em;
   color: var(--ink);
 }
@@ -355,6 +376,14 @@ a.number:hover {
   color: var(--muted);
   font-size: 0.94rem;
   max-width: 26ch;
+}
+
+.numbers-2 .number:first-child {
+  --unit: var(--violet);
+}
+
+.numbers-2 .number:last-child strong {
+  color: var(--amber);
 }
 
 .numbers-2 {
@@ -471,6 +500,10 @@ a.number:hover {
   border: 1px solid var(--line-strong);
 }
 
+.proof-main {
+  --unit: var(--violet);
+}
+
 .proof-number {
   font: 700 clamp(4.4rem, 11vw, 10.5rem) / 0.86 var(--font-display);
   letter-spacing: -0.06em;
@@ -532,6 +565,14 @@ a.number:hover {
   transform: translateY(-3px);
 }
 
+.proof-side a:nth-child(1) {
+  --unit: var(--cyan);
+}
+
+.proof-side a:nth-child(2) strong {
+  color: var(--amber);
+}
+
 .proof-side strong {
   font: 700 clamp(3rem, 6vw, 5rem) / 0.9 var(--font-display);
   letter-spacing: -0.06em;
@@ -563,13 +604,14 @@ a.number:hover {
 
 .benchmarks {
   display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 20px;
+  gap: 16px;
 }
 
 .benchmarks-side {
   display: grid;
-  gap: 20px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  align-items: start;
 }
 
 .bench {
@@ -596,7 +638,7 @@ a.number:hover {
 
 .bench-bars {
   display: grid;
-  gap: 18px;
+  gap: 14px;
   margin: 0;
   padding: 0;
   list-style: none;

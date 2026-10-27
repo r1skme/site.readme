@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useLanguage } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import type { Project } from '@/data/projects';
+import { Figure } from '@/components/CountUp';
 
 type Group = NonNullable<Project['benchmarks']>[number];
 
@@ -40,7 +41,9 @@ function BarGroup({ group }: { group: Group }) {
               <span className="bench-track">
                 <span className="bench-fill" />
               </span>
-              <strong>{r.display}</strong>
+              <strong>
+                <Figure value={r.display} />
+              </strong>
             </li>
           ))}
         </ol>
@@ -49,7 +52,9 @@ function BarGroup({ group }: { group: Group }) {
           {group.rows.map((r) => (
             <div key={r.display}>
               <dt>{t(r.label)}</dt>
-              <dd>{r.display}</dd>
+              <dd>
+                <Figure value={r.display} />
+              </dd>
             </div>
           ))}
         </dl>

@@ -120,14 +120,7 @@ export default function Media() {
           <strong>
             <CountUp value="150K+" />
           </strong>
-          <span>
-            {t(
-              L(
-                'Сумма просмотров четырёх роликов на двух аккаунтах: 95,1K + 26,8K + 20,8K + 16,1K = 158,8K.',
-                'Total views of four posts on two accounts: 95.1K + 26.8K + 20.8K + 16.1K = 158.8K.',
-              ),
-            )}
-          </span>
+          <span>{t(L('просмотров у моих роликов в TikTok', 'views on my TikTok videos'))}</span>
         </div>
         <div className="number" data-reveal>
           <strong>

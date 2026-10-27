@@ -1,15 +1,15 @@
 /* Scroll reveal: only applied to elements that start below the fold. */
 .reveal-ready {
   opacity: 0;
-  transform: translateY(26px);
+  transform: translateY(18px);
 }
 
 .reveal-ready.revealed {
   opacity: 1;
   transform: none;
   transition:
-    opacity 0.8s var(--ease),
-    transform 0.8s var(--ease);
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
 }
 
 @keyframes ambient-drift {

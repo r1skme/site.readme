@@ -6,7 +6,7 @@ import { useMotionPreference } from '@/lib/motion';
 import { ActionLink, SpotlightCard, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 import { Terminal } from '@/components/Terminal';
-import { CountUp } from '@/components/CountUp';
+import { CountUp, Figure } from '@/components/CountUp';
 import { projects, findProject } from '@/data/projects';
 import { role, capabilities } from '@/data/profile';
 
@@ -16,17 +16,20 @@ const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'
 );
 const stack = [
   'Python',
+  'asyncio',
+  'aiohttp',
   'C++20',
-  'SQLite',
-  'Telegram Bot API',
   'CMake',
-  'GitHub Actions',
-  'Regex',
-  'MCP',
+  'Clang',
+  'DirectX 11',
   'Dear ImGui',
-  'React',
+  'Win32 API',
+  'C# / .NET',
+  'Avalonia UI',
+  'SQLite',
+  'MCP',
+  'GitHub Actions',
   'DaVinci Resolve',
-  'Fusion',
 ];
 
 function HeroTitle() {
@@ -132,7 +135,9 @@ export default function Home() {
         >
           <Terminal lines={researchify.commands!.slice(0, 5)} />
           <Link to="/projects/researchify/" className="hero-chip hero-chip-a">
-            <strong>94,6×</strong>
+            <strong>
+              <Figure value="94,6×" />
+            </strong>
             <span>{t(L('быстрее поиска, как в VS Code', 'faster than VS Code-style search'))}</span>
           </Link>
           <Link to="/projects/researchify/" className="hero-chip hero-chip-b">
@@ -207,7 +212,9 @@ export default function Home() {
                   <dl className="feature-facts">
                     {p.facts.map((f) => (
                       <div key={f.value}>
-                        <dt>{f.value}</dt>
+                        <dt>
+                          <Figure value={f.value} />
+                        </dt>
                         <dd>{t(f.label)}</dd>
                       </div>
                     ))}
@@ -231,8 +238,8 @@ export default function Home() {
           <span className="proof-caption">
             {t(
               L(
-                'просмотров у четырёх моих TikTok-роликов — монтаж, идея и подача мои.',
-                'views on four of my TikTok edits — the idea, edit and delivery are mine.',
+                'просмотров у моих роликов в TikTok — идея, съёмка и монтаж мои.',
+                'views on my TikTok videos — idea, footage and edit are mine.',
               ),
             )}
             <span className="proof-more">
