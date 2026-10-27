@@ -1,19 +1,21 @@
 {
-  "name": "r1sk-personal-portfolio",
+  "name": "predict-rip",
   "private": true,
-  "version": "9.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "tsc -b && vite build && node scripts/finalize-pages.mjs && node scripts/verify-build.mjs && node scripts/verify-domain-build.mjs",
+    "build": "tsc -b && vite build && node scripts/verify-build.mjs",
     "preview": "vite preview --host 0.0.0.0",
-    "test:qa": "node scripts/qa.mjs && node scripts/qa-v8.mjs && node scripts/qa-v9.mjs && node scripts/qa-domain.mjs"
+    "test:qa": "node scripts/qa.mjs",
+    "og": "node scripts/og-image.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "@radix-ui/react-slot": "1.2.3",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
-    "gsap": "3.13.0",
     "lucide-react": "0.468.0",
     "motion": "12.23.24",
     "react": "19.2.0",

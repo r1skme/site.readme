@@ -1,0 +1,5 @@
+dist/
+qa-output/
+package-lock.json
+public/
+LICENSE

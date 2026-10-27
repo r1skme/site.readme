@@ -1,299 +1,213 @@
+// Browser checks against the built site (or a live origin via QA_ORIGIN=https://predict.rip).
+// Serves dist/ like GitHub Pages: real files only, unknown paths get 404.html with HTTP 404.
 import { chromium } from '@playwright/test';
-import { mkdirSync, writeFileSync, copyFileSync, existsSync } from 'node:fs';
-import { spawn } from 'node:child_process';
+import { createServer } from 'node:http';
+import { readFile, stat } from 'node:fs/promises';
+import { mkdirSync, readFileSync } from 'node:fs';
+import path from 'node:path';
 import assert from 'node:assert/strict';
-const output = 'qa-output';
-mkdirSync(output, { recursive: true });
-const server = spawn(
-  'node',
-  ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4173'],
-  { stdio: ['ignore', 'pipe', 'pipe'] },
-);
-const base = 'http://127.0.0.1:4173/';
-let browser, page;
-const report = {
-  version: 5,
-  checks: [],
-  layouts: [],
-  limits: [
-    'Chromium desktop and touch emulation, not a physical iPhone.',
-    'Third-party video playback is not asserted; player mounting and teardown are tested.',
-    'No Lighthouse or FPS score claimed.',
-  ],
-  errors: [],
-};
-const check = (name) => {
-  report.checks.push(name);
-  console.log('PASS:', name);
-};
-const waitServer = async () => {
-  for (let i = 0; i < 80; i++) {
-    try {
-      if ((await fetch(base)).ok) return;
-    } catch {}
-    await new Promise((r) => setTimeout(r, 200));
-  }
-  throw Error('Preview server failed to start');
-};
-try {
-  await waitServer();
-  browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({
-    viewport: { width: 1440, height: 1000 },
-    deviceScaleFactor: 1,
-  });
-  page = await context.newPage();
-  page.on('pageerror', (e) => report.errors.push(e.message));
-  await page.goto(base, { waitUntil: 'domcontentloaded' });
-  await page.locator('.home-hero h1').waitFor();
-  await page.waitForTimeout(1200);
-  const first = await page.locator('#ribbon-shape').getAttribute('d');
-  await page.waitForTimeout(700);
-  assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'), first);
-  check('Autonomous ribbon changes while idle');
-  assert.equal(await page.locator('.motion-switch').count(), 0);
-  check('Broken manual animation switch has been removed');
-  await page.evaluate(() => localStorage.setItem('r1sk-pause', 'true'));
-  await page.reload();
-  await page.locator('.home-hero h1').waitFor();
-  await page.waitForTimeout(300);
-  const oldPreference = await page.locator('#ribbon-shape').getAttribute('d');
-  await page.waitForTimeout(450);
-  assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'), oldPreference);
-  assert.equal(await page.evaluate(() => localStorage.getItem('r1sk-pause')), null);
-  check('Motion defaults to active and obsolete saved pause setting is cleared');
-  await page.emulateMedia({ reducedMotion: 'reduce' });
-  await page.waitForTimeout(250);
-  const frozen = await page.locator('#ribbon-shape').getAttribute('d');
-  await page.waitForTimeout(350);
-  assert.equal(await page.locator('#ribbon-shape').getAttribute('d'), frozen);
-  assert.equal(
-    await page
-      .locator('.glass-caustic')
-      .evaluate((el) => getComputedStyle(el, '::after').animationPlayState),
-    'paused',
-  );
-  check('System reduced-motion preference pauses ribbon and glass highlights');
-  await page.emulateMedia({ reducedMotion: 'no-preference' });
-  await page.waitForTimeout(220);
-  await page.locator('.glass-dock-link[href$="/about/"]').click();
-  await page.waitForURL('**/about/');
-  await page.locator('.v6-about-intro').waitFor();
-  await page.waitForTimeout(650);
-  assert.equal(
-    await page.locator('.glass-dock-link[aria-current="page"]').getAttribute('href'),
-    '/about/',
-  );
-  check('Separate About URL and active glass lens');
-  assert.equal(await page.locator('.home-hero').count(), 0);
-  check('Outgoing page unmounted rather than stacking sections');
-  assert.equal(await page.locator('.timeline-list').count(), 0);
-  check('Gaming chronology is not mislabeled as programming experience');
-  await page.goBack();
-  await page.waitForURL((url) => url.pathname === '/');
-  await page.locator('.home-hero').waitFor();
-  check('Browser Back restores prior page');
-  await page.locator('.lang-switch button').nth(1).click();
-  assert.equal(await page.locator('html').getAttribute('lang'), 'en');
-  assert.ok(page.url().includes('lang=en'));
-  check('Language switches without document reload');
 
-  // Regression: similar project names must not produce duplicate featured listings.
-  await page.goto(base + 'projects/?lang=ru', { waitUntil: 'domcontentloaded' });
-  await page.locator('.v7-project-catalog').waitFor();
-  assert.equal(await page.locator('.v7-project-row').count(), 5);
-  assert.equal(await page.locator('.v7-project-row[href*="researchify-web"]').count(), 0);
-  assert.equal(await page.locator('.v7-experiment-link[href*="researchify-web"]').count(), 1);
-  check('ReSearchify listed once; Researchify Web is a distinct experiment');
-  const aligned = await page.locator('.v7-project-row[href*="researchify/"]').evaluate((row) => {
-    const heading = row.querySelector('h2').getBoundingClientRect(),
-      arrow = row.querySelector('.v7-inline-arrow').getBoundingClientRect();
-    return (
-      arrow.top >= heading.top - 8 &&
-      arrow.bottom <= heading.bottom + 8 &&
-      arrow.left >= heading.left
-    );
+const out = process.env.QA_OUTPUT || 'qa-output';
+mkdirSync(out, { recursive: true });
+
+const types = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript',
+  '.css': 'text/css',
+  '.svg': 'image/svg+xml',
+  '.webp': 'image/webp',
+  '.png': 'image/png',
+  '.xml': 'application/xml',
+  '.txt': 'text/plain',
+};
+
+let server;
+let origin = process.env.QA_ORIGIN?.replace(/\/$/, '');
+if (!origin) {
+  const dist = path.resolve('dist');
+  server = createServer(async (req, res) => {
+    let file = path.join(dist, decodeURIComponent(new URL(req.url, 'http://x').pathname));
+    try {
+      if ((await stat(file)).isDirectory()) file = path.join(file, 'index.html');
+      const body = await readFile(file);
+      res.writeHead(200, {
+        'content-type': types[path.extname(file)] || 'application/octet-stream',
+      });
+      res.end(body);
+    } catch {
+      res.writeHead(404, { 'content-type': types['.html'] });
+      res.end(await readFile(path.join(dist, '404.html')));
+    }
   });
-  assert.ok(aligned, 'Project arrow must align with title');
-  check('Project arrows stay aligned with their titles');
-  await page.goto(base + 'projects/prime-market/?lang=ru', { waitUntil: 'domcontentloaded' });
-  await page.locator('.v7-technology-section').waitFor();
-  assert.ok((await page.locator('.v7-technology-section').innerText()).includes('SQLite'));
-  assert.equal(await page.locator('.v6-case-role').count(), 0);
-  assert.equal(
-    await page
-      .locator('.v7-prime-wordmark img')
-      .evaluate((img) => img.complete && img.naturalWidth > 0),
-    true,
-  );
-  check('Project details show real technologies, not role, and real PRIME logo loads');
-  await page.goto(base + 'roadmap/?lang=ru', { waitUntil: 'domcontentloaded' });
-  await page.locator('.v7-journey-card').first().waitFor({ timeout: 20000 });
-  assert.equal(await page.locator('.v7-journey-card').count(), 5);
-  assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2025'));
-  assert.ok((await page.locator('.v7-journey-timeline').innerText()).includes('2026'));
-  check('Real milestone roadmap is accessible as its own route');
-  await page.locator('.lang-switch button').first().click();
-  const routes = [
-    '',
-    'roadmap/',
-    'projects/',
-    'projects/prime-market/',
-    'projects/predict/',
-    'projects/researchify/',
-    'projects/researchify-web/',
-    'projects/glow-rust/',
-    'projects/exchange/',
-    'media/',
-    'skills/',
-    'about/',
-    'contact/',
-  ];
-  for (const width of [320, 390, 768, 1440]) {
-    await page.setViewportSize({ width, height: width < 600 ? 844 : 1000 });
+  await new Promise((r) => server.listen(4173, '127.0.0.1', r));
+  origin = 'http://127.0.0.1:4173';
+}
+
+const routes = process.env.QA_ORIGIN
+  ? [
+      '',
+      'projects/',
+      'projects/researchify/',
+      'media/',
+      'skills/',
+      'about/',
+      'roadmap/',
+      'contact/',
+    ]
+  : [...readFileSync('dist/sitemap.xml', 'utf8').matchAll(/predict\.rip\/(.*?)<\/loc>/g)].map(
+      (m) => m[1],
+    );
+
+const errors = [];
+let passed = 0;
+const check = async (name, fn) => {
+  await fn();
+  passed++;
+  console.log('PASS', name);
+};
+
+const browser = await chromium.launch();
+const open = async (width, extra = {}) => {
+  const context = await browser.newContext({
+    viewport: { width, height: width < 600 ? 812 : 900 },
+    deviceScaleFactor: width < 600 ? 2 : 1,
+    isMobile: width < 600,
+    hasTouch: width < 600,
+    ...extra,
+  });
+  const page = await context.newPage();
+  page.on('pageerror', (e) => errors.push(`${page.url()}: ${e.message}`));
+  page.on('console', (m) => {
+    // YouTube/Google font hiccups are third-party; our own errors are not.
+    // The deliberate 404 checks log the document's own 404 status.
+    const expected404 = page.url().includes('/no-such-') && /status of 404/.test(m.text());
+    if (m.type() === 'error' && !expected404 && !/youtube|ytimg|googleapis|gstatic/.test(m.text()))
+      errors.push(`${page.url()}: ${m.text()}`);
+  });
+  return page;
+};
+
+try {
+  for (const width of [1280, 375]) {
+    const page = await open(width);
     for (const lang of ['ru', 'en']) {
       for (const route of routes) {
-        const response = await page.goto(base + route + '?lang=' + lang, {
-          waitUntil: 'domcontentloaded',
+        await check(`/${route} ${lang} @${width}`, async () => {
+          const res = await page.goto(`${origin}/${route}?lang=${lang}`, {
+            waitUntil: 'networkidle',
+          });
+          assert.equal(res.status(), 200);
+          await page.locator('#main h1').first().waitFor();
+          const title = await page.title();
+          assert.ok(title.includes('R1SK') && title !== 'R1SK', `title "${title}"`);
+          assert.equal(await page.locator('html').getAttribute('lang'), lang);
+          const overflow = await page.evaluate(
+            () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
+          );
+          assert.ok(overflow <= 0, `horizontal overflow ${overflow}px`);
+          if (lang === 'ru') {
+            // Scroll through so scroll-revealed blocks are visible in the full-page shot.
+            await page.evaluate(async () => {
+              for (let y = 0; y < document.body.scrollHeight; y += innerHeight / 2) {
+                scrollTo(0, y);
+                await new Promise((r) => setTimeout(r, 60));
+              }
+              scrollTo(0, 0);
+              await new Promise((r) => setTimeout(r, 900));
+            });
+            await page.screenshot({
+              path: `${out}/${width}-${route.replace(/\//g, '_') || 'home'}.png`,
+              fullPage: true,
+            });
+          }
         });
-        assert.equal(response?.status(), 200);
-        await page.locator('.page-main h1').waitFor({ timeout: 20000 });
-        await page.waitForTimeout(550);
-        const dims = await page.evaluate(() => ({
-          w: innerWidth,
-          scroll: document.documentElement.scrollWidth,
-          text: document.querySelector('.page-main h1')?.textContent,
-        }));
-        assert.ok(dims.scroll <= dims.w + 1, `Overflow ${width}/${lang}/${route}: ${dims.scroll}`);
-        assert.equal(await page.locator('html').getAttribute('lang'), lang);
-        report.layouts.push({ width, lang, route, overflow: false });
       }
     }
+    await page.context().close();
   }
-  check('104 route/language/viewport combinations without horizontal overflow');
-  await page.setViewportSize({ width: 1440, height: 1000 });
-  await page.goto(base + 'media/?lang=ru', { waitUntil: 'domcontentloaded' });
-  await page.locator('.media-cards').waitFor();
-  assert.equal(await page.locator('iframe').count(), 0);
-  await page.locator('.media-work').nth(4).click();
-  await page.locator('dialog[open]').waitFor();
-  assert.equal(await page.locator('iframe').count(), 1);
-  await page.keyboard.press('Escape');
-  await page.waitForTimeout(100);
-  assert.equal(await page.locator('iframe').count(), 0);
-  assert.notEqual(await page.evaluate(() => document.body.style.overflow), 'hidden');
-  check('Video opens deliberately; Escape removes iframe and unlocks scrolling');
-  await page.goto(base + 'contact/?lang=ru', { waitUntil: 'domcontentloaded' });
-  await page.locator('.contact-main').waitFor();
-  await page.evaluate(() =>
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: {
-        writeText: async (value) => {
-          window.__copied = value;
-        },
-      },
-    }),
-  );
-  await page.locator('button.contact-secondary-card').click();
-  assert.equal(await page.evaluate(() => window.__copied), 'r1sk.gg');
-  check('Discord copy uses exact username');
-  await page.evaluate(() =>
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: {
-        writeText: async () => {
-          throw Error('denied');
-        },
-      },
-    }),
-  );
-  await page.locator('button.contact-secondary-card').click();
-  await page.waitForTimeout(100);
-  assert.ok(
-    (await page.locator('button.contact-secondary-card').innerText()).includes('Не удалось'),
-  );
-  check('Clipboard denial shows failure, never fake success');
-  async function screenshot(route, name, width, height = 1000, full = true) {
-    await page.setViewportSize({ width, height });
-    await page.goto(base + route + '?lang=ru', { waitUntil: 'domcontentloaded' });
-    await page.locator('.page-main h1').waitFor();
-    await page.evaluate(() =>
-      Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 4000))]),
-    );
-    await page.waitForTimeout(800);
-    if (full) {
-      const h = await page.evaluate(() => document.documentElement.scrollHeight);
-      for (let y = 0; y < h; y += height * 0.75) {
-        await page.evaluate((y) => scrollTo(0, y), y);
-        await page.waitForTimeout(120);
-      }
-      await page.evaluate(() => scrollTo(0, 0));
-      await page.waitForTimeout(800);
-    }
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.waitForTimeout(130);
-    await page.screenshot({ path: `${output}/${name}.png`, fullPage: full });
-  }
-  await screenshot('', 'home-desktop', 1440, 1000, false);
-  await screenshot('', 'home-full', 1440, 1000);
-  await screenshot('', 'home-mobile', 390, 844, false);
-  await page.locator('.liquid-dock').screenshot({ path: `${output}/glass-dock-mobile.png` });
-  for (const route of ['projects', 'roadmap', 'about', 'skills', 'media', 'contact'])
-    await screenshot(route + '/', route, 1440, 1000, true);
-  await screenshot('projects/predict/', 'predict', 1440, 1000, true);
-  await page.locator('.liquid-dock').screenshot({ path: `${output}/glass-dock.png` });
-  check('Real page screenshots captured after rendering');
-  const reduced = await browser.newContext({
-    reducedMotion: 'reduce',
-    viewport: { width: 390, height: 844 },
-    hasTouch: true,
-    isMobile: true,
+
+  const page = await open(1280);
+
+  await check('Background ribbon animates while idle', async () => {
+    await page.goto(origin + '/', { waitUntil: 'networkidle' });
+    const a = await page.locator('#ribbon-shape').getAttribute('d');
+    await page.waitForTimeout(500);
+    assert.notEqual(await page.locator('#ribbon-shape').getAttribute('d'), a);
   });
-  const rp = await reduced.newPage();
-  await rp.goto(base, { waitUntil: 'domcontentloaded' });
-  await rp.locator('.home-hero').waitFor();
-  await rp.waitForTimeout(100);
-  const d = await rp.locator('#ribbon-shape').getAttribute('d');
-  await rp.waitForTimeout(700);
-  assert.equal(await rp.locator('#ribbon-shape').getAttribute('d'), d);
-  check('System reduced motion starts with static geometry');
-  await reduced.close();
-  assert.deepEqual(report.errors, []);
-  check('No uncaught JavaScript errors in exercised scenarios');
-  writeFileSync(`${output}/report.json`, JSON.stringify(report, null, 2));
-  console.log(
-    'QA_SUCCESS',
-    JSON.stringify({ checks: report.checks.length, layouts: report.layouts.length }),
-  );
-  mkdirSync('dist/_review', { recursive: true });
-  for (const name of [
-    'home-desktop',
-    'home-full',
-    'home-mobile',
-    'glass-dock-mobile',
-    'glass-dock',
-    'projects',
-    'roadmap',
-    'about',
-    'skills',
-    'media',
-    'contact',
-    'predict',
-  ])
-    if (existsSync(`${output}/${name}.png`))
-      copyFileSync(`${output}/${name}.png`, `dist/_review/${name}.png`);
-  copyFileSync(`${output}/report.json`, 'dist/_review/report.json');
-} catch (error) {
-  report.failure = String(error);
-  writeFileSync(`${output}/report.json`, JSON.stringify(report, null, 2));
-  console.error(error);
-  if (page)
-    try {
-      await page.screenshot({ path: `${output}/failure.png`, fullPage: true });
-    } catch {}
-  process.exitCode = 1;
+
+  await check('?lang=ru wins over a saved EN and survives navigation', async () => {
+    await page.evaluate(() => localStorage.setItem('r1sk-lang', 'en'));
+    await page.goto(origin + '/?lang=ru', { waitUntil: 'networkidle' });
+    await page.locator('.glass-dock-link[href="/projects/"]').click();
+    await page.waitForURL('**/projects/');
+    assert.equal(await page.locator('html').getAttribute('lang'), 'ru');
+    assert.equal(await page.title(), 'Проекты — R1SK');
+  });
+
+  await check('Language switch updates the tab title', async () => {
+    await page.locator('.lang-switch button', { hasText: 'EN' }).click();
+    assert.equal(await page.title(), 'Projects — R1SK');
+    await page.locator('.lang-switch button', { hasText: 'RU' }).click();
+  });
+
+  await check('Project page has a project title and GitHub links', async () => {
+    await page.goto(origin + '/projects/researchify/', { waitUntil: 'networkidle' });
+    assert.equal(await page.title(), 'ReSearchify — R1SK');
+    assert.equal(await page.locator('a[href="https://github.com/r1skme/ReSearchify"]').count(), 1);
+    assert.equal(
+      await page.locator('a[href="https://github.com/r1skme/ReSearchify/releases"]').count(),
+      1,
+    );
+  });
+
+  await check('Dock highlights nothing on the roadmap', async () => {
+    await page.goto(origin + '/roadmap/', { waitUntil: 'networkidle' });
+    assert.equal(await page.locator('.glass-dock-link[aria-current]').count(), 0);
+    assert.equal(await page.locator('.topbar-link[aria-current="page"]').count(), 1);
+  });
+
+  await check('Unknown paths return 404 with the shared NotFound view', async () => {
+    for (const p of ['/no-such-page/', '/projects/no-such-project/']) {
+      const res = await page.goto(origin + p, { waitUntil: 'networkidle' });
+      assert.equal(res.status(), 404);
+      await page.locator('.not-found h1').waitFor();
+      assert.match(await page.title(), /Страница не найдена/);
+      assert.equal(await page.locator('.glass-dock-link[aria-current]').count(), 0);
+    }
+  });
+
+  await check('Media: TikTok cards link out, YouTube opens a player', async () => {
+    await page.goto(origin + '/media/', { waitUntil: 'networkidle' });
+    assert.equal(await page.locator('a.work-tiktok').count(), 4);
+    assert.equal(await page.locator('a.work-tiktok .work-play').count(), 0);
+    await page.locator('button.work-youtube').first().click();
+    await page.locator('dialog[open] iframe').waitFor();
+    await page.keyboard.press('Escape');
+    await page.locator('dialog').waitFor({ state: 'detached' });
+  });
+
+  await check('Media: reel images are never upscaled', async () => {
+    const worst = await page.$$eval('.reel img', (imgs) =>
+      Math.max(
+        ...imgs
+          .filter((i) => i.complete && i.naturalWidth)
+          .map((i) => i.getBoundingClientRect().width / (i.naturalWidth * devicePixelRatio)),
+      ),
+    );
+    assert.ok(worst <= 1.01, `an image is drawn at ${worst.toFixed(2)}× its natural size`);
+  });
+
+  await check('Reduced motion freezes the ribbon', async () => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(origin + '/', { waitUntil: 'networkidle' });
+    const a = await page.locator('#ribbon-shape').getAttribute('d');
+    await page.waitForTimeout(400);
+    assert.equal(await page.locator('#ribbon-shape').getAttribute('d'), a);
+  });
+
+  assert.deepEqual(errors, [], 'console errors:\n' + errors.join('\n'));
+  console.log(`\nQA OK: ${passed} checks against ${origin}. Screenshots in ${out}/`);
 } finally {
-  await browser?.close();
-  server.kill('SIGTERM');
+  await browser.close();
+  server?.close();
 }
