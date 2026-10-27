@@ -123,12 +123,6 @@
     transition: none;
   }
 
-  .loader-grid i {
-    animation: none;
-    opacity: 0.7;
-    transform: scale(0.6);
-  }
-
   .bench-fill {
     transform: none;
     transition: none;

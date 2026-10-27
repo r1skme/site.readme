@@ -4,7 +4,6 @@ import {
   lazy,
   useEffect,
   useRef,
-  type CSSProperties,
   type ErrorInfo,
   type ReactNode,
 } from 'react';
@@ -16,6 +15,8 @@ import { pageLoaders } from '@/lib/routes';
 import { SiteShell } from '@/components/SiteShell';
 import PageTransition from '@/components/PageTransition';
 import NotFound from '@/components/NotFound';
+import { LoaderMark } from '@/components/LoaderMark';
+import { booting, markPageReady } from '@/lib/boot';
 const Home = lazy(pageLoaders.home),
   Projects = lazy(pageLoaders.projects),
   Detail = lazy(pageLoaders.detail),
@@ -24,23 +25,23 @@ const Home = lazy(pageLoaders.home),
   Skills = lazy(pageLoaders.skills),
   Contact = lazy(pageLoaders.contact),
   Roadmap = lazy(pageLoaders.roadmap);
-/** A field of dots with a wave running through it, in the footer's halftone style.
- * It fades in after a short delay, so fast route changes never flash it. */
+/** Shown only while a page chunk is really loading; it fades in after 250 ms so fast
+ * navigations never flash it. Nothing renders while the boot screen still covers the page. */
 function ResourceLoading() {
   const { t } = useLanguage();
+  if (booting()) return null;
   return (
     <div className="route-loading" role="status">
-      <div className="loader-grid" aria-hidden="true">
-        {Array.from({ length: 45 }, (_, i) => (
-          <i key={i} style={{ '--d': (i % 9) + Math.floor(i / 9) } as CSSProperties} />
-        ))}
-      </div>
-      <p className="loader-word" aria-hidden="true">
-        R1SK<span>.</span>
-      </p>
+      <LoaderMark size={200} />
       <span className="sr-only">{t(L('Загрузка страницы', 'Loading page'))}</span>
     </div>
   );
+}
+
+/** Mounts only when the Suspense boundary has resolved: the first page is on screen. */
+function PageReady() {
+  useEffect(() => markPageReady(), []);
+  return null;
 }
 class PageError extends Component<{ children: ReactNode }, { error: boolean }> {
   state = { error: false };
@@ -108,6 +109,7 @@ function AnimatedPages() {
               <Route path="/contact/" element={<Contact />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <PageReady />
           </Suspense>
         </PageError>
       </PageTransition>
