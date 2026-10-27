@@ -1,96 +1,65 @@
 import { Link } from 'react-router-dom';
-import type { CSSProperties } from 'react';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowRight, Github } from 'lucide-react';
 import { projects } from '@/data/projects';
 import { useLanguage, L } from '@/lib/i18n';
-import { PageHeading } from '@/components/Primitives';
+import { PageHeading, SpotlightCard, StatusBadge } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
 
 export default function Projects() {
   const { t } = useLanguage();
-  const primary = projects.filter((p) => p.slug !== 'researchify-web');
-  const web = projects.find((p) => p.slug === 'researchify-web');
   return (
     <>
       <PageHeading
-        label={t(L('Проекты', 'Projects'))}
-        title={t(L('Мои проекты', 'My projects'))}
+        title={t(L('Проекты.', 'Projects.'))}
         desc={t(
           L(
-            'Автоматизация, поиск по исходному коду, игровые инструменты и опыт собственного сервера. Для каждого проекта — задача, технологии и текущий этап работы.',
-            'Automation, source-code search, gaming tools and the experience of running my own server. Each project includes its purpose, technology and current stage.',
+            'Поиск по коду, автоматизация, кроссплатформенные сборки, игровые инструменты и собственный сервер. У каждого — задача, стек и текущий статус.',
+            'Code search, automation, cross-platform builds, gaming tools and my own server. Each with its purpose, stack and current status.',
           ),
         )}
       />
-      <section
-        className="shell v6-projects-editorial v7-project-catalog"
-        aria-label={t(L('Каталог проектов', 'Project directory'))}
-      >
-        <div className="v6-project-list">
-          {primary.map((project) => (
-            <Link
-              key={project.slug}
-              className={'v6-project-row v7-project-row v6-project-' + project.slug}
-              to={'/projects/' + project.slug + '/'}
-              style={{ '--project-color': project.accent } as CSSProperties}
-            >
-              <div className="v6-project-titles">
+      <section className="shell catalog" aria-label={t(L('Каталог проектов', 'Project directory'))}>
+        {projects.map((p, i) => (
+          <SpotlightCard key={p.slug} as="article" className="catalog-item">
+            <Link to={`/projects/${p.slug}/`} className="catalog-link">
+              <span className="catalog-index" aria-hidden="true">
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <div className="catalog-main">
                 <h2>
-                  <ProjectIdentity name={project.name} slug={project.slug} arrow />
+                  <ProjectIdentity name={p.name} slug={p.slug} arrow />
+                  {p.links?.repo && (
+                    <Github
+                      className="catalog-gh"
+                      size={18}
+                      aria-label={t(L('Есть код на GitHub', 'Source on GitHub'))}
+                    />
+                  )}
                 </h2>
-                <p>{t(project.summary)}</p>
-                <div className="v7-row-facts">
-                  <span>{t(project.since)}</span>
-                  <span aria-hidden="true" className="v7-fact-sep">
-                    ·
-                  </span>
-                  <span>{project.stack.slice(0, 3).join(' · ')}</span>
-                </div>
+                <p>{t(p.tagline)}</p>
+              </div>
+              <div className="catalog-meta">
+                <StatusBadge status={p.status} />
+                <span>{t(p.period)}</span>
+                <span className="catalog-stack">{p.stack.slice(0, 3).join(' · ')}</span>
               </div>
             </Link>
-          ))}
-        </div>
+          </SpotlightCard>
+        ))}
       </section>
-      {web && (
-        <section className="shell v7-experiment">
-          <div className="v7-experiment-heading">
-            <h2>{t(L('Отдельный эксперимент', 'Separate experiment'))}</h2>
-            <p>
-              {t(L('Интернет-источники для локальных моделей.', 'Web sources for local models.'))}
-            </p>
-          </div>
-          <Link to="/projects/researchify-web/" className="v7-experiment-link">
-            <div>
-              <strong>Researchify Web</strong>
-              <p>
-                {t(
-                  L(
-                    'Интернет-поиск и чтение источников для локальных LLM.',
-                    'Internet search and source retrieval for local LLMs.',
-                  ),
-                )}
-              </p>
-            </div>
-            <ArrowUpRight aria-hidden="true" size={24} />
-          </Link>
-        </section>
-      )}
-      <section className="shell v6-projects-note">
-        <h2>{t(L('Как развиваются проекты', 'Where the projects go next'))}</h2>
-        <div>
-          <p>
+      <section className="shell section-tight">
+        <Link to="/roadmap/" className="roadmap-line" data-reveal>
+          <span>{t(L('Планы', 'Plans'))}</span>
+          <span className="roadmap-line-text">
             {t(
               L(
-                'Основное внимание сейчас уделяю Prime Market, ReSearchify и новым программным инструментам. В дорожной карте собрал опыт запусков и ближайшие задачи.',
-                'My current focus is Prime Market, ReSearchify and new software tools. The roadmap brings together lessons from earlier launches and the next tasks.',
+                'Что дальше по проектам и новые идеи — в дорожной карте',
+                'What is next for each project and new ideas — on the roadmap',
               ),
             )}
-          </p>
-          <Link className="v7-secondary-link" to="/roadmap/">
-            {t(L('Открыть дорожную карту', 'Explore my roadmap'))}
-            <ArrowRight size={17} />
-          </Link>
-        </div>
+          </span>
+          <ArrowRight size={20} aria-hidden="true" />
+        </Link>
       </section>
     </>
   );

@@ -7,20 +7,14 @@ import {
   type ErrorInfo,
   type ReactNode,
 } from 'react';
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useLocation,
-  useNavigationType,
-  Link,
-} from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation, useNavigationType } from 'react-router-dom';
 import { LazyMotion, domMax, MotionConfig, AnimatePresence } from 'motion/react';
 import { LanguageProvider, useLanguage, L } from '@/lib/i18n';
 import { MotionProvider, useMotionPreference } from '@/lib/motion';
 import { pageLoaders } from '@/lib/routes';
 import { SiteShell } from '@/components/SiteShell';
 import PageTransition from '@/components/PageTransition';
+import NotFound from '@/components/NotFound';
 const Home = lazy(pageLoaders.home),
   Projects = lazy(pageLoaders.projects),
   Detail = lazy(pageLoaders.detail),
@@ -33,10 +27,7 @@ function ResourceLoading() {
   const { t } = useLanguage();
   return (
     <div className="route-loading" role="status">
-      <div className="loading-mark" aria-hidden="true">
-        R<span>1</span>SK
-      </div>
-      <div className="loading-progress">
+      <div className="loading-progress" aria-hidden="true">
         <span />
       </div>
       <p>{t(L('Загрузка страницы', 'Loading page'))}</p>
@@ -62,18 +53,6 @@ class PageError extends Component<{ children: ReactNode }, { error: boolean }> {
       this.props.children
     );
   }
-}
-function NotFound() {
-  const { t } = useLanguage();
-  return (
-    <section className="shell interior-heading">
-      <span className="eyebrow">404</span>
-      <h1>{t(L('Страница не найдена', 'Page not found'))}</h1>
-      <Link to="/" className="action-button">
-        {t(L('На главную', 'Back home'))}
-      </Link>
-    </section>
-  );
 }
 function AnimatedPages() {
   const location = useLocation(),

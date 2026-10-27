@@ -18,35 +18,35 @@ const steps: JourneyStep[] = [
   },
   {
     id: 'glow',
-    date: L('2025 · проект на паузе', '2025 · project paused'),
+    date: L('2025', '2025'),
     title: L('GLOW RUST', 'GLOW RUST'),
     description: L(
-      'Сам запустил Rust-сервер, настроил хостинг и плагины, занимался поддержкой и контентом. Привлечь игроков оказалось сложнее, чем собрать сервер. Проект поставлен на паузу; главный вывод — не пытаться делать всё одному.',
-      'I launched a Rust server, configured hosting and plugins, handled support and made content. Attracting players was harder than getting the server running. The project is paused; the main lesson was not to do everything alone.',
+      'Запустил сервер в игре Rust: хостинг, плагины, поддержка и контент. Привлечь игроков оказалось сложнее, чем собрать сервер. Проект на паузе; главный вывод — не пытаться делать всё одному.',
+      'I launched a server for the game Rust: hosting, plugins, support and content. Attracting players was harder than getting the server running. Paused; the main lesson was not to do everything alone.',
     ),
     stack: ['Rust', 'RCON'],
     href: '/projects/glow-rust/',
   },
   {
     id: 'prime',
-    date: L('Первый серьёзный проект · развивается', 'First serious project · ongoing'),
+    date: L('2026 — сейчас', '2026 — present'),
     title: L('Prime Market', 'Prime Market'),
     description: L(
-      'Начал с автоматизации собственных задач на рынке игровых предметов. Работаю над Telegram-ботом, фильтрами и уведомлениями, развиваю сайт проекта. Следующий шаг — браузерная версия и проверка сценариев перед запуском.',
-      'I started by automating my own game-item market workflows. I work on a Telegram bot, filters and notifications, and the project website. Next comes the browser version and testing before launch.',
+      'Первый серьёзный программный проект: Telegram-бот с фильтрами и уведомлениями для рынка CS2-скинов и сайт проекта.',
+      'My first serious software project: a Telegram bot with filters and notifications for the CS2 skin market, plus the project website.',
     ),
     stack: ['Python', 'SQLite', 'Telegram API'],
     href: '/projects/prime-market/',
   },
   {
     id: 'search',
-    date: L('Октябрь 2026', 'October 2026'),
+    date: L('окт. 2026', 'Oct 2026'),
     title: L('ReSearchify', 'ReSearchify'),
     description: L(
-      'Не устроила скорость привычного поиска — начал собственный движок по исходному коду. Сейчас занимаюсь индексом, поиском по словам и фразам, проверкой корректности и скорости на больших проектах.',
-      'Everyday search felt too slow, so I started a source-code search engine. The current work focuses on indexing, word and phrase search, correctness and performance on large projects.',
+      'Движок поиска по исходному коду на C++20 с CLI `rs`. Опубликованы preview-релизы под пять платформ, есть JSON и MCP для ИИ-агентов. Параллельно выпустил сборки ShareX для macOS и Linux.',
+      'A C++20 source-code search engine with the `rs` CLI. Preview releases for five platforms, JSON and MCP for AI agents. In parallel I shipped ShareX builds for macOS and Linux.',
     ),
-    stack: ['C++20', 'CLI', 'Regex'],
+    stack: ['C++20', 'CMake', 'MCP', 'C#'],
     href: '/projects/researchify/',
   },
   {
@@ -54,15 +54,15 @@ const steps: JourneyStep[] = [
     date: L('Сейчас', 'Now'),
     title: L('Новые инструменты', 'New tools'),
     description: L(
-      'Продолжаю Predict и отдельный Researchify Web для интернет-поиска локальными моделями. Параллельно работаю над интерфейсами, тестирую изменения и возвращаюсь к деталям, которые мешают пользоваться продуктом.',
-      'I am continuing Predict and the separate Researchify Web tool for local-model web research. Alongside them I work on interfaces, test changes and refine the details that make products harder to use.',
+      'Развиваю Predict — игровой инструмент на C++ и Dear ImGui — и прототипирую ReSearchify Web: интернет-поиск и чтение источников для локальных LLM.',
+      'Building Predict — a gaming tool in C++ and Dear ImGui — and prototyping ReSearchify Web: web search and source reading for local LLMs.',
     ),
-    stack: ['Predict', 'Researchify Web'],
+    stack: ['Predict', 'ReSearchify Web'],
     href: '/projects/',
     linkLabel: L('Все проекты', 'All projects'),
   },
 ];
-const next = [
+const next: { title: string; href?: string; copy: ReturnType<typeof L> }[] = [
   {
     title: 'Prime Market',
     href: '/projects/prime-market/',
@@ -75,31 +75,30 @@ const next = [
     title: 'ReSearchify',
     href: '/projects/researchify/',
     copy: L(
-      'Быстрее буквальный поиск, меньше индекс и проверяемые сравнения на больших проектах.',
-      'Faster literal search, a smaller index and reproducible comparisons on large codebases.',
+      'Быстрее широкие regex и буквальный поиск, меньше индекс.',
+      'Faster broad regex and literal search, a smaller index.',
     ),
   },
   {
-    title: 'Researchify Web',
-    href: '/projects/researchify-web/',
+    title: 'ReSearchify Web',
     copy: L(
-      'Доработка поиска и чтения источников для локальных моделей перед релизом.',
-      'Refining source discovery and reading for local models before release.',
+      'Отдельный от ReSearchify проект: поиск в интернете, получение страниц и передача текста локальной модели. Стек ещё выбираю.',
+      'Separate from ReSearchify: web search, page retrieval and handing clean text to a local model. Stack still being chosen.',
     ),
   },
   {
     title: 'Predict',
     href: '/projects/predict/',
     copy: L(
-      'Разработка функциональности и интерфейса. Публичный показ — по мере готовности.',
-      'Continuing features and interface work, with a public presentation when ready.',
+      'Функциональность и интерфейс. Публичная демонстрация — после релиза.',
+      'Features and interface. Public demo after release.',
     ),
   },
 ];
 export default function Roadmap() {
   const { t } = useLanguage();
   return (
-    <div className="v8-roadmap-page">
+    <>
       <PageHeading
         title={t(L('Путь и планы.', 'Work in progress.'))}
         desc={t(
@@ -109,7 +108,7 @@ export default function Roadmap() {
           ),
         )}
         side={
-          <div className="v8-roadmap-jumps">
+          <div className="pill-links">
             <a href="#journey">
               {t(L('Мой опыт', 'The journey'))}
               <ArrowDown size={16} aria-hidden="true" />
@@ -122,22 +121,33 @@ export default function Roadmap() {
         }
       />
       <Timeline items={steps} />
-      <section className="shell v8-next-section" id="next">
-        <header>
+      <section className="shell section" id="next">
+        <header className="section-head">
           <h2>{t(L('Дальше — больше практики.', 'Next: keep building.'))}</h2>
         </header>
-        <div className="v8-next-list">
-          {next.map((item) => (
-            <Link to={item.href} key={item.title}>
-              <div>
-                <h3>{item.title}</h3>
-                <p>{t(item.copy)}</p>
+        <div className="next-list">
+          {next.map((item) => {
+            const body = (
+              <>
+                <div>
+                  <h3>{item.title}</h3>
+                  <p>{t(item.copy)}</p>
+                </div>
+                {item.href && <ArrowUpRight size={21} strokeWidth={1.5} aria-hidden="true" />}
+              </>
+            );
+            return item.href ? (
+              <Link to={item.href} key={item.title} data-reveal>
+                {body}
+              </Link>
+            ) : (
+              <div key={item.title} data-reveal>
+                {body}
               </div>
-              <ArrowUpRight size={21} strokeWidth={1.5} aria-hidden="true" />
-            </Link>
-          ))}
+            );
+          })}
         </div>
       </section>
-    </div>
+    </>
   );
 }

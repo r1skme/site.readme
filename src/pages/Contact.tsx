@@ -10,112 +10,114 @@ import {
   Music2,
 } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
-import { PageHeading, Eyebrow } from '@/components/Primitives';
+import { PageHeading, SpotlightCard } from '@/components/Primitives';
+
+const DISCORD = 'r1sk.gg';
+
 export default function Contact() {
   const { t } = useLanguage();
-  const [copied, setCopied] = useState(false),
-    [error, setError] = useState(false);
+  const [state, setState] = useState<'idle' | 'copied' | 'error'>('idle');
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   useEffect(() => () => clearTimeout(timer.current), []);
   const copy = async () => {
     clearTimeout(timer.current);
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText('r1sk.gg');
-      setCopied(true);
-      setError(false);
-      timer.current = setTimeout(() => setCopied(false), 2800);
+      await navigator.clipboard.writeText(DISCORD);
+      setState('copied');
     } catch {
-      setCopied(false);
-      setError(true);
-      timer.current = setTimeout(() => setError(false), 4000);
+      setState('error');
     }
+    timer.current = setTimeout(() => setState('idle'), 3000);
   };
   return (
     <>
       <PageHeading
-        label={t(L('06 / КОНТАКТЫ', '06 / CONTACT'))}
         title={
           <>
-            {t(L('Есть задача?', 'Got a project?'))}
+            {t(L('Есть задача?', 'Got a task?'))}
             <br />
-            <span className="muted-headline">{t(L('Давай обсудим.', 'Let’s talk.'))}</span>
+            <span className="muted">{t(L('Давай обсудим.', 'Let’s talk.'))}</span>
           </>
         }
         desc={t(
           L(
-            'Связаться можно напрямую. Расскажи, над чем работаешь и чем я могу быть полезен.',
-            'You can reach me directly. Tell me what you are building and how I might help.',
+            'Расскажи, что нужно сделать, — отвечу и скажу, чем могу помочь. Быстрее всего в Telegram.',
+            'Tell me what needs to be done — I’ll reply and say how I can help. Telegram is the fastest.',
           ),
         )}
       />
-      <section className="contact-main shell">
-        <a
-          className="contact-main-card"
-          href="https://t.me/R1SKME"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <div className="contact-main-top">
-            <span>
-              <Send size={19} /> TELEGRAM
+      <section className="shell contacts">
+        <SpotlightCard className="contact contact-main">
+          <a
+            href="https://t.me/R1SKME"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="contact-link"
+          >
+            <span className="contact-label">
+              <Send size={18} aria-hidden="true" /> Telegram
             </span>
-            <ArrowUpRight size={27} />
-          </div>
-          <strong>@R1SKME</strong>
-          <p>{t(L('Основной способ связи', 'Preferred way to reach me'))}</p>
-        </a>
-        <div className="contact-secondary">
-          <button type="button" onClick={copy} className="contact-secondary-card">
-            <span>
-              <MessageCircle size={20} /> DISCORD
+            <strong>@R1SKME</strong>
+            <span className="contact-action">
+              {t(L('Основной способ связи', 'Preferred way to reach me'))}
+              <ArrowUpRight size={18} aria-hidden="true" />
             </span>
-            <strong>r1sk.gg</strong>
-            <span className="contact-card-action" role="status" aria-live="polite">
-              {copied ? (
+          </a>
+        </SpotlightCard>
+        <SpotlightCard className="contact">
+          <button type="button" onClick={copy} className="contact-link">
+            <span className="contact-label">
+              <MessageCircle size={18} aria-hidden="true" /> Discord
+            </span>
+            <strong>{DISCORD}</strong>
+            <span className="contact-action" role="status" aria-live="polite">
+              {state === 'copied' ? (
                 <>
-                  <Check size={16} />
+                  <Check size={16} aria-hidden="true" />
                   {t(L('Скопировано', 'Copied'))}
                 </>
               ) : (
                 <>
-                  <Copy size={16} />
-                  {error
+                  <Copy size={16} aria-hidden="true" />
+                  {state === 'error'
                     ? t(L('Не удалось скопировать', 'Could not copy'))
                     : t(L('Скопировать ник', 'Copy username'))}
                 </>
               )}
             </span>
           </button>
+        </SpotlightCard>
+        <SpotlightCard className="contact">
           <a
-            className="contact-secondary-card"
             href="https://github.com/r1skme"
             target="_blank"
             rel="noopener noreferrer"
+            className="contact-link"
           >
-            <span>
-              <Github size={20} /> GITHUB
+            <span className="contact-label">
+              <Github size={18} aria-hidden="true" /> GitHub
             </span>
             <strong>r1skme</strong>
-            <span className="contact-card-action">
-              {t(L('Открыть профиль', 'View profile'))}
-              <ArrowUpRight size={16} />
+            <span className="contact-action">
+              {t(L('Код проектов', 'Project source'))}
+              <ArrowUpRight size={16} aria-hidden="true" />
             </span>
           </a>
-        </div>
+        </SpotlightCard>
       </section>
-      <section className="contact-social shell">
-        <Eyebrow>{t(L('ТАКЖЕ В СЕТИ', 'ALSO ONLINE'))}</Eyebrow>
-        <div>
+      <section className="shell section-tight">
+        <h2 className="eyebrow">{t(L('Также в сети', 'Also online'))}</h2>
+        <div className="pill-links">
           <a href="https://youtube.com/@r1sk-gg" target="_blank" rel="noopener noreferrer">
-            <Youtube size={23} />
-            <span>YouTube / @r1sk-gg</span>
-            <ArrowUpRight />
+            <Youtube size={18} aria-hidden="true" />
+            YouTube · @r1sk-gg
+            <ArrowUpRight size={16} aria-hidden="true" />
           </a>
           <a href="https://www.tiktok.com/@r1skme.hvh" target="_blank" rel="noopener noreferrer">
-            <Music2 size={23} />
-            <span>TikTok / @r1skme.hvh</span>
-            <ArrowUpRight />
+            <Music2 size={18} aria-hidden="true" />
+            TikTok · @r1skme.hvh
+            <ArrowUpRight size={16} aria-hidden="true" />
           </a>
         </div>
       </section>

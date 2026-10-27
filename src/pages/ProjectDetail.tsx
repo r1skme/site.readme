@@ -1,127 +1,131 @@
 import { Link, useParams } from 'react-router-dom';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
-import type { CSSProperties } from 'react';
+import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
-import { projects } from '@/data/projects';
+import { useMotionPreference } from '@/lib/motion';
+import { projects, findProject } from '@/data/projects';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
+import {
+  ProjectLinks,
+  RichText,
+  SpotlightCard,
+  StackList,
+  StatusBadge,
+} from '@/components/Primitives';
+import { Terminal } from '@/components/Terminal';
+import NotFound from '@/components/NotFound';
 
 export default function ProjectDetail() {
   const { slug } = useParams();
   const { t } = useLanguage();
-  const project = projects.find((p) => p.slug === slug);
-  if (!project)
-    return (
-      <section className="shell no-project">
-        <h1>404</h1>
-        <Link to="/projects/">{t(L('Вернуться к проектам', 'Back to projects'))}</Link>
-      </section>
-    );
+  const { paused } = useMotionPreference();
+  const project = findProject(slug);
+  if (!project) return <NotFound backTo="/projects/" />;
   const next = projects[(projects.indexOf(project) + 1) % projects.length];
+  const story = [
+    { title: L('Зачем', 'Why'), text: project.challenge },
+    { title: L('Как устроено', 'How it works'), text: project.approach },
+    { title: L('Где сейчас', 'Where it is now'), text: project.outcome },
+  ];
   return (
     <>
-      <section
-        className="shell v6-case-header v7-case-header"
-        style={{ '--project-color': project.accent } as CSSProperties}
-      >
-        <Link className="v6-case-back" to="/projects/">
-          <ArrowLeft size={17} />
+      <section className="shell case-head">
+        <Link className="back-link" to="/projects/">
+          <ArrowLeft size={17} aria-hidden="true" />
           {t(L('Все проекты', 'All projects'))}
         </Link>
-        {project.slug === 'prime-market' && (
-          <div className="v7-prime-wordmark">
-            <img
-              src={import.meta.env.BASE_URL + 'assets/prime-wordmark.svg'}
-              width="475"
-              height="133"
-              alt="PRIME"
-            />
-          </div>
-        )}
-        <h1 className={project.slug === 'prime-market' ? 'sr-only' : undefined}>
+        <m.h1
+          className={'case-title case-' + project.slug}
+          initial={paused ? false : { opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: paused ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
           <ProjectIdentity name={project.name} slug={project.slug} />
-        </h1>
-        <p className="v6-case-tagline">{t(project.tagline)}</p>
-        <div className="v7-tech-intro">
-          <p>{t(project.summary)}</p>
-          <dl className="v7-project-metadata">
-            <div>
-              <dt>{t(L('Период работы', 'Timeline'))}</dt>
-              <dd>{t(project.since)}</dd>
-            </div>
-            <div>
-              <dt>{t(L('Состояние', 'Status'))}</dt>
-              <dd>
-                {t(
-                  L(
-                    project.status === 'building' ? 'В разработке' : 'Приостановлен',
-                    project.status === 'building' ? 'In development' : 'Paused',
-                  ),
-                )}
-              </dd>
-            </div>
+        </m.h1>
+        <p className="case-tagline">{t(project.tagline)}</p>
+        <div className="case-intro">
+          <p className="lead">
+            <RichText text={t(project.summary)} />
+          </p>
+          <div className="case-side">
+            <dl className="case-meta">
+              <div>
+                <dt>{t(L('Период', 'Period'))}</dt>
+                <dd>{t(project.period)}</dd>
+              </div>
+              <div>
+                <dt>{t(L('Статус', 'Status'))}</dt>
+                <dd>
+                  <StatusBadge status={project.status} />
+                </dd>
+              </div>
+            </dl>
+            <ProjectLinks project={project} />
+          </div>
+        </div>
+      </section>
+
+      {project.facts && (
+        <section className="shell section-tight" aria-labelledby="facts-title">
+          <h2 id="facts-title" className="eyebrow">
+            {t(L('Замеры из README', 'Measurements from the README'))}
+          </h2>
+          <dl className="facts">
+            {project.facts.map((f) => (
+              <SpotlightCard key={f.value} className="fact">
+                <dt>{f.value}</dt>
+                <dd>{t(f.label)}</dd>
+              </SpotlightCard>
+            ))}
           </dl>
-        </div>
+          {project.footnote && <p className="footnote">{t(project.footnote)}</p>}
+        </section>
+      )}
+
+      {project.commands && (
+        <section className="shell section-tight try" aria-labelledby="try-title">
+          <div>
+            <h2 id="try-title">{t(L('Как попробовать', 'Try it'))}</h2>
+            <p className="lead">
+              {t(
+                L(
+                  'Скачай архив под свою систему со страницы релизов, распакуй и запусти из корня проекта:',
+                  'Download the archive for your system from the releases page, unpack it and run from your project root:',
+                ),
+              )}
+            </p>
+          </div>
+          <Terminal lines={project.commands} typing={false} />
+        </section>
+      )}
+
+      <section className="shell section-tight" aria-labelledby="stack-title">
+        <h2 id="stack-title" className="eyebrow">
+          {t(L('Технологии', 'Stack'))}
+        </h2>
+        <StackList items={project.stack} />
+        {project.footnote && !project.facts && <p className="footnote">{t(project.footnote)}</p>}
       </section>
-      <section className="shell v7-technology-section">
-        <h2>{t(L('Технологии и инструменты', 'Stack & tools'))}</h2>
-        <ul>
-          {project.stack.map((v) => (
-            <li key={v}>{v}</li>
-          ))}
-        </ul>
-        {project.slug === 'predict' && (
-          <p className="v7-stack-caveat">
-            {t(
-              L(
-                'Указан стек интерфейсного прототипа; технические детали будущего релиза пока закрыты.',
-                'UI prototype stack is shown; unreleased product implementation details remain private.',
-              ),
-            )}
-          </p>
-        )}
-        {project.slug === 'researchify-web' && (
-          <p className="v7-stack-caveat">
-            {t(
-              L(
-                'Проект на раннем этапе: окончательный технический стек ещё не определён.',
-                'Early-stage project: final implementation stack is not yet confirmed.',
-              ),
-            )}
-          </p>
-        )}
+
+      <section className="shell case-story">
+        {story.map((s, i) => (
+          <article key={i} data-reveal>
+            <h2>
+              <span aria-hidden="true">0{i + 1}</span>
+              {t(s.title)}
+            </h2>
+            <p>
+              <RichText text={t(s.text)} />
+            </p>
+          </article>
+        ))}
       </section>
-      <section className="shell v6-case-content v7-case-content">
-        <div className="v6-case-story">
-          <article>
-            <h2>{t(L('Зачем создавался', 'The problem'))}</h2>
-            <p>{t(project.challenge)}</p>
-          </article>
-          <article>
-            <h2>{t(L('Как развивается', 'Development'))}</h2>
-            <p>{t(project.approach)}</p>
-          </article>
-          <article>
-            <h2>{t(L('Текущий результат', 'Current state'))}</h2>
-            <p>{t(project.outcome)}</p>
-          </article>
-        </div>
-        {project.link && (
-          <a
-            className="v6-case-visit"
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span>{t(project.linkText || L('Открыть сайт', 'Project website'))}</span>
-            <ArrowUpRight size={24} />
-          </a>
-        )}
-      </section>
-      <section className="shell v6-case-next">
-        <Link to={'/projects/' + next.slug + '/'}>
+
+      <section className="shell section-tight">
+        <Link to={`/projects/${next.slug}/`} className="next-project" data-reveal>
           <span>{t(L('Следующий проект', 'Next project'))}</span>
           <strong>{next.name}</strong>
-          <ArrowUpRight size={27} />
+          <ArrowUpRight size={28} aria-hidden="true" />
         </Link>
       </section>
     </>

@@ -1,216 +1,294 @@
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Github, Send } from 'lucide-react';
 import { m } from 'motion/react';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
-import { AnimatedLink } from '@/components/Primitives';
-import TextLoop from '@/components/ui/text-loop';
+import { ActionLink, SpotlightCard, StatusBadge, StackList } from '@/components/Primitives';
 import { ProjectIdentity } from '@/components/ProjectIdentity';
-const subjects = { ru: ['инструменты', 'проекты', 'видео'], en: ['tools', 'projects', 'videos'] };
-const focus = [
-  {
-    name: L('Программирование', 'Software & automation'),
-    description: L(
-      'Python, Telegram-боты, API и автоматизация. Работаю над логикой, проверкой функций и поиском причин ошибок.',
-      'Python, Telegram bots, APIs and automation. I work on workflows, feature testing and understanding what breaks.',
-    ),
-    url: '/skills/',
-  },
-  {
-    name: L('Продукты', 'Products & interfaces'),
-    description: L(
-      'Собственные инструменты: от задачи и сценариев использования до интерфейса и следующих версий.',
-      'My own tools, from a problem and user flows to the interface and the next iteration.',
-    ),
-    url: '/projects/',
-  },
-  {
-    name: L('Видеомонтаж', 'Video editing'),
-    description: L(
-      'Около трёх лет в DaVinci Resolve. Игровые эдиты, ритм, анимация, цвет и работа со звуком.',
-      'About three years in DaVinci Resolve. Gaming edits, rhythm, animation, colour and sound.',
-    ),
-    url: '/media/',
-  },
+import { Terminal } from '@/components/Terminal';
+import { CountUp } from '@/components/CountUp';
+import { projects, findProject } from '@/data/projects';
+import { role, capabilities, approach } from '@/data/profile';
+
+const researchify = findProject('researchify')!;
+const featured = ['researchify', 'prime-market', 'predict', 'sharex-macos-linux'].map(
+  (slug) => findProject(slug)!,
+);
+const stack = [
+  'Python',
+  'C++20',
+  'SQLite',
+  'Telegram Bot API',
+  'CMake',
+  'GitHub Actions',
+  'Regex',
+  'MCP',
+  'Dear ImGui',
+  'React',
+  'DaVinci Resolve',
+  'Fusion',
 ];
-const selection = [
-  {
-    slug: 'prime-market',
-    name: 'Prime Market',
-    desc: L(
-      'Автоматизация задач на рынке игровых предметов.',
-      'Automation for game-item market workflows.',
-    ),
-  },
-  {
-    slug: 'predict',
-    name: 'Predict',
-    desc: L(
-      'Программный продукт с собственной логикой и интерфейсом.',
-      'A software product with its own logic and interface.',
-    ),
-  },
-  {
-    slug: 'researchify',
-    name: 'ReSearchify',
-    desc: L(
-      'Локальный поиск по исходному коду на C++20.',
-      'Local source-code search built with C++20.',
-    ),
-  },
-];
+
+function HeroTitle() {
+  const { paused } = useMotionPreference();
+  return (
+    <h1 className="hero-title" aria-label="R1SK">
+      {'R1SK'.split('').map((ch, i) => (
+        <m.span
+          key={i}
+          aria-hidden="true"
+          initial={paused ? false : { y: '0.6em', opacity: 0, filter: 'blur(10px)' }}
+          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+          transition={{
+            duration: paused ? 0 : 0.8,
+            delay: paused ? 0 : 0.08 * i,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          {ch}
+        </m.span>
+      ))}
+      <m.span
+        aria-hidden="true"
+        className="hero-dot"
+        initial={paused ? false : { scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{
+          duration: paused ? 0 : 0.5,
+          delay: paused ? 0 : 0.45,
+          type: 'spring',
+          stiffness: 260,
+        }}
+      >
+        .
+      </m.span>
+    </h1>
+  );
+}
+
 export default function Home() {
-  const { lang, t } = useLanguage(),
-    { paused } = useMotionPreference();
+  const { t } = useLanguage();
+  const { paused } = useMotionPreference();
+  const fade = (delay: number) =>
+    paused
+      ? {}
+      : {
+          initial: { opacity: 0, y: 16 },
+          animate: { opacity: 1, y: 0 },
+          transition: { duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] as const },
+        };
   return (
     <>
-      <section className="home-hero shell v6-hero v8-hero">
-        <div className="home-hero-content">
-          <div className="home-hero-main">
-            <div className="v6-hero-identity">
-              <m.h1
-                initial={paused ? false : { opacity: 0, y: 25 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: paused ? 0 : 0.75, ease: [0.22, 1, 0.36, 1] }}
-              >
-                R1SK<span className="hero-point">.</span>
-              </m.h1>
-              <div className="hero-rotator">
-                <TextLoop
-                  staticText={t(L('Создаю', 'I build'))}
-                  rotatingTexts={subjects[lang]}
-                  interval={3400}
-                />
-              </div>
-            </div>
-            <div className="hero-right">
-              <p className="hero-thought">
-                {t(
-                  L(
-                    'Занимаюсь программированием, автоматизацией и игровым видеоконтентом. Развиваю свои инструменты — от задачи и интерфейса до проверки результата.',
-                    'I work on programming, automation and gaming video content. I develop my own tools, from the problem and interface to testing the result.',
-                  ),
-                )}
-              </p>
-              <div className="home-actions">
-                <AnimatedLink to="/projects/">{t(L('Мои проекты', 'My projects'))}</AnimatedLink>
-                <Link className="link-subtle" to="/about/">
-                  {t(L('Обо мне', 'About me'))}
-                  <ArrowUpRight size={17} aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </div>
+      <section className="hero shell">
+        <div className="hero-copy">
+          <m.p className="hero-now" {...fade(0.05)}>
+            <span className="pulse" aria-hidden="true" />
+            {t(L('Сейчас:', 'Now:'))} <Link to="/projects/researchify/">ReSearchify</Link>
+            <span aria-hidden="true"> · </span>
+            <Link to="/projects/prime-market/">Prime Market</Link>
+          </m.p>
+          <HeroTitle />
+          <m.p className="hero-role" {...fade(0.35)}>
+            {t(role)}
+          </m.p>
+          <m.p className="hero-pitch" {...fade(0.45)}>
+            {t(
+              L(
+                'Делаю инструменты, которые убирают рутину и ускоряют работу, — и довожу их до релиза: от сценария и интерфейса до сборок под Windows, macOS и Linux.',
+                'I build tools that remove routine and speed up work — and ship them: from the workflow and interface to builds for Windows, macOS and Linux.',
+              ),
+            )}
+          </m.p>
+          <m.div className="hero-actions" {...fade(0.55)}>
+            <ActionLink to="/projects/">{t(L('Проекты', 'Projects'))}</ActionLink>
+            <ActionLink
+              to="https://github.com/r1skme"
+              variant="secondary"
+              icon={<Github size={18} />}
+            >
+              GitHub
+            </ActionLink>
+            <ActionLink to="/about/" variant="text">
+              {t(L('Обо мне', 'About me'))}
+            </ActionLink>
+          </m.div>
         </div>
-      </section>
-      <section className="shell v9-home-about v9-section" aria-labelledby="home-about-title">
-        <div>
-          <h2 id="home-about-title">
-            {t(L('Создаю то, чем хочу пользоваться сам.', 'Building tools I want to use.'))}
-          </h2>
-          <Link to="/about/">
-            {t(L('Подробнее обо мне', 'More about me'))}
-            <ArrowUpRight size={19} aria-hidden="true" />
+        <m.div
+          className="hero-visual"
+          initial={paused ? false : { opacity: 0, y: 30, rotateX: 12 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{
+            duration: paused ? 0 : 1,
+            delay: paused ? 0 : 0.35,
+            ease: [0.22, 1, 0.36, 1],
+          }}
+        >
+          <Terminal lines={researchify.commands!.slice(0, 5)} />
+          <Link to="/projects/researchify/" className="hero-chip hero-chip-a">
+            <strong>19×</strong>
+            <span>{t(L('быстрее v1 на редком термине', 'faster than v1 on a rare term'))}</span>
           </Link>
-        </div>
-        <div className="v9-reading-copy">
-          <p>
-            {t(
-              L(
-                'Prime Market появился из желания автоматизировать повторяющиеся действия, а ReSearchify — сделать поиск по коду удобнее и быстрее. Мне интересно разбираться в устройстве продукта: как связаны данные, настройки, интерфейс и поведение программы.',
-                'Prime Market started with repetitive tasks I wanted to automate; ReSearchify with a need for better source-code search. I like understanding how a product works: how data, settings, the interface and program behaviour connect.',
-              ),
-            )}
-          </p>
-          <p>
-            {t(
-              L(
-                'Работаю с требованиями, проверкой функций и баг-репортами, развиваю навыки Python и C++20. Параллельно около трёх лет монтирую в DaVinci Resolve. Опыт игровых проектов и поддержки покупателей помогает смотреть на результат не только со стороны автора.',
-                'I work with requirements, feature testing and bug reports while developing my Python and C++20 skills. In parallel, I have edited in DaVinci Resolve for around three years. Game projects and buyer support help me see the result from more than its creator’s perspective.',
-              ),
-            )}
-          </p>
-        </div>
+          <Link to="/projects/researchify/" className="hero-chip hero-chip-b">
+            <strong>5</strong>
+            <span>{t(L('платформ в релизах', 'release platforms'))}</span>
+          </Link>
+        </m.div>
       </section>
-      <section className="shell v6-focus-section">
-        <header className="v6-section-intro">
-          <h2>{t(L('Чем занимаюсь', 'What I do'))}</h2>
+
+      <div className="marquee" aria-hidden="true">
+        <div className="marquee-track">
+          {[...stack, ...stack].map((item, i) => (
+            <span key={i}>{item}</span>
+          ))}
+        </div>
+      </div>
+
+      <section className="shell section" aria-labelledby="can-title">
+        <header className="section-head" data-reveal>
+          <h2 id="can-title">{t(L('Чем могу быть полезен', 'How I can help'))}</h2>
+          <p className="lead">
+            {t(
+              L(
+                'Каждый пункт подтверждён проектом, который можно открыть и проверить.',
+                'Every item is backed by a project you can open and check.',
+              ),
+            )}
+          </p>
         </header>
-        <div className="v6-focus-list">
-          {focus.map((v, i) => (
-            <Link key={i} to={v.url} className="v6-focus-row">
-              <h3>{t(v.name)}</h3>
-              <p>{t(v.description)}</p>
-              <ArrowUpRight size={22} strokeWidth={1.4} aria-hidden="true" />
-            </Link>
+        <div className="capabilities">
+          {capabilities.map((c, i) => (
+            <SpotlightCard key={i} as="article" className="capability">
+              <span className="capability-index">0{i + 1}</span>
+              <h3>{t(c.title)}</h3>
+              <p>{t(c.text)}</p>
+              <StackList items={c.tools} />
+              <Link to={c.proof.href} className="capability-proof">
+                {typeof c.proof.label === 'string' ? c.proof.label : t(c.proof.label)}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </Link>
+            </SpotlightCard>
           ))}
         </div>
       </section>
-      <section className="shell v6-selection-section">
-        <header className="v6-section-intro">
-          <h2>{t(L('Мои проекты', 'Selected projects'))}</h2>
-          <Link to="/projects/" className="v6-inline-link">
-            {t(L('Все проекты', 'All projects'))}
-            <ArrowRight size={18} aria-hidden="true" />
+
+      <section className="shell section" aria-labelledby="work-title">
+        <header className="section-head section-head-row" data-reveal>
+          <h2 id="work-title">{t(L('Проекты', 'Projects'))}</h2>
+          <Link to="/projects/" className="text-link">
+            {t(L('Все проекты', 'All projects'))} ({projects.length})
+            <ArrowRight size={17} aria-hidden="true" />
           </Link>
         </header>
-        <div className="v6-feature-list">
-          {selection.map((v) => (
-            <Link className="v6-feature-row" to={'/projects/' + v.slug + '/'} key={v.slug}>
-              <div>
+        <div className="featured">
+          {featured.map((p, i) => (
+            <SpotlightCard
+              key={p.slug}
+              as="article"
+              className={'feature' + (i === 0 ? ' feature-main' : '')}
+            >
+              <Link to={`/projects/${p.slug}/`} className="feature-link">
+                <div className="feature-top">
+                  <StatusBadge status={p.status} />
+                  {p.links?.repo && <Github size={17} aria-label="GitHub" />}
+                </div>
                 <h3>
-                  <ProjectIdentity name={v.name} slug={v.slug} arrow />
+                  <ProjectIdentity name={p.name} slug={p.slug} arrow />
                 </h3>
-                <p>{t(v.desc)}</p>
-              </div>
-            </Link>
+                <p>{t(p.tagline)}</p>
+                {i === 0 && p.facts && (
+                  <dl className="feature-facts">
+                    {p.facts.map((f) => (
+                      <div key={f.value}>
+                        <dt>{f.value}</dt>
+                        <dd>{t(f.label)}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                )}
+                <StackList items={p.stack.slice(0, i === 0 ? 6 : 3)} />
+              </Link>
+            </SpotlightCard>
           ))}
         </div>
       </section>
-      <section className="shell v7-roadmap-callout v8-roadmap-callout">
-        <div>
-          <h2>{t(L('Путь и планы', 'How I got here'))}</h2>
-          <p>
+
+      <section className="shell numbers" aria-label={t(L('В цифрах', 'In numbers'))}>
+        {[
+          {
+            value: '150K+',
+            label: L('просмотров четырёх TikTok-роликов', 'views on four TikTok posts'),
+            href: '/media/',
+          },
+          {
+            value: '3',
+            label: L('года в DaVinci Resolve', 'years in DaVinci Resolve'),
+            href: '/media/',
+          },
+          {
+            value: '5',
+            label: L('платформ в релизах ReSearchify', 'ReSearchify release platforms'),
+            href: '/projects/researchify/',
+          },
+          {
+            value: '6',
+            label: L('собственных проектов', 'projects of my own'),
+            href: '/projects/',
+          },
+        ].map((n) => (
+          <Link key={n.value} to={n.href} className="number" data-reveal>
+            <strong>
+              <CountUp value={n.value} />
+            </strong>
+            <span>{t(n.label)}</span>
+          </Link>
+        ))}
+      </section>
+
+      <section className="shell section" aria-labelledby="how-title">
+        <header className="section-head" data-reveal>
+          <h2 id="how-title">{t(L('Как работаю', 'How I work'))}</h2>
+        </header>
+        <ol className="steps">
+          {approach.map((a, i) => (
+            <li key={i} data-reveal>
+              <span className="step-index">{i + 1}</span>
+              <h3>{t(a.title)}</h3>
+              <p>{t(a.text)}</p>
+            </li>
+          ))}
+        </ol>
+        <Link to="/roadmap/" className="roadmap-line" data-reveal>
+          <span>{t(L('Путь и планы', 'Roadmap'))}</span>
+          <span className="roadmap-line-text">
             {t(
               L(
-                'Что дали первые запуски и куда развиваются мои проекты.',
-                'What the early launches taught me and where my projects go next.',
+                'Что дали первые запуски и что дальше',
+                'What early launches taught me and what is next',
               ),
             )}
-          </p>
-        </div>
-        <Link to="/roadmap/">
-          {t(L('Roadmap', 'Explore roadmap'))}
-          <ArrowUpRight size={22} aria-hidden="true" />
+          </span>
+          <ArrowUpRight size={20} aria-hidden="true" />
         </Link>
       </section>
-      <section className="shell v6-proof">
-        <div className="v6-proof-primary">
-          <strong>150K+</strong>
-          <p>
-            {t(
-              L(
-                'просмотров четырёх TikTok-роликов на двух аккаунтах',
-                'views across four TikTok posts from two accounts',
-              ),
-            )}
-          </p>
+
+      <section className="shell cta" data-reveal>
+        <h2>{t(L('Есть задача? Давай обсудим.', 'Have a task? Let’s talk.'))}</h2>
+        <p className="lead">
+          {t(
+            L(
+              'Пиши в Telegram — отвечу и скажу, чем могу помочь.',
+              'Message me on Telegram — I’ll reply and tell you how I can help.',
+            ),
+          )}
+        </p>
+        <div className="hero-actions">
+          <ActionLink to="https://t.me/R1SKME" icon={<Send size={18} />}>
+            Telegram @R1SKME
+          </ActionLink>
+          <ActionLink to="/contact/" variant="secondary">
+            {t(L('Все контакты', 'All contacts'))}
+          </ActionLink>
         </div>
-        <div className="v6-proof-secondary">
-          <strong>3 {t(L('года', 'years'))}</strong>
-          <p>DaVinci Resolve</p>
-          <Link to="/media/">
-            {t(L('Посмотреть работы', 'Watch my work'))}
-            <ArrowUpRight size={17} aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
-      <section className="shell v6-home-cta">
-        <div>
-          <h2>{t(L('Есть задача или идея?', 'Have a project in mind?'))}</h2>
-          <p>{t(L('Напиши — обсудим.', 'Get in touch.'))}</p>
-        </div>
-        <AnimatedLink to="/contact/">{t(L('Связаться', 'Get in touch'))}</AnimatedLink>
       </section>
     </>
   );

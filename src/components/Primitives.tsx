@@ -1,71 +1,73 @@
-import type { ReactNode } from 'react';
+import { useRef, type ReactNode, type PointerEvent } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowUpRight, ArrowRight } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Github, Download, ExternalLink } from 'lucide-react';
 import { m } from 'motion/react';
-import { GlowCard } from '@/components/ui/spotlight-card';
 import { prefetchPage } from '@/lib/routes';
 import { useMotionPreference } from '@/lib/motion';
-// Legacy section labels are deliberately not rendered: the actual heading carries the hierarchy.
-export function Eyebrow(_props: { children: ReactNode; index?: string }) {
-  return null;
-}
+import { useLanguage, L } from '@/lib/i18n';
+import { statusLabel, type Project, type ProjectStatus } from '@/data/projects';
+
 export function PageHeading({
   title,
   desc,
   side,
 }: {
-  label?: string;
   title: ReactNode;
-  desc?: string;
+  desc?: ReactNode;
   side?: ReactNode;
 }) {
   const { paused } = useMotionPreference();
   return (
-    <section className="interior-heading shell">
-      <div className="interior-heading-grid">
-        <m.h1
-          initial={paused ? false : { y: 14, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: paused ? 0 : 0.58, ease: [0.22, 1, 0.36, 1] }}
-        >
-          {title}
-        </m.h1>
-        {(desc || side) && (
-          <div className="interior-heading-side">
-            {desc && <p>{desc}</p>}
-            {side}
-          </div>
-        )}
-      </div>
+    <section className="page-heading shell">
+      <m.h1
+        initial={paused ? false : { y: 18, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: paused ? 0 : 0.6, ease: [0.22, 1, 0.36, 1] }}
+      >
+        {title}
+      </m.h1>
+      {(desc || side) && (
+        <div className="page-heading-side">
+          {desc && <p className="lead">{desc}</p>}
+          {side}
+        </div>
+      )}
     </section>
   );
 }
-export function AnimatedLink({
+
+type ButtonVariant = 'primary' | 'secondary' | 'text';
+
+export function ActionLink({
   to,
   children,
-  external = false,
+  variant = 'primary',
+  icon,
   className = '',
 }: {
   to: string;
   children: ReactNode;
-  external?: boolean;
+  variant?: ButtonVariant;
+  icon?: ReactNode;
   className?: string;
 }) {
+  const external = /^https?:/.test(to);
   const content = (
     <>
-      <span className="button-label">{children}</span>
-      <span className="button-icon" aria-hidden="true">
-        {external ? <ArrowUpRight size={18} /> : <ArrowRight size={18} />}
+      <span>{children}</span>
+      <span className="btn-icon" aria-hidden="true">
+        {icon ?? (external ? <ArrowUpRight size={18} /> : <ArrowRight size={18} />)}
       </span>
     </>
   );
+  const cls = `btn btn-${variant} ${className}`;
   return external ? (
-    <a className={'action-button ' + className} href={to} target="_blank" rel="noopener noreferrer">
+    <a className={cls} href={to} target="_blank" rel="noopener noreferrer">
       {content}
     </a>
   ) : (
     <Link
-      className={'action-button ' + className}
+      className={cls}
       to={to}
       onPointerEnter={() => prefetchPage(to)}
       onFocus={() => prefetchPage(to)}
@@ -74,21 +76,88 @@ export function AnimatedLink({
     </Link>
   );
 }
-export const TitleLine = ({ children }: { children: ReactNode }) => (
-  <h2 className="title-line">{children}</h2>
-);
-export function AccentPanel({
+
+/** A card whose border and surface light up under the pointer. */
+export function SpotlightCard({
   children,
-  color = 'blue',
   className = '',
+  as: Tag = 'div',
 }: {
   children: ReactNode;
-  color?: 'blue' | 'purple' | 'green';
   className?: string;
+  as?: 'div' | 'article' | 'li';
 }) {
+  const ref = useRef<HTMLElement>(null);
+  const { paused } = useMotionPreference();
+  const move = (e: PointerEvent<HTMLElement>) => {
+    if (e.pointerType === 'touch' || paused || !ref.current) return;
+    const b = ref.current.getBoundingClientRect();
+    ref.current.style.setProperty('--mx', `${(e.clientX - b.left).toFixed(0)}px`);
+    ref.current.style.setProperty('--my', `${(e.clientY - b.top).toFixed(0)}px`);
+  };
   return (
-    <GlowCard glowColor={color} className={'accent-panel ' + className}>
+    <Tag ref={ref as never} onPointerMove={move} className={`spotlight ${className}`} data-reveal>
       {children}
-    </GlowCard>
+    </Tag>
+  );
+}
+
+export function StatusBadge({ status }: { status: ProjectStatus }) {
+  const { t } = useLanguage();
+  return (
+    <span className={`status status-${status}`}>
+      <i aria-hidden="true" />
+      {t(statusLabel[status])}
+    </span>
+  );
+}
+
+export function StackList({ items, label }: { items: string[]; label?: string }) {
+  return (
+    <ul className="chips" aria-label={label}>
+      {items.map((v) => (
+        <li key={v}>{v}</li>
+      ))}
+    </ul>
+  );
+}
+
+export function ProjectLinks({ project }: { project: Project }) {
+  const { t } = useLanguage();
+  const { repo, releases, site } = project.links ?? {};
+  if (!repo && !releases && !site) return null;
+  return (
+    <div className="project-links">
+      {repo && (
+        <ActionLink to={repo} variant="primary" icon={<Github size={18} />}>
+          {t(L('Код на GitHub', 'Code on GitHub'))}
+        </ActionLink>
+      )}
+      {releases && (
+        <ActionLink to={releases} variant="secondary" icon={<Download size={18} />}>
+          {t(L('Релизы', 'Releases'))}
+        </ActionLink>
+      )}
+      {site && (
+        <ActionLink
+          to={site}
+          variant={repo ? 'secondary' : 'primary'}
+          icon={<ExternalLink size={18} />}
+        >
+          {t(L('Сайт проекта', 'Project website'))}
+        </ActionLink>
+      )}
+    </div>
+  );
+}
+
+/** Renders `code` spans inside otherwise plain localized copy. */
+export function RichText({ text }: { text: string }) {
+  return (
+    <>
+      {text
+        .split(/(`[^`]+`)/)
+        .map((part, i) => (part.startsWith('`') ? <code key={i}>{part.slice(1, -1)}</code> : part))}
+    </>
   );
 }

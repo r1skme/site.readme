@@ -1,0 +1,133 @@
+/* Scroll reveal: only applied to elements that start below the fold. */
+.reveal-ready {
+  opacity: 0;
+  transform: translateY(26px);
+}
+
+.reveal-ready.revealed {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 0.8s var(--ease),
+    transform 0.8s var(--ease);
+}
+
+@keyframes ambient-drift {
+  from {
+    transform: translate3d(-3%, 0, 0) rotate(-3deg);
+  }
+  to {
+    transform: translate3d(4%, 3%, 0) rotate(4deg);
+  }
+}
+
+@keyframes glass-flow {
+  0%,
+  15% {
+    transform: translateX(-135%) skewX(-18deg);
+    opacity: 0;
+  }
+  45% {
+    opacity: 1;
+  }
+  75%,
+  100% {
+    transform: translateX(350%) skewX(-18deg);
+    opacity: 0;
+  }
+}
+
+@keyframes loading {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(1turn);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Keeps the reel's tilt while it translates. */
+@keyframes reel-marquee {
+  from {
+    transform: rotateX(14deg) rotateZ(-4deg) translateX(0);
+  }
+  to {
+    transform: rotateX(14deg) rotateZ(-4deg) translateX(-50%);
+  }
+}
+
+/* Reduced motion or a hidden tab: everything decorative stops. */
+.motion-paused *,
+.motion-paused *::before,
+.motion-paused *::after {
+  animation-play-state: paused !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal-ready {
+    opacity: 1;
+    transform: none;
+  }
+
+  .spotlight:hover,
+  .work:hover,
+  .btn:hover {
+    transform: none;
+  }
+
+  .hero-visual .terminal {
+    transform: none;
+  }
+}

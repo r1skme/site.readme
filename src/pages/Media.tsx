@@ -1,21 +1,81 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ArrowUpRight, Play, X, ExternalLink } from 'lucide-react';
 import { useLanguage, L } from '@/lib/i18n';
 import { PageHeading } from '@/components/Primitives';
-import { TiltedGridHero } from '@/components/ui/tilted-grid-hero';
-import { publishedWorks } from '@/data/content';
+import { CountUp } from '@/components/CountUp';
+import { Reel } from '@/components/Reel';
+import { works, channels, type Work } from '@/data/media';
+
+const src = (img: string) => (img.startsWith('http') ? img : `/${img}`);
+
+function WorkCard({ work, onPlay }: { work: Work; onPlay: (id: string) => void }) {
+  const { t } = useLanguage();
+  const body = (
+    <>
+      <div className="work-image">
+        <img
+          src={src(work.img)}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onError={(e) => {
+            if (work.video && !e.currentTarget.src.includes('hqdefault'))
+              e.currentTarget.src = `https://i.ytimg.com/vi/${work.video}/hqdefault.jpg`;
+          }}
+        />
+        {work.video && (
+          <span className="work-play" aria-hidden="true">
+            <Play size={20} fill="currentColor" />
+          </span>
+        )}
+      </div>
+      <div className="work-info">
+        <span className="work-platform">
+          {work.platform} · {work.account}
+        </span>
+        <h3>{t(work.title)}</h3>
+        <span className="work-foot">
+          {work.views ? (
+            <strong>
+              {work.views} <small>{t(L('просмотров', 'views'))}</small>
+            </strong>
+          ) : (
+            <span />
+          )}
+          <span className="work-action">
+            {work.video ? t(L('Смотреть', 'Watch')) : t(L('Смотреть в TikTok', 'Watch on TikTok'))}
+            {!work.video && <ArrowUpRight size={16} aria-hidden="true" />}
+          </span>
+        </span>
+      </div>
+    </>
+  );
+  return work.video ? (
+    <button
+      type="button"
+      className={'work work-youtube'}
+      onClick={() => onPlay(work.id)}
+      data-reveal
+    >
+      {body}
+    </button>
+  ) : (
+    <a
+      className="work work-tiktok"
+      href={work.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      data-reveal
+    >
+      {body}
+    </a>
+  );
+}
+
 export default function Media() {
   const { t } = useLanguage();
   const [selected, setSelected] = useState<string | null>(null);
-  const heroImages = useMemo(
-    () =>
-      publishedWorks.map((v) => ({
-        src: v.img.startsWith('http') ? v.img : `${import.meta.env.BASE_URL}${v.img}`,
-        alt: '',
-      })),
-    [],
-  );
-  const work = publishedWorks.find((w) => w.id === selected),
+  const work = works.find((w) => w.id === selected),
     modal = useRef<HTMLDialogElement>(null);
   useEffect(() => {
     if (!selected) return;
@@ -39,203 +99,112 @@ export default function Media() {
   }, [selected]);
   return (
     <>
-      <section className="media-hero">
-        <div className="shell media-heading">
-          <PageHeading
-            title={
-              <>
-                {t(L('Монтаж', 'Editing'))}
-                <br />
-                <span className="muted-headline">
-                  {t(L('в ритме игры.', 'in the rhythm of play.'))}
-                </span>
-              </>
-            }
-            desc={t(
-              L(
-                'Люблю игровые эдиты. Мне интересен весь путь от идеи до финального кадра и его звучания.',
-                'Gaming edits are my favourite. I enjoy the entire process from the idea to the final image and sound.',
-              ),
-            )}
-          />
-        </div>
-        <div className="curved-reel">
-          <TiltedGridHero
-            images={heroImages}
-            speed={5.4}
-            className="media-tilted-grid"
-            tileHeight={37}
-            curve={65}
-            axis={48}
-            fade={8}
-            gap={4}
-            aspectRatio={16 / 10}
-          />
-        </div>
-      </section>
-      <section className="media-metrics shell">
-        <div className="media-metric-large">
-          <span>{t(L('Суммарные просмотры четырёх роликов', 'Total views on four posts'))}</span>
+      <PageHeading
+        title={
+          <>
+            {t(L('Монтаж', 'Editing'))}
+            <br />
+            <span className="muted">{t(L('в ритме игры.', 'in the rhythm of play.'))}</span>
+          </>
+        }
+        desc={t(
+          L(
+            'Игровые эдиты для личных каналов и GLOW RUST: идея, материал, ритм, музыка, цвет и звук.',
+            'Gaming edits for my channels and GLOW RUST: idea, footage, rhythm, music, colour and sound.',
+          ),
+        )}
+      />
+      <Reel works={works} />
+      <section className="shell numbers numbers-2" aria-label={t(L('В цифрах', 'In numbers'))}>
+        <div className="number number-wide" data-reveal>
           <strong>
-            150K<span>+</span>
+            <CountUp value="150K+" />
           </strong>
-          <p>
+          <span>
             {t(
               L(
-                '158,8 тыс. суммарных просмотров четырёх публикаций в личном TikTok и GLOW RUST. Показатели зафиксированы на скриншотах; это просмотры роликов, а не уникальные зрители.',
-                '158.8K total views across four posts on my personal TikTok and GLOW RUST. The counts were recorded in screenshots; these are post views rather than unique viewers.',
+                'Сумма просмотров четырёх роликов на двух аккаунтах: 95,1K + 26,8K + 20,8K + 16,1K = 158,8K.',
+                'Total views of four posts on two accounts: 95.1K + 26.8K + 20.8K + 16.1K = 158.8K.',
               ),
             )}
-          </p>
+          </span>
         </div>
-        <div className="media-metric-small">
-          <strong>3</strong>
+        <div className="number" data-reveal>
+          <strong>
+            <CountUp value="3" />
+          </strong>
           <span>{t(L('года в DaVinci Resolve', 'years in DaVinci Resolve'))}</span>
         </div>
       </section>
-      <section className="media-gallery shell">
-        <div className="section-head-inline">
-          <h2>{t(L('Избранные работы', 'Selected work'))}</h2>
-          <p>
-            {t(
-              L(
-                'Игровые эдиты, моменты и короткие ролики для личных каналов и GLOW RUST.',
-                'Gaming edits, moments and short videos for my personal channels and GLOW RUST.',
-              ),
-            )}
-          </p>
-        </div>
-        <div className="media-cards">
-          {publishedWorks.map((v) => (
-            <button
-              key={v.id}
-              type="button"
-              className="media-work"
-              onClick={() => setSelected(v.id)}
-              aria-label={`${t(L('Открыть', 'Open'))} ${t(v.title)}`}
-            >
-              <div className="work-image">
-                <img
-                  src={v.img.startsWith('http') ? v.img : `${import.meta.env.BASE_URL}${v.img}`}
-                  alt={t(v.title)}
-                  loading="lazy"
-                  onError={(e) => {
-                    e.currentTarget.style.opacity = '0';
-                  }}
-                />
-                <div className="work-play">
-                  <Play size={20} fill="currentColor" aria-hidden="true" />
-                </div>
-              </div>
-              <div className="work-info">
-                <div>
-                  <span className="work-platform">{v.category}</span>
-                  <h3>{t(v.title)}</h3>
-                </div>
-                <div className="work-views">{v.views || <ArrowUpRight size={21} />}</div>
-              </div>
-            </button>
+      <section className="shell section" aria-labelledby="works-title">
+        <header className="section-head" data-reveal>
+          <h2 id="works-title">{t(L('Избранные работы', 'Selected work'))}</h2>
+        </header>
+        <div className="works">
+          {works.map((w) => (
+            <WorkCard key={w.id} work={w} onPlay={setSelected} />
           ))}
         </div>
       </section>
-      <section className="media-method shell">
-        <div className="media-method-grid">
-          <h2>{t(L('Как собираю ролик', 'How I build an edit'))}</h2>
-          <div className="v9-reading-copy">
-            <p>
-              {t(
-                L(
-                  'Самый сложный этап для меня — найти идею и нужный материал. Использую собственные записи, демки и готовые материалы в зависимости от задачи. Затем собираю основу, работаю с темпом, музыкой и акцентами.',
-                  'For me, the hardest stage is finding the idea and the right material. Depending on the task I use my own recordings, demos and existing material. Then I assemble the edit and work on pacing, music and emphasis.',
-                ),
-              )}
-            </p>
-            <p>
-              {t(
-                L(
-                  'В коротком ролике стараюсь сразу заинтересовать зрителя, не затягивать монтаж и не перегружать его эффектами. Для хорошего результата готов возвращаться к работе несколько дней.',
-                  'In short videos I try to engage the viewer early, avoid dragging out the edit and keep effects purposeful. I am willing to revisit a piece over several days for a better result.',
-                ),
-              )}
-            </p>
+      <section className="shell section split" aria-labelledby="method-title">
+        <h2 id="method-title" data-reveal>
+          {t(L('Как собираю ролик', 'How I build an edit'))}
+        </h2>
+        <div className="prose" data-reveal>
+          <p>
+            {t(
+              L(
+                'Самое сложное — найти идею и нужный материал. Использую свои записи, демки и готовые материалы в зависимости от задачи. Затем собираю основу и работаю с темпом, музыкой и акцентами.',
+                'The hardest part is finding the idea and the right footage. Depending on the task I use my own recordings, demos and existing material. Then I assemble the edit and work on pacing, music and emphasis.',
+              ),
+            )}
+          </p>
+          <p>
+            {t(
+              L(
+                'В коротком ролике цепляю зрителя с первых секунд, не затягиваю и не перегружаю эффектами. Ради хорошего результата возвращаюсь к работе несколько дней.',
+                'In short videos I hook the viewer from the first seconds, keep it tight and use effects with purpose. For a better result I come back to a piece over several days.',
+              ),
+            )}
+          </p>
+          <div className="pill-links">
+            {channels.map((c) => (
+              <a key={c.url} href={c.url} target="_blank" rel="noopener noreferrer">
+                {c.label}
+                <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
+            ))}
           </div>
         </div>
-        <div className="channel-links">
-          <a href="https://youtube.com/@r1sk-gg" target="_blank" rel="noopener noreferrer">
-            YouTube
-            <ArrowUpRight size={17} />
-          </a>
-          <a href="https://www.tiktok.com/@r1skme.hvh" target="_blank" rel="noopener noreferrer">
-            TikTok
-            <ArrowUpRight size={17} />
-          </a>
-          <a href="https://www.tiktok.com/@glow_rust" target="_blank" rel="noopener noreferrer">
-            GLOW RUST
-            <ArrowUpRight size={17} />
-          </a>
-          <a href="https://vm.tiktok.com/ZN8AC4mbQ/" target="_blank" rel="noopener noreferrer">
-            {t(L('Работа в TikTok 01', 'TikTok edit 01'))}
-            <ArrowUpRight size={17} />
-          </a>
-          <a href="https://vm.tiktok.com/ZN8ACCbM2/" target="_blank" rel="noopener noreferrer">
-            {t(L('Работа в TikTok 02', 'TikTok edit 02'))}
-            <ArrowUpRight size={17} />
-          </a>
-        </div>
       </section>
-      {work && (
+      {work?.video && (
         <dialog
           ref={modal}
-          className="media-native-dialog"
+          className="video-dialog"
           aria-label={t(work.title)}
           onClick={(e) => {
-            if (e.target === e.currentTarget) {
-              const r = e.currentTarget.getBoundingClientRect();
-              if (
-                e.clientX < r.left ||
-                e.clientX > r.right ||
-                e.clientY < r.top ||
-                e.clientY > r.bottom
-              )
-                setSelected(null);
-            }
+            if (e.target === e.currentTarget) setSelected(null);
           }}
         >
           <div className="video-modal">
-            <div className="modal-title">
+            <div className="video-modal-head">
               <span>{t(work.title)}</span>
               <button onClick={() => setSelected(null)} aria-label={t(L('Закрыть', 'Close'))}>
                 <X size={20} />
               </button>
             </div>
-            {'video' in work && work.video ? (
-              <div className="modal-player">
-                <iframe
-                  title={t(work.title)}
-                  src={`https://www.youtube-nocookie.com/embed/${work.video}?rel=0`}
-                  allow="accelerometer;encrypted-media;gyroscope;picture-in-picture;fullscreen"
-                  allowFullScreen
-                  referrerPolicy="strict-origin-when-cross-origin"
-                />
-              </div>
-            ) : (
-              <div className="modal-poster">
-                <img src={`${import.meta.env.BASE_URL}${work.img}`} alt="" />
-                <p>
-                  {t(
-                    L(
-                      'Другие публикации этого аккаунта можно посмотреть в TikTok.',
-                      'Explore more posts from this account on TikTok.',
-                    ),
-                  )}
-                </p>
-              </div>
-            )}
-            <a href={work.url} target="_blank" rel="noopener noreferrer" className="modal-external">
-              {work.video
-                ? t(L('Открыть оригинал', 'Open original'))
-                : t(L('Открыть профиль TikTok', 'Open TikTok profile'))}
-              <ExternalLink size={16} />
+            <div className="video-player">
+              <iframe
+                title={t(work.title)}
+                src={`https://www.youtube-nocookie.com/embed/${work.video}?rel=0&autoplay=1`}
+                allow="accelerometer;autoplay;encrypted-media;gyroscope;picture-in-picture;fullscreen"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            </div>
+            <a href={work.url} target="_blank" rel="noopener noreferrer" className="text-link">
+              {t(L('Открыть на YouTube', 'Open on YouTube'))}
+              <ExternalLink size={16} aria-hidden="true" />
             </a>
           </div>
         </dialog>

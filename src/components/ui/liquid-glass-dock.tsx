@@ -12,11 +12,12 @@ import { House, Grid3X3, Clapperboard, UserRound, Layers3, Mail } from 'lucide-r
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { prefetchPage } from '@/lib/routes';
+import { isKnownPath } from '@/lib/seo';
 const items = [
   { url: '/', icon: House, name: L('Главная', 'Home') },
   { url: '/projects/', icon: Grid3X3, name: L('Проекты', 'Projects') },
   { url: '/media/', icon: Clapperboard, name: L('Медиа', 'Media') },
-  { url: '/skills/', icon: Layers3, name: L('Опыт', 'Experience') },
+  { url: '/skills/', icon: Layers3, name: L('Навыки', 'Skills') },
   { url: '/about/', icon: UserRound, name: L('Обо мне', 'About') },
   { url: '/contact/', icon: Mail, name: L('Контакты', 'Contact') },
 ];
@@ -27,15 +28,13 @@ export function LiquidGlassDock() {
     { pathname } = useLocation();
   const nav = useRef<HTMLElement>(null),
     links = useRef<(HTMLAnchorElement | null)[]>([]);
-  const current = Math.max(
-    0,
-    items.findIndex((item) =>
-      item.url === '/'
-        ? pathname === '/'
-        : pathname === '/roadmap/'
-          ? item.url === '/about/'
-          : pathname.startsWith(item.url),
-    ),
+  // Highlight only real sections. Roadmap and unknown paths (404) have no dock item.
+  const current = items.findIndex((item) =>
+    item.url === '/'
+      ? pathname === '/'
+      : item.url === '/projects/'
+        ? pathname === '/projects/' || (pathname.startsWith('/projects/') && isKnownPath(pathname))
+        : pathname === item.url,
   );
   const [lens, setLens] = useState<Lens>({ x: 4, width: 80 }),
     [hover, setHover] = useState<Lens | null>(null),
@@ -53,6 +52,7 @@ export function LiquidGlassDock() {
     let alive = true;
     const update = () => {
       if (!alive) return;
+      if (current < 0) return setReady(false);
       const next = measure(current);
       if (next) {
         setLens(next);
@@ -121,7 +121,7 @@ export function LiquidGlassDock() {
               />
             )}
           </AnimatePresence>
-          {ready && (
+          {ready && current >= 0 && (
             <m.span
               className="glass-lens"
               aria-hidden="true"

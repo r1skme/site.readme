@@ -73,15 +73,10 @@ export default function Timeline({ items }: { items: JourneyStep[] }) {
     el.querySelector<HTMLElement>('h3')?.focus({ preventScroll: true });
   };
   return (
-    <section
-      ref={root}
-      id="journey"
-      className="shell v7-journey-timeline v8-journey"
-      data-managed-motion
-    >
-      <aside className="v8-journey-sidebar">
+    <section ref={root} id="journey" className="shell journey" data-managed-motion>
+      <aside className="journey-sidebar">
         <h2>{t(L('Опыт, который остаётся', 'Experience that stays with me'))}</h2>
-        <nav className="v8-chapters" aria-label={t(L('Этапы пути', 'Journey chapters'))}>
+        <nav className="journey-chapters" aria-label={t(L('Этапы пути', 'Journey chapters'))}>
           {items.map((item, index) => (
             <a
               key={item.id}
@@ -90,18 +85,18 @@ export default function Timeline({ items }: { items: JourneyStep[] }) {
               aria-current={active === index ? 'step' : undefined}
               className={active === index ? 'is-reading' : ''}
             >
-              <span className="v8-chapter-dot" aria-hidden="true" />
+              <span className="journey-dot" aria-hidden="true" />
               <span>{t(item.title)}</span>
             </a>
           ))}
         </nav>
-        <a className="v8-next-jump" href="#next">
+        <a className="text-link" href="#next">
           {t(L('Что дальше', 'What comes next'))}
           <ArrowDown size={16} aria-hidden="true" />
         </a>
       </aside>
-      <div className="v8-journey-story">
-        <div className="v8-story-line" aria-hidden="true">
+      <div className="journey-story">
+        <div className="journey-line" aria-hidden="true">
           <span />
         </div>
         {items.map((item, index) => (
@@ -111,18 +106,18 @@ export default function Timeline({ items }: { items: JourneyStep[] }) {
             ref={(el) => {
               cards.current[index] = el;
             }}
-            className={'v7-journey-card v8-story-step' + (active === index ? ' is-reading' : '')}
+            className={'journey-step' + (active === index ? ' is-reading' : '')}
           >
-            <span className="v8-story-node" aria-hidden="true" />
-            <p className="v8-step-date">{t(item.date)}</p>
+            <span className="journey-node" aria-hidden="true" />
+            <p className="journey-date">{t(item.date)}</p>
             <h3 tabIndex={-1}>{t(item.title)}</h3>
-            <p className="v8-step-description">{t(item.description)}</p>
-            <ul className="v8-step-stack" aria-label={t(L('Инструменты', 'Tools'))}>
+            <p className="journey-text">{t(item.description).replace(/`/g, '')}</p>
+            <ul className="chips" aria-label={t(L('Инструменты', 'Tools'))}>
               {item.stack.map((tool) => (
                 <li key={tool}>{tool}</li>
               ))}
             </ul>
-            <Link to={item.href} className="v8-step-link">
+            <Link to={item.href} className="text-link">
               {t(item.linkLabel || L('О проекте', 'Explore project'))}
               <ArrowUpRight size={17} aria-hidden="true" />
             </Link>

@@ -1,0 +1,35 @@
+:root {
+  color-scheme: dark;
+
+  --font-display: 'Unbounded', 'Onest', system-ui, sans-serif;
+  --font-sans: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  --bg: #060b15;
+  --bg-raised: #0b1424;
+  --surface: rgb(14 24 42 / 0.62);
+  --surface-strong: rgb(16 28 50 / 0.86);
+  --ink: #f2f6ff;
+  --muted: #a6b4cb;
+  --soft: #74859f;
+  --line: rgb(150 175 220 / 0.14);
+  --line-strong: rgb(150 175 220 / 0.26);
+
+  --blue: #6b8cff;
+  --cyan: #5fdcf0;
+  --violet: #a37dff;
+  --green: #7fe3b9;
+  --amber: #f2c27b;
+  --gradient: linear-gradient(100deg, var(--cyan), var(--blue) 45%, var(--violet));
+
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 28px;
+
+  --shell: 1240px;
+  --gutter: clamp(16px, 4vw, 48px);
+  --section: clamp(80px, 11vw, 150px);
+  --dock-space: 120px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
