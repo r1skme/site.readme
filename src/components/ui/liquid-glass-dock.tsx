@@ -8,18 +8,25 @@ import {
 } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { m, AnimatePresence } from 'motion/react';
-import { House, Grid3X3, Clapperboard, UserRound, Layers3, Mail } from 'lucide-react';
+import {
+  AboutIcon,
+  ContactIcon,
+  HomeIcon,
+  MediaIcon,
+  ProjectsIcon,
+  SkillsIcon,
+} from '@/components/ui/dock-icons';
 import { useLanguage, L } from '@/lib/i18n';
 import { useMotionPreference } from '@/lib/motion';
 import { prefetchPage } from '@/lib/routes';
 import { isKnownPath } from '@/lib/seo';
 const items = [
-  { url: '/', icon: House, name: L('Главная', 'Home') },
-  { url: '/projects/', icon: Grid3X3, name: L('Проекты', 'Projects') },
-  { url: '/media/', icon: Clapperboard, name: L('Медиа', 'Media') },
-  { url: '/skills/', icon: Layers3, name: L('Навыки', 'Skills') },
-  { url: '/about/', icon: UserRound, name: L('Обо мне', 'About') },
-  { url: '/contact/', icon: Mail, name: L('Контакты', 'Contact') },
+  { url: '/', icon: HomeIcon, name: L('Главная', 'Home') },
+  { url: '/projects/', icon: ProjectsIcon, name: L('Проекты', 'Projects') },
+  { url: '/media/', icon: MediaIcon, name: L('Медиа', 'Media') },
+  { url: '/skills/', icon: SkillsIcon, name: L('Навыки', 'Skills') },
+  { url: '/about/', icon: AboutIcon, name: L('Обо мне', 'About') },
+  { url: '/contact/', icon: ContactIcon, name: L('Контакты', 'Contact') },
 ];
 type Lens = { x: number; width: number };
 export function LiquidGlassDock() {
@@ -165,7 +172,7 @@ export function LiquidGlassDock() {
                 whileTap={paused ? undefined : { scale: 0.95 }}
                 transition={{ type: 'spring', stiffness: 420, damping: 28 }}
               >
-                <Icon size={17} strokeWidth={1.6} aria-hidden="true" />
+                <Icon size={18} />
                 <span>{t(name)}</span>
               </m.span>
             </Link>
