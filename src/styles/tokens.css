@@ -1,7 +1,12 @@
 :root {
   color-scheme: dark;
 
+  /* Unbounded: the R1SK logo and big numbers only. */
   --font-display: 'Unbounded', 'Onest', system-ui, sans-serif;
+  /* Section and page headings. */
+  --font-heading: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --heading-weight: 700;
+  --heading-tracking: -0.03em;
   --font-sans: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: 'IBM Plex Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 

@@ -38,9 +38,9 @@ button {
 h1,
 h2,
 h3 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  letter-spacing: -0.035em;
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-tracking);
   line-height: 1.08;
   text-wrap: balance;
   margin: 0;

@@ -459,3 +459,48 @@ a:hover .identity-arrow {
 .glass-item-content svg {
   flex: none;
 }
+
+/* Dev-only heading font switcher (FontLab). */
+.font-lab {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 120;
+  display: grid;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: rgb(8 14 27 / 0.92);
+  font-size: 0.78rem;
+  color: var(--soft);
+}
+
+.font-lab summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 2px 6px;
+  color: var(--ink);
+}
+
+.font-lab button {
+  min-height: 30px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: var(--muted);
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.font-lab button[aria-pressed='true'] {
+  background: rgb(107 140 255 / 0.25);
+  color: var(--ink);
+}
+
+@media (max-width: 640px) {
+  .font-lab {
+    bottom: 96px;
+  }
+}

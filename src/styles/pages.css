@@ -85,7 +85,7 @@
 }
 
 .hero-role strong {
-  font: 600 clamp(1.3rem, 2vw, 1.7rem) / 1.2 var(--font-display);
+  font: var(--heading-weight) clamp(1.3rem, 2vw, 1.7rem) / 1.2 var(--font-heading);
   letter-spacing: -0.03em;
   color: var(--ink);
   justify-self: start;
@@ -440,7 +440,7 @@ a.number:hover {
 }
 
 .roadmap-line > span:first-child {
-  font: 500 clamp(1.1rem, 2vw, 1.5rem) var(--font-display);
+  font: var(--heading-weight) clamp(1.1rem, 2vw, 1.5rem) var(--font-heading);
   letter-spacing: -0.03em;
 }
 
@@ -532,7 +532,7 @@ a.number:hover {
   padding: 4px 0;
   border: 0;
   background: none;
-  font-family: var(--font-display);
+  font-family: var(--font-heading);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 1.1;
@@ -910,7 +910,7 @@ a.number:hover {
 .case-tagline {
   margin-top: 22px;
   max-width: 30ch;
-  font: 500 clamp(1.3rem, 2.6vw, 2rem) / 1.25 var(--font-display);
+  font: var(--heading-weight) clamp(1.3rem, 2.6vw, 2rem) / 1.25 var(--font-heading);
   letter-spacing: -0.03em;
   color: #dbe5f7;
 }
@@ -1038,7 +1038,7 @@ a.number:hover {
 }
 
 .next-project strong {
-  font: 500 clamp(2rem, 5vw, 4rem) / 1 var(--font-display);
+  font: var(--heading-weight) clamp(2rem, 5vw, 4rem) / 1 var(--font-heading);
   letter-spacing: -0.05em;
 }
 
@@ -1525,7 +1525,7 @@ a.number:hover {
 }
 
 .contact-link strong {
-  font: 500 clamp(1.5rem, 2.8vw, 2.2rem) / 1.1 var(--font-display);
+  font: var(--heading-weight) clamp(1.5rem, 2.8vw, 2.2rem) / 1.1 var(--font-heading);
   letter-spacing: -0.04em;
   overflow-wrap: anywhere;
 }

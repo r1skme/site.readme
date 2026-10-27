@@ -9,6 +9,7 @@ import { getPageMeta } from '@/lib/seo';
 import FluidBackdrop from '@/components/FluidBackdrop';
 import { LiquidGlassDock } from '@/components/ui/liquid-glass-dock';
 import HalftoneWordmarkFooter from '@/components/ui/halftone-wordmark-footer';
+import FontLab from '@/components/FontLab';
 
 /** Fades in every [data-reveal] element that starts below the fold. */
 function RevealController() {
@@ -141,6 +142,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
         className="site-footer"
       />
       <LiquidGlassDock />
+      {import.meta.env.DEV && <FontLab />}
     </div>
   );
 }
